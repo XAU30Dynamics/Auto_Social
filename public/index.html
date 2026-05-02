@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#080C12">
+<title>XAU30 — Auto Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #103050;
+  --navy2: #1F4E79;
+  --gold: #D0A030;
+  --gold-light: #D4B842;
+  --gold-dim: rgba(208,160,48,0.15);
+  --gold-border: rgba(208,160,48,0.25);
+  --bg: #080C12;
+  --bg2: #0D1520;
+  --bg3: #121C28;
+  --bg4: #172030;
+  --text: #EEE8DC;
+  --muted: #7A8898;
+  --muted2: #4A5868;
+  --green: #2ECC71;
+  --green-dim: rgba(46,204,113,0.12);
+  --red: #E74C3C;
+  --red-dim: rgba(231,76,60,0.12);
+  --font-display: 'Playfair Display', serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(8,12,18,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--gold-border);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.header-logo span { color: var(--gold); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.refresh-btn {
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover { background: rgba(208,160,48,0.25); }
+
+.post-count {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+  padding: 12px 20px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.filter-bar::-webkit-scrollbar { display: none; }
+
+.filter-pill {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--muted2);
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.filter-pill.active {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ─── POSTS LIST ─── */
+.posts-container {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── POST CARD ─── */
+.post-card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.post-card.approved { border-color: rgba(46,204,113,0.3); }
+.post-card.rejected { border-color: rgba(231,76,60,0.2); opacity: 0.5; }
+
+/* Card header */
+.card-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  user-select: none;
+}
+
+.pillar-tag {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.card-headline {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.3;
+}
+
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--muted2);
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--muted2);
+}
+
+.status-dot.pending { background: var(--gold); }
+.status-dot.approved { background: var(--green); }
+.status-dot.rejected { background: var(--red); }
+
+/* Card body (collapsible) */
+.card-body {
+  display: none;
+  padding: 16px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-body.open { display: flex; }
+
+/* Image preview */
+.image-preview {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg3);
+  position: relative;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted2);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+
+/* Field groups */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field-input {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  padding: 10px 12px;
+  width: 100%;
+  resize: vertical;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--gold-border);
+  background: var(--bg4);
+}
+
+.field-input.mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.char-count {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--muted2);
+  text-align: right;
+  margin-top: 2px;
+}
+
+.char-count.over { color: var(--red); }
+
+/* Platform blocks */
+.platform-block {
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.platform-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.platform-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.copy-btn {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--gold-border);
+  background: var(--gold-dim);
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.copy-btn:active { transform: scale(0.96); }
+.copy-btn.copied {
+  background: var(--green-dim);
+  border-color: rgba(46,204,113,0.3);
+  color: var(--green);
+}
+
+.platform-text {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Variant selector */
+.variant-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.variant-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.variant-btn.selected-black {
+  background: #111;
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.variant-btn.selected-white {
+  background: #F5F0E8;
+  border-color: var(--gold);
+  color: #103050;
+}
+
+/* Canva section */
+.canva-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.canva-generate-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--gold);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canva-generate-btn:hover { background: var(--gold-light); }
+.canva-generate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.canva-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.canva-link:hover { border-color: var(--gold-border); }
+
+.canva-link-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.canva-link-arrow {
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+/* Posted toggles */
+.posted-row {
+  display: flex;
+  gap: 8px;
+}
+
+.posted-toggle {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg3);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.posted-toggle.done {
+  background: var(--green-dim);
+  border-color: rgba(46,204,113,0.3);
+  color: var(--green);
+}
+
+/* Action buttons */
+.action-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.btn-approve {
+  flex: 1;
+  padding: 13px;
+  background: var(--green-dim);
+  border: 1px solid rgba(46,204,113,0.3);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reject {
+  flex: 1;
+  padding: 13px;
+  background: var(--red-dim);
+  border: 1px solid rgba(231,76,60,0.2);
+  color: var(--red);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save {
+  padding: 13px 18px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Loading / empty states */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--gold-border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg3);
+  border: 1px solid var(--gold-border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+  z-index: 999;
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Divider */
+.section-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 4px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">XAU30<span>.</span></div>
+  <div class="header-right">
+    <span class="post-count" id="postCount">— posts</span>
+    <button class="refresh-btn" onclick="loadPosts()">Refresh</button>
+  </div>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-pill active" data-filter="all" onclick="setFilter('all', this)">All</button>
+  <button class="filter-pill" data-filter="Pending Review" onclick="setFilter('Pending Review', this)">Pending</button>
+  <button class="filter-pill" data-filter="Approved" onclick="setFilter('Approved', this)">Approved</button>
+  <button class="filter-pill" data-filter="Rejected" onclick="setFilter('Rejected', this)">Rejected</button>
+</div>
+
+<div id="postsContainer" class="posts-container">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading posts</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let allPosts = [];
+let currentFilter = 'all';
+
+// ─── Load Posts ───────────────────────────────────────────────────────────────
+async function loadPosts() {
+  document.getElementById('postsContainer').innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading posts</div>
+    </div>`;
+  try {
+    const res = await fetch('/api/posts');
+    allPosts = await res.json();
+    renderPosts();
+  } catch (e) {
+    document.getElementById('postsContainer').innerHTML = `<div class="empty">Failed to load posts</div>`;
+  }
+}
+
+// ─── Filter ───────────────────────────────────────────────────────────────────
+function setFilter(filter, el) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderPosts();
+}
+
+// ─── Render Posts ─────────────────────────────────────────────────────────────
+function renderPosts() {
+  const filtered = currentFilter === 'all'
+    ? allPosts
+    : allPosts.filter(p => p.status === currentFilter);
+
+  document.getElementById('postCount').textContent = `${filtered.length} post${filtered.length !== 1 ? 's' : ''}`;
+
+  if (filtered.length === 0) {
+    document.getElementById('postsContainer').innerHTML = `<div class="empty">No posts found</div>`;
+    return;
+  }
+
+  document.getElementById('postsContainer').innerHTML = filtered.map(post => renderCard(post)).join('');
+}
+
+// ─── Render Card ──────────────────────────────────────────────────────────────
+function renderCard(post) {
+  const statusClass = post.status === 'Approved' ? 'approved' : post.status === 'Rejected' ? 'rejected' : '';
+  const dotClass = post.status === 'Approved' ? 'approved' : post.status === 'Rejected' ? 'rejected' : 'pending';
+
+  const igFull = `${post.caption}\n\n${post.hashtags}`;
+  const igLen = igFull.length;
+  const xLen = post.x_post.length;
+  const threadsLen = post.threads_post.length;
+
+  const canvaSection = post.canva_url
+    ? `<a class="canva-link" href="${post.canva_url}" target="_blank">
+        <span class="canva-link-label">Open in Canva</span>
+        <span class="canva-link-arrow">→</span>
+       </a>`
+    : '';
+
+  return `
+  <div class="post-card ${statusClass}" id="card-${post.rowIndex}">
+    <div class="card-header" onclick="toggleCard(${post.rowIndex})">
+      <div class="status-dot ${dotClass}"></div>
+      <div class="pillar-tag">${pillarShort(post.pillar)}</div>
+      <div class="card-headline">${escHtml(post.headline)}</div>
+      <div class="card-meta">${post.date || ''}</div>
+    </div>
+
+    <div class="card-body" id="body-${post.rowIndex}">
+
+      <!-- Image -->
+      ${post.image_url ? `
+      <div class="image-preview">
+        <img src="${post.image_url}" alt="Post image" onerror="this.parentElement.innerHTML='<div class=image-preview-placeholder>Image unavailable</div>'">
+      </div>` : ''}
+
+      <!-- Headline -->
+      <div class="field-group">
+        <div class="field-label">Headline</div>
+        <input class="field-input" id="headline-${post.rowIndex}" value="${escAttr(post.headline)}" maxlength="80">
+      </div>
+
+      <!-- Subheading -->
+      <div class="field-group">
+        <div class="field-label">Subheading</div>
+        <input class="field-input" id="subheading-${post.rowIndex}" value="${escAttr(post.subheading)}" maxlength="100">
+      </div>
+
+      <!-- CTA Text -->
+      <div class="field-group">
+        <div class="field-label">CTA Text</div>
+        <input class="field-input" id="cta_text-${post.rowIndex}" value="${escAttr(post.cta_text)}" maxlength="60">
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- IG Caption -->
+      <div class="platform-block">
+        <div class="platform-header">
+          <div class="platform-label">Instagram</div>
+          <button class="copy-btn" onclick="copyIG(${post.rowIndex})">Copy</button>
+        </div>
+        <textarea class="field-input" id="caption-${post.rowIndex}" rows="6" oninput="updateCharCount(${post.rowIndex}, 'caption', 2200)">${escHtml(post.caption)}</textarea>
+        <div class="char-count" id="cc-caption-${post.rowIndex}">${post.caption.length} / 2200</div>
+        <div style="margin-top:10px">
+          <textarea class="field-input mono" id="hashtags-${post.rowIndex}" rows="2" oninput="updateCharCount(${post.rowIndex}, 'hashtags', 300)">${escHtml(post.hashtags)}</textarea>
+          <div class="char-count" id="cc-hashtags-${post.rowIndex}">${post.hashtags.length} / 300</div>
+        </div>
+      </div>
+
+      <!-- X Post -->
+      <div class="platform-block">
+        <div class="platform-header">
+          <div class="platform-label">X / Twitter</div>
+          <button class="copy-btn" onclick="copyField('x_post-${post.rowIndex}')">Copy</button>
+        </div>
+        <textarea class="field-input mono" id="x_post-${post.rowIndex}" rows="3" oninput="updateCharCount(${post.rowIndex}, 'x_post', 280)">${escHtml(post.x_post)}</textarea>
+        <div class="char-count ${xLen > 280 ? 'over' : ''}" id="cc-x_post-${post.rowIndex}">${xLen} / 280</div>
+      </div>
+
+      <!-- Threads -->
+      <div class="platform-block">
+        <div class="platform-header">
+          <div class="platform-label">Threads</div>
+          <button class="copy-btn" onclick="copyField('threads_post-${post.rowIndex}')">Copy</button>
+        </div>
+        <textarea class="field-input" id="threads_post-${post.rowIndex}" rows="3" oninput="updateCharCount(${post.rowIndex}, 'threads_post', 500)">${escHtml(post.threads_post)}</textarea>
+        <div class="char-count ${threadsLen > 500 ? 'over' : ''}" id="cc-threads_post-${post.rowIndex}">${threadsLen} / 500</div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Canva variant -->
+      <div class="field-group">
+        <div class="field-label">Canva Template</div>
+        <div class="variant-selector">
+          <button class="variant-btn ${post.bg_variant === '1' ? 'selected-black' : ''}" 
+            id="var1-${post.rowIndex}" onclick="selectVariant(${post.rowIndex}, '1')">
+            ◼ Black
+          </button>
+          <button class="variant-btn ${post.bg_variant === '2' ? 'selected-white' : ''}"
+            id="var2-${post.rowIndex}" onclick="selectVariant(${post.rowIndex}, '2')">
+            ◻ White
+          </button>
+        </div>
+      </div>
+
+      <div class="canva-section">
+        <button class="canva-generate-btn" id="canva-btn-${post.rowIndex}" 
+          onclick="generateCanva(${post.rowIndex})"
+          ${!post.bg_variant ? 'disabled' : ''}>
+          Generate Canva Graphic
+        </button>
+        <div id="canva-result-${post.rowIndex}">
+          ${canvaSection}
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Posted toggles -->
+      <div class="field-group">
+        <div class="field-label">Posted</div>
+        <div class="posted-row">
+          <button class="posted-toggle ${post.posted_ig ? 'done' : ''}" id="pig-${post.rowIndex}"
+            onclick="togglePosted(${post.rowIndex}, 'posted_ig', 'pig-${post.rowIndex}')">
+            ${post.posted_ig ? '✓ IG' : 'IG'}
+          </button>
+          <button class="posted-toggle ${post.posted_x ? 'done' : ''}" id="px-${post.rowIndex}"
+            onclick="togglePosted(${post.rowIndex}, 'posted_x', 'px-${post.rowIndex}')">
+            ${post.posted_x ? '✓ X' : 'X'}
+          </button>
+          <button class="posted-toggle ${post.posted_threads ? 'done' : ''}" id="pth-${post.rowIndex}"
+            onclick="togglePosted(${post.rowIndex}, 'posted_threads', 'pth-${post.rowIndex}')">
+            ${post.posted_threads ? '✓ Threads' : 'Threads'}
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-row">
+        <button class="btn-approve" onclick="setStatus(${post.rowIndex}, 'Approved')">Approve</button>
+        <button class="btn-reject" onclick="setStatus(${post.rowIndex}, 'Rejected')">Reject</button>
+        <button class="btn-save" onclick="saveEdits(${post.rowIndex})">Save</button>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+// ─── Toggle Card ──────────────────────────────────────────────────────────────
+function toggleCard(rowIndex) {
+  const body = document.getElementById(`body-${rowIndex}`);
+  body.classList.toggle('open');
+}
+
+// ─── Char Count ───────────────────────────────────────────────────────────────
+function updateCharCount(rowIndex, field, max) {
+  const el = document.getElementById(`${field}-${rowIndex}`);
+  const cc = document.getElementById(`cc-${field}-${rowIndex}`);
+  if (!el || !cc) return;
+  const len = el.value.length;
+  cc.textContent = `${len} / ${max}`;
+  cc.classList.toggle('over', len > max);
+}
+
+// ─── Copy IG (caption + hashtags merged) ─────────────────────────────────────
+function copyIG(rowIndex) {
+  const caption = document.getElementById(`caption-${rowIndex}`)?.value || '';
+  const hashtags = document.getElementById(`hashtags-${rowIndex}`)?.value || '';
+  const full = hashtags ? `${caption}\n\n${hashtags}` : caption;
+  copyText(full, `copy-btn`);
+  showToast('Instagram caption copied');
+}
+
+function copyField(fieldId) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  copyText(el.value);
+  showToast('Copied to clipboard');
+}
+
+function copyText(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+}
+
+// ─── Variant Select ───────────────────────────────────────────────────────────
+function selectVariant(rowIndex, variant) {
+  const btn1 = document.getElementById(`var1-${rowIndex}`);
+  const btn2 = document.getElementById(`var2-${rowIndex}`);
+  if (btn1) { btn1.classList.remove('selected-black'); }
+  if (btn2) { btn2.classList.remove('selected-white'); }
+  if (variant === '1' && btn1) btn1.classList.add('selected-black');
+  if (variant === '2' && btn2) btn2.classList.add('selected-white');
+
+  // Enable generate button
+  const genBtn = document.getElementById(`canva-btn-${rowIndex}`);
+  if (genBtn) genBtn.disabled = false;
+
+  // Store locally on the post object
+  const post = allPosts.find(p => p.rowIndex === rowIndex);
+  if (post) post.bg_variant = variant;
+
+  // Save to sheet immediately
+  patch(rowIndex, { bg_variant: variant });
+}
+
+// ─── Generate Canva ───────────────────────────────────────────────────────────
+async function generateCanva(rowIndex) {
+  const post = allPosts.find(p => p.rowIndex === rowIndex);
+  if (!post) return;
+
+  const headline = document.getElementById(`headline-${rowIndex}`)?.value || post.headline;
+  const subheading = document.getElementById(`subheading-${rowIndex}`)?.value || post.subheading;
+  const cta_text = document.getElementById(`cta_text-${rowIndex}`)?.value || post.cta_text;
+  const caption = document.getElementById(`caption-${rowIndex}`)?.value || post.caption;
+
+  const btn = document.getElementById(`canva-btn-${rowIndex}`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Generating…'; }
+
+  try {
+    const res = await fetch('/api/canva-autofill', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rowIndex,
+        bg_variant: post.bg_variant,
+        headline,
+        subheading,
+        cta_text,
+        caption,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+
+    // Update local post
+    post.canva_url = data.canva_url;
+
+    // Show link
+    const resultEl = document.getElementById(`canva-result-${rowIndex}`);
+    if (resultEl) {
+      resultEl.innerHTML = `<a class="canva-link" href="${data.canva_url}" target="_blank">
+        <span class="canva-link-label">Open in Canva</span>
+        <span class="canva-link-arrow">→</span>
+      </a>`;
+    }
+
+    showToast('Canva graphic ready');
+  } catch (e) {
+    showToast(`Error: ${e.message}`);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Regenerate Canva Graphic'; }
+  }
+}
+
+// ─── Save Edits ───────────────────────────────────────────────────────────────
+async function saveEdits(rowIndex) {
+  const fields = ['headline', 'subheading', 'cta_text', 'caption', 'hashtags', 'x_post', 'threads_post'];
+  const updates = {};
+  fields.forEach(f => {
+    const el = document.getElementById(`${f}-${rowIndex}`);
+    if (el) updates[f] = el.value;
+  });
+  await patch(rowIndex, updates);
+  showToast('Saved');
+}
+
+// ─── Set Status ───────────────────────────────────────────────────────────────
+async function setStatus(rowIndex, status) {
+  await patch(rowIndex, { status });
+  const post = allPosts.find(p => p.rowIndex === rowIndex);
+  if (post) post.status = status;
+  const card = document.getElementById(`card-${rowIndex}`);
+  if (card) {
+    card.className = `post-card ${status === 'Approved' ? 'approved' : status === 'Rejected' ? 'rejected' : ''}`;
+  }
+  showToast(`Marked as ${status}`);
+}
+
+// ─── Toggle Posted ────────────────────────────────────────────────────────────
+async function togglePosted(rowIndex, field, btnId) {
+  const btn = document.getElementById(btnId);
+  const post = allPosts.find(p => p.rowIndex === rowIndex);
+  if (!post) return;
+
+  const now = new Date().toISOString();
+  const current = post[field];
+  const newVal = current ? '' : now;
+  post[field] = newVal;
+
+  const labels = { posted_ig: 'IG', posted_x: 'X', posted_threads: 'Threads' };
+  const label = labels[field] || field;
+
+  if (btn) {
+    btn.classList.toggle('done', !!newVal);
+    btn.textContent = newVal ? `✓ ${label}` : label;
+  }
+
+  await patch(rowIndex, { [field]: newVal });
+  showToast(newVal ? `${label} marked posted` : `${label} unmarked`);
+}
+
+// ─── Patch helper ─────────────────────────────────────────────────────────────
+async function patch(rowIndex, updates) {
+  try {
+    await fetch(`/api/posts/${rowIndex}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+  } catch (e) {
+    showToast('Save failed');
+  }
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function pillarShort(pillar) {
+  const map = {
+    'Performance Proof': 'Proof',
+    'Strategy Deep Dive': 'Strat',
+    'Product Showcase': 'Product',
+    'Educational': 'Edu',
+    'Market Commentary': 'Commentary',
+    'Behind the Scenes': 'BTS',
+  };
+  return map[pillar] || pillar || '—';
+}
+
+function escHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function escAttr(str) {
+  return String(str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+loadPosts();
+</script>
+</body>
+</html>
