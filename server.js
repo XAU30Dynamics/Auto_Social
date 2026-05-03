@@ -4,6 +4,16 @@ const cors = require('cors');
 const { google } = require('googleapis');
 const axios = require('axios');
 const path = require('path');
+const crypto = require('crypto');
+
+// ─── PKCE helpers ─────────────────────────────────────────────────────────────
+function generateCodeVerifier() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+function generateCodeChallenge(verifier) {
+  return crypto.createHash('sha256').update(verifier).digest('base64url');
+}
+let pkceVerifier = null;
 
 const app = express();
 app.use(cors());
@@ -201,26 +211,34 @@ app.post('/api/canva-autofill', async (req, res) => {
   }
 });
 
-// ─── Canva OAuth ─────────────────────────────────────────────────────────────
+// ─── Canva OAuth (PKCE) ───────────────────────────────────────────────────────
 app.get('/canva/auth', (req, res) => {
+  pkceVerifier = generateCodeVerifier();
+  const challenge = generateCodeChallenge(pkceVerifier);
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: process.env.CANVA_CLIENT_ID,
-    redirect_uri: `https://autosocial-production.up.railway.app/canva/callback`,
+    redirect_uri: 'https://autosocial-production.up.railway.app/canva/callback',
     scope: 'design:content:read design:content:write asset:read asset:write brandtemplate:content:read brandtemplate:meta:read',
+    code_challenge_method: 'S256',
+    code_challenge: challenge,
   });
   res.redirect(`https://www.canva.com/api/oauth/authorize?${params}`);
 });
 
 app.get('/canva/callback', async (req, res) => {
   const { code } = req.query;
+  if (!code) return res.status(400).send('No code returned from Canva.');
+  if (!pkceVerifier) return res.status(400).send('No PKCE verifier found. Please restart the auth flow at /canva/auth.');
   try {
     const response = await axios.post(
       'https://api.canva.com/rest/v1/oauth/token',
       new URLSearchParams({
         grant_type: 'authorization_code',
         code,
-        redirect_uri: `https://autosocial-production.up.railway.app/canva/callback`,
+        redirect_uri: 'https://autosocial-production.up.railway.app/canva/callback',
+        code_verifier: pkceVerifier,
+        client_id: process.env.CANVA_CLIENT_ID,
       }),
       {
         auth: {
@@ -230,17 +248,18 @@ app.get('/canva/callback', async (req, res) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       }
     );
+    pkceVerifier = null;
     const { access_token, refresh_token } = response.data;
-    res.send(`
-      <h2>Canva OAuth Success</h2>
-      <p><strong>Access Token:</strong></p>
-      <textarea rows="4" style="width:100%">${access_token}</textarea>
-      <p><strong>Refresh Token:</strong></p>
-      <textarea rows="4" style="width:100%">${refresh_token}</textarea>
-      <p>Copy the access token and add it to Railway as CANVA_ACCESS_TOKEN. Also save the refresh token somewhere safe.</p>
-    `);
+    res.send(`<!DOCTYPE html><html><body style="font-family:sans-serif;padding:40px;max-width:700px">
+      <h2>✅ Canva OAuth Success</h2>
+      <p><strong>Access Token</strong> — add to Railway as <code>CANVA_ACCESS_TOKEN</code>:</p>
+      <textarea rows="4" style="width:100%;font-size:12px;padding:8px">${access_token}</textarea>
+      <p style="margin-top:20px"><strong>Refresh Token</strong> — save somewhere safe:</p>
+      <textarea rows="4" style="width:100%;font-size:12px;padding:8px">${refresh_token}</textarea>
+    </body></html>`);
   } catch (err) {
-    res.status(500).send(`OAuth error: ${JSON.stringify(err.response?.data || err.message)}`);
+    const detail = JSON.stringify(err.response?.data || err.message, null, 2);
+    res.status(500).send(`<pre>OAuth error:\n${detail}</pre>`);
   }
 });
 
