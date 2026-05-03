@@ -27,25 +27,26 @@ const SHEET_NAME = process.env.SHEET_NAME || 'Posts';
 
 // Column index map (0-based)
 const COL = {
-  timestamp: 0,    // A
-  date: 1,         // B
-  day: 2,          // C
-  pillar: 3,       // D
-  image_url: 4,    // E
-  headline: 5,     // F
-  caption: 6,      // G
-  hashtags: 7,     // H
-  x_post: 8,       // I
-  threads_post: 9, // J
-  status: 10,      // K
-  subheading: 11,  // L
-  cta_text: 12,    // M
-  bg_variant: 13,  // N
-  canva_url: 14,   // O
-  final_image: 15, // P
-  posted_ig: 16,   // Q
-  posted_x: 17,    // R
+  timestamp: 0,       // A
+  date: 1,            // B
+  day: 2,             // C
+  pillar: 3,          // D
+  image_url: 4,       // E
+  headline: 5,        // F
+  caption: 6,         // G
+  hashtags: 7,        // H
+  x_post: 8,          // I
+  threads_post: 9,    // J
+  status: 10,         // K
+  subheading: 11,     // L
+  cta_text: 12,       // M
+  bg_variant: 13,     // N
+  canva_url: 14,      // O
+  final_image: 15,    // P
+  posted_ig: 16,      // Q
+  posted_x: 17,       // R
   posted_threads: 18, // S
+  graphic_text: 19,   // T
 };
 
 // ─── GET /api/posts ───────────────────────────────────────────────────────────
@@ -54,7 +55,7 @@ app.get('/api/posts', async (req, res) => {
     const sheets = getSheetsClient();
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A2:S`,
+      range: `${SHEET_NAME}!A2:T`,
     });
 
     const rows = response.data.values || [];
@@ -79,6 +80,7 @@ app.get('/api/posts', async (req, res) => {
       posted_ig: row[COL.posted_ig] || '',
       posted_x: row[COL.posted_x] || '',
       posted_threads: row[COL.posted_threads] || '',
+      graphic_text: row[COL.graphic_text] || '',
     }));
 
     // Return newest first
@@ -129,14 +131,11 @@ app.patch('/api/posts/:row', async (req, res) => {
 // ─── POST /api/canva-autofill ─────────────────────────────────────────────────
 // Triggers Canva autofill and returns the new design URL
 app.post('/api/canva-autofill', async (req, res) => {
-  const { rowIndex, bg_variant, headline, subheading, cta_text, caption } = req.body;
+  const { rowIndex, bg_variant, headline, subheading, cta_text, graphic_text } = req.body;
 
   const templateId = bg_variant === '2'
     ? process.env.CANVA_TEMPLATE_WHITE
     : process.env.CANVA_TEMPLATE_BLACK;
-
-  // Strip hashtags from caption for the text field
-  const textNoHashtags = caption.replace(/#\w+/g, '').replace(/\s{2,}/g, ' ').trim();
 
   try {
     // Canva Autofill API
@@ -149,7 +148,7 @@ app.post('/api/canva-autofill', async (req, res) => {
           Heading: { type: 'text', text: headline },
           Subheading: { type: 'text', text: subheading },
           'CTA text': { type: 'text', text: cta_text },
-          'Text with no hashtags': { type: 'text', text: textNoHashtags },
+          'Text with no hashtags': { type: 'text', text: graphic_text || '' },
         },
       },
       {
@@ -199,6 +198,49 @@ app.post('/api/canva-autofill', async (req, res) => {
   } catch (err) {
     console.error('POST /api/canva-autofill error:', err.response?.data || err.message);
     res.status(500).json({ error: err.response?.data?.message || err.message });
+  }
+});
+
+// ─── Canva OAuth ─────────────────────────────────────────────────────────────
+app.get('/canva/auth', (req, res) => {
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: process.env.CANVA_CLIENT_ID,
+    redirect_uri: `https://autosocial-production.up.railway.app/canva/callback`,
+    scope: 'design:content:read design:content:write asset:read asset:write brandtemplate:content:read brandtemplate:meta:read',
+  });
+  res.redirect(`https://www.canva.com/api/oauth/authorize?${params}`);
+});
+
+app.get('/canva/callback', async (req, res) => {
+  const { code } = req.query;
+  try {
+    const response = await axios.post(
+      'https://api.canva.com/rest/v1/oauth/token',
+      new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: `https://autosocial-production.up.railway.app/canva/callback`,
+      }),
+      {
+        auth: {
+          username: process.env.CANVA_CLIENT_ID,
+          password: process.env.CANVA_CLIENT_SECRET,
+        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      }
+    );
+    const { access_token, refresh_token } = response.data;
+    res.send(`
+      <h2>Canva OAuth Success</h2>
+      <p><strong>Access Token:</strong></p>
+      <textarea rows="4" style="width:100%">${access_token}</textarea>
+      <p><strong>Refresh Token:</strong></p>
+      <textarea rows="4" style="width:100%">${refresh_token}</textarea>
+      <p>Copy the access token and add it to Railway as CANVA_ACCESS_TOKEN. Also save the refresh token somewhere safe.</p>
+    `);
+  } catch (err) {
+    res.status(500).send(`OAuth error: ${JSON.stringify(err.response?.data || err.message)}`);
   }
 });
 
