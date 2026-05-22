@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { google } = require('googleapis');
-const axios = require('axios');
 const path = require('path');
 
 const app = express();
@@ -131,113 +130,6 @@ app.patch('/api/posts/:row', async (req, res) => {
     console.error('PATCH /api/posts error:', err.message);
     res.status(500).json({ error: err.message });
   }
-});
-
-// ─── POST /api/engagement ─────────────────────────────────────────────────────
-// Searches target accounts for recent posts and drafts replies using Claude
-app.post('/api/engagement', async (req, res) => {
-  const TAVILY_KEY = process.env.TAVILY_API_KEY;
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-
-  if (!TAVILY_KEY) return res.status(500).json({ error: 'TAVILY_API_KEY not set' });
-  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
-
-  // Target accounts from brief Section 9
-  const targets = [
-    { handle: '@FTMO_com',        platform: 'X',         query: 'from:FTMO_com trading prop firm' },
-    { handle: '@cTrader',         platform: 'X',         query: 'from:cTrader algo trading platform' },
-    { handle: '@cTraderGuru',     platform: 'X',         query: 'from:cTraderGuru cTrader algo' },
-    { handle: '@PropFirmMatch',   platform: 'X',         query: 'from:PropFirmMatch prop firm' },
-    { handle: '@AlgobuilderX',    platform: 'X',         query: 'from:AlgobuilderX algo builder' },
-    { handle: '@ftmocom',         platform: 'Instagram', query: 'ftmocom FTMO prop firm trading site:twitter.com OR site:x.com' },
-    { handle: '@ctrader',         platform: 'Instagram', query: 'ctrader official trading platform news' },
-  ];
-
-  const results = [];
-
-  for (const target of targets) {
-    try {
-      // Search for recent posts from this account
-      const tavilyRes = await axios.post(
-        'https://api.tavily.com/search',
-        {
-          query: target.query,
-          search_depth: 'basic',
-          max_results: 2,
-          include_answer: false,
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${TAVILY_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      const searchResults = tavilyRes.data.results || [];
-      if (searchResults.length === 0) continue;
-
-      // Take the most relevant result
-      const post = searchResults[0];
-      const postContent = post.content || post.title || '';
-      const postUrl = post.url || '';
-
-      if (!postContent || postContent.length < 20) continue;
-
-      // Draft a reply using Claude
-      const claudeRes = await axios.post(
-        'https://api.anthropic.com/v1/messages',
-        {
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 300,
-          messages: [
-            {
-              role: 'user',
-              content: `You are drafting a reply on behalf of TraderS from XAU30 Dynamics — a serious, experienced XAUUSD trader and algo developer (13 years trading, 35+ prop firm payouts, 18 FTMO payouts).
-
-Voice rules:
-- Direct, evidence-led, anti-hype
-- Add genuine value — share a specific insight, data point, or experience
-- Never plug XAU30 Dynamics or ask people to follow/join
-- No emojis, no trader-bro slang, no sycophancy
-- Sound like a knowledgeable practitioner, not a marketer
-- Max 240 characters for X, 3 sentences max
-- If you disagree with something in the post, disagree respectfully with reasoning
-
-Post from ${target.handle} (${target.platform}):
-"${postContent.slice(0, 500)}"
-
-Draft a reply that adds genuine value. Return ONLY the reply text, nothing else.`,
-            },
-          ],
-        },
-        {
-          headers: {
-            'x-api-key': ANTHROPIC_KEY,
-            'anthropic-version': '2023-06-01',
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      const reply = claudeRes.data.content?.[0]?.text?.trim() || '';
-      if (!reply) continue;
-
-      results.push({
-        handle: target.handle,
-        platform: target.platform,
-        post_snippet: postContent.slice(0, 200),
-        post_url: postUrl,
-        drafted_reply: reply,
-      });
-
-    } catch (err) {
-      console.error(`Engagement search error for ${target.handle}:`, err.response?.data || err.message);
-      // Continue to next target rather than failing entirely
-    }
-  }
-
-  res.json({ results, generated_at: new Date().toISOString() });
 });
 
 // ─── Serve dashboard ──────────────────────────────────────────────────────────

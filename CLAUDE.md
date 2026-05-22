@@ -10,8 +10,6 @@ Mobile-first approval dashboard for the XAU30 Dynamics social media automation p
 - **Data store**: Google Sheets (via `googleapis` service-account auth) — the `Posts` tab is the source of truth.
 - **External APIs called from the server**:
   - Google Sheets API (`spreadsheets.values.get` / `batchUpdate`)
-  - Tavily search API (engagement digest)
-  - Anthropic Messages API (drafts reply text — currently pinned to `claude-sonnet-4-20250514`)
 - **External APIs called from the browser only**: Canva (static brand-template URLs, opened in a new tab — no Canva API call from this codebase despite what the README implies).
 - **Deploy target**: Railway (auto-deploys on push to `main`).
 
@@ -48,7 +46,6 @@ All routes live in `server.js`:
 |--------|---------------------|------------------------------------------------------------------------------|
 | GET    | `/api/posts`        | Read rows `A2:T` from the `Posts` sheet, return newest-first as JSON         |
 | PATCH  | `/api/posts/:row`   | Per-field cell update via `batchUpdate` — body is `{ fieldName: value, ... }` where `fieldName` must be a key in the `COL` map |
-| POST   | `/api/engagement`   | Tavily-searches a hardcoded list of competitor handles, drafts replies via Anthropic, returns `{ results, generated_at }` |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
 
 PATCH safety: unknown field names are silently skipped (see `if (COL[field] === undefined) continue;` in `server.js:111`). Sending only unknown fields returns `{ ok: true }` with no writes.
@@ -108,8 +105,6 @@ Defined in `env.example`. All are required for full functionality:
 | `CANVA_ACCESS_TOKEN`            | Same — unused                            |
 | `CANVA_TEMPLATE_BLACK`          | Unused server-side; templates are hardcoded in `public/index.html:401-402` |
 | `CANVA_TEMPLATE_WHITE`          | Same                                     |
-| `TAVILY_API_KEY`                | `POST /api/engagement` only              |
-| `ANTHROPIC_API_KEY`             | `POST /api/engagement` only              |
 | `PORT`                          | Optional, defaults to `3000`             |
 
 The service account must have edit access to the spreadsheet — share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` explicitly.
@@ -122,7 +117,6 @@ The service account must have edit access to the spreadsheet — share the sheet
 - **DOM IDs** in the frontend follow `f-<field>-<rowIndex>` for inputs (e.g. `f-headline-42`) and `cc-<field>-<rowIndex>` for character counters. `renderCard()` is the source of truth.
 - **PATCH-on-edit** for individual toggles (variant select, posted toggles); explicit Save button for text fields. Don't auto-save text inputs on blur — that's intentional.
 - **Newest first**: `GET /api/posts` does `.reverse()` before returning so the latest sheet row shows up top.
-- **Voice/brand for AI-drafted replies** is baked into the `/api/engagement` prompt (`server.js:196-210`). If the brand voice changes, edit that prompt.
 
 ## Gotchas
 
@@ -131,9 +125,6 @@ The service account must have edit access to the spreadsheet — share the sheet
 - **README claims Canva Autofill API integration** — there is no Canva API call in the server. The UI just deep-links to two static Canva brand-template URLs (`public/index.html:401-402`) and the operator copy/pastes fields into Canva manually. Don't promise Canva-API behavior without implementing it.
 - **The `hashtags` column is merged into `caption` on read.** `GET /api/posts` returns `caption = caption + "\n\n" + hashtags`, and the UI no longer renders a separate hashtags input. If you re-introduce a hashtags field, also unmerge in `server.js:63-68`. PATCH still accepts `hashtags` as a field name and writes to column H.
 - **Column map is positional.** Inserting a column mid-sheet (or in the `COL` map without matching the sheet) will silently corrupt every row. Append new columns at the end of both.
-- **Engagement endpoint hits Anthropic with a pinned old model ID** (`claude-sonnet-4-20250514`, `server.js:191`). Update deliberately if needed; don't auto-bump.
-- **Hardcoded engagement targets.** The competitor handles for `/api/engagement` are baked into `server.js:146-154`. Editing the list requires a server edit + redeploy.
 - **Catch-all route serves `index.html` for any unmatched GET**, including paths that look like missing API routes. A typo'd API path won't 404 — it'll return the dashboard HTML. Check the response `Content-Type` when debugging.
 - **`GOOGLE_PRIVATE_KEY` newline handling**: the value is stored with literal `\n` escapes and unescaped via `.replace(/\\n/g, '\n')` (`server.js:18`). When pasting into Railway, keep the `\n` escapes — don't paste real newlines.
 - **No request auth.** Anyone who can reach the deployed URL can read and write the sheet via `/api/posts` and `/api/posts/:row`. Keep the Railway URL private, or add auth before exposing it.
-- **`/api/engagement` is slow and serial.** It loops the 7 target accounts with two awaited HTTP calls each (Tavily then Anthropic). Expect ~10–30s response times. The UI shows a spinner; don't add a short fetch timeout.
