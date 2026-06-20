@@ -132,6 +132,70 @@ app.patch('/api/posts/:row', async (req, res) => {
   }
 });
 
+// ─── POST /api/threads/generate ───────────────────────────────────────────────
+// Proxies {topic, pillar} to the Make "Thread Generator" webhook (Claude + brief),
+// keeping the webhook URL server-side. Returns the parsed thread chain JSON.
+const THREAD_WEBHOOK_URL = process.env.MAKE_THREAD_WEBHOOK_URL;
+
+app.post('/api/threads/generate', async (req, res) => {
+  const topic = String(req.body?.topic || '').trim();
+  const pillar = String(req.body?.pillar || '').trim();
+  if (!topic) return res.status(400).json({ error: 'Topic is required' });
+  if (!THREAD_WEBHOOK_URL) {
+    return res.status(500).json({ error: 'MAKE_THREAD_WEBHOOK_URL is not set on the server' });
+  }
+
+  try {
+    const upstream = await fetch(THREAD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, pillar }),
+    });
+
+    const raw = await upstream.text();
+    if (!upstream.ok) {
+      console.error('Thread webhook error:', upstream.status, raw.slice(0, 300));
+      return res.status(502).json({ error: `Generator returned ${upstream.status}`, detail: raw.slice(0, 300) });
+    }
+
+    const thread = parseThread(raw);
+    if (!thread) {
+      return res.status(502).json({ error: 'Could not parse generator response', detail: raw.slice(0, 300) });
+    }
+    res.json(thread);
+  } catch (err) {
+    console.error('POST /api/threads/generate error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Defensively extract the thread JSON from the webhook body (handles raw JSON or ```fences).
+function parseThread(raw) {
+  if (!raw) return null;
+  let text = String(raw).trim();
+  if (text.startsWith('```')) {
+    text = text.replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
+  }
+  let obj;
+  try {
+    obj = JSON.parse(text);
+  } catch {
+    const s = text.indexOf('{'), e = text.lastIndexOf('}');
+    if (s === -1 || e === -1) return null;
+    try { obj = JSON.parse(text.slice(s, e + 1)); } catch { return null; }
+  }
+  if (!obj || typeof obj !== 'object') return null;
+  const posts = Array.isArray(obj.posts) ? obj.posts.map((p) => String(p)) : [];
+  return {
+    pillar: obj.pillar || '',
+    topic_tag: obj.topic_tag || '',
+    hook: obj.hook || '',
+    posts,
+    cta: obj.cta || '',
+    total_posts: obj.total_posts || (posts.length + (obj.hook ? 1 : 0) + (obj.cta ? 1 : 0)),
+  };
+}
+
 // ─── Serve dashboard ──────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

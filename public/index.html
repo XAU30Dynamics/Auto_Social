@@ -218,6 +218,35 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 }
 .toast.show { transform:translateX(-50%) translateY(0); }
 
+/* ─── Thread Generator ─── */
+.tg-panel { margin:12px 16px 0; border:1px solid var(--gold-border); border-radius:var(--radius); background:linear-gradient(135deg, rgba(208,160,48,0.06), rgba(16,48,80,0.18)); overflow:hidden; }
+.tg-toggle { width:100%; display:flex; align-items:center; gap:10px; padding:13px 14px; background:transparent; border:none; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; }
+.tg-toggle-label { font-family:var(--font-display); font-size:0.95rem; font-weight:600; color:var(--gold); white-space:nowrap; }
+.tg-toggle-sub { flex:1; font-family:var(--font-mono); font-size:0.52rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; }
+.tg-body { display:none; flex-direction:column; gap:12px; padding:0 14px 16px; border-top:1px solid rgba(255,255,255,0.05); }
+.tg-body.open { display:flex; }
+.tg-body .field-group { margin-top:12px; }
+select.field-input { -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%237A8898' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:28px; }
+.tg-generate { padding:13px; background:var(--gold); border:none; color:#0A0A0A; font-family:var(--font-mono); font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; border-radius:var(--radius-sm); cursor:pointer; transition:all 0.2s; }
+.tg-generate:active { transform:scale(0.98); }
+.tg-generate.loading { opacity:0.55; pointer-events:none; }
+.tg-output { display:flex; flex-direction:column; gap:10px; }
+.tg-output:empty { display:none; }
+.tg-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.tg-tag, .tg-copyall { font-family:var(--font-mono); font-size:0.58rem; letter-spacing:0.06em; padding:4px 9px; border-radius:5px; cursor:pointer; transition:all 0.15s; }
+.tg-tag { color:var(--gold); background:var(--gold-dim); border:1px solid var(--gold-border); }
+.tg-copyall { margin-left:auto; text-transform:uppercase; border:1px solid var(--muted2); background:transparent; color:var(--muted); }
+.tg-tag:active, .tg-copyall:active { transform:scale(0.95); }
+.tg-post { background:var(--bg3); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:11px; }
+.tg-post.hook { border-color:var(--gold-border); background:linear-gradient(135deg, rgba(208,160,48,0.08), rgba(16,48,80,0.2)); }
+.tg-post.cta { border-color:rgba(46,204,113,0.25); background:var(--green-dim); }
+.tg-post-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; gap:8px; }
+.tg-post-label { font-family:var(--font-mono); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
+.tg-post.cta .tg-post-label { color:var(--green); }
+.tg-post-text { font-family:var(--font-body); font-size:0.85rem; line-height:1.55; color:var(--text); white-space:pre-wrap; }
+.tg-post-count { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; text-align:right; }
+.tg-post-count.over { color:var(--red); }
+
 </style>
 </head>
 <body>
@@ -241,6 +270,33 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
   <button class="filter-pill" onclick="setFilter('Approved',this)">Approved</button>
   <button class="filter-pill" onclick="setFilter('Rejected',this)">Rejected</button>
   <button class="filter-pill" onclick="setFilter('all',this)">All</button>
+</div>
+
+<div class="tg-panel">
+  <button class="tg-toggle" onclick="toggleTG()">
+    <span class="tg-toggle-label">⚡ Thread Generator</span>
+    <span class="tg-toggle-sub">Build a Threads chain</span>
+    <span class="card-chevron" id="tgChevron">▾</span>
+  </button>
+  <div class="tg-body" id="tgBody">
+    <div class="field-group">
+      <div class="field-label">Category</div>
+      <select class="field-input" id="tg-pillar">
+        <option value="Educational">Educational — teach one idea</option>
+        <option value="Market Commentary">Market Commentary — reactive take</option>
+        <option value="Strategy Deep Dive">Strategy / Algo Deep Dive</option>
+        <option value="Performance Proof">Performance Proof — numbers &amp; payouts</option>
+        <option value="Product Showcase">Product Showcase — Discord / apps / bots</option>
+        <option value="Behind the Scenes">Behind the Scenes / Founder</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Topic / brief</div>
+      <textarea class="field-input" id="tg-topic" rows="3" placeholder="e.g. Why most traders fail their first FTMO challenge"></textarea>
+    </div>
+    <button class="tg-generate" id="tgGenerate" onclick="generateThread()">Generate thread</button>
+    <div class="tg-output" id="tg-output"></div>
+  </div>
 </div>
 
 <div id="postsContainer" class="posts-container"></div>
@@ -488,6 +544,76 @@ function esc(s) {
 }
 
 function escAttr(s) { return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+// ─── Thread Generator ───
+let lastThread=null, tgPostSeq=0;
+
+function toggleTG() {
+  const body=document.getElementById('tgBody');
+  const chev=document.getElementById('tgChevron');
+  const open=body.classList.toggle('open');
+  chev.style.transform=open?'rotate(180deg)':'';
+}
+
+async function generateThread() {
+  const topic=document.getElementById('tg-topic').value.trim();
+  const pillar=document.getElementById('tg-pillar').value;
+  const out=document.getElementById('tg-output');
+  const btn=document.getElementById('tgGenerate');
+  if(!topic){showToast('Enter a topic first');return;}
+  btn.classList.add('loading'); btn.textContent='Generating…';
+  out.innerHTML='<div class="loading"><div class="spinner"></div><div class="loading-text">Writing your thread</div></div>';
+  try {
+    const res=await fetch('/api/threads/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,pillar})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Generation failed');
+    lastThread=data;
+    renderThread(data);
+  } catch(e) {
+    out.innerHTML='<div class="empty-state"><div class="empty-icon">⚠</div><div class="empty-text">'+esc(e.message)+'</div><div class="empty-sub">Check the Make scenario is on, then try again</div></div>';
+  } finally {
+    btn.classList.remove('loading'); btn.textContent='Generate thread';
+  }
+}
+
+function renderThread(t) {
+  const out=document.getElementById('tg-output');
+  const tag=t.topic_tag?('#'+String(t.topic_tag).replace(/^#/,'')):'';
+  const parts=['<div class="tg-meta"><div class="pillar-tag">'+esc(pillarShort(t.pillar))+'</div>'+
+    (tag?'<button class="tg-tag" onclick="copyTag(this)">'+esc(tag)+' · copy</button>':'')+
+    '<button class="tg-copyall" onclick="copyWholeThread(this)">Copy all</button></div>'];
+  if(t.hook)parts.push(threadPost('Hook · Post 1',t.hook,'hook'));
+  (t.posts||[]).forEach((p,i)=>parts.push(threadPost('Reply · Post '+(i+2),p,'')));
+  if(t.cta)parts.push(threadPost('CTA · Final post',t.cta,'cta'));
+  out.innerHTML=parts.join('');
+}
+
+function threadPost(label,text,cls) {
+  const id='tgp-'+(tgPostSeq++);
+  const len=String(text).length;
+  const over=(len>500)?' over':'';
+  return '<div class="tg-post '+cls+'">'+
+    '<div class="tg-post-head"><span class="tg-post-label">'+esc(label)+'</span>'+
+    '<button class="copy-btn" onclick="copyEl(\''+id+'\',this)">Copy</button></div>'+
+    '<div class="tg-post-text" id="'+id+'">'+esc(text)+'</div>'+
+    '<div class="tg-post-count'+over+'">'+len+' chars</div></div>';
+}
+
+function copyTag(btn) {
+  if(!lastThread)return;
+  doC('#'+String(lastThread.topic_tag||'').replace(/^#/,''));
+  flashBtn(btn); showToast('Topic tag copied');
+}
+
+function copyWholeThread(btn) {
+  if(!lastThread)return;
+  const lines=[];
+  if(lastThread.hook)lines.push(lastThread.hook);
+  (lastThread.posts||[]).forEach(p=>lines.push(p));
+  if(lastThread.cta)lines.push(lastThread.cta);
+  doC(lines.join('\n\n———\n\n'));
+  flashBtn(btn); showToast('Whole thread copied');
+}
 
 loadPosts();
 </script>
