@@ -146,7 +146,7 @@ app.post('/api/threads/generate', async (req, res) => {
   }
 
   // Total posts in the chain (hook + replies + CTA). Clamp to a sane range.
-  const total = Math.min(15, Math.max(3, parseInt(req.body?.count, 10) || 9));
+  const total = Math.min(15, Math.max(3, parseInt(req.body?.count, 10) || 7));
   const replies = total - 2; // one hook + N numbered replies + one CTA
   // Fold an authoritative length instruction into the topic the webhook reads.
   // This overrides the default range baked into the Make/Claude prompt without
