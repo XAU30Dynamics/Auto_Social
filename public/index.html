@@ -291,6 +291,15 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
       </select>
     </div>
     <div class="field-group">
+      <div class="field-label">Thread length</div>
+      <select class="field-input" id="tg-count">
+        <option value="5">Short — 5 posts</option>
+        <option value="7">Medium — 7 posts</option>
+        <option value="9" selected>Long — 9 posts</option>
+        <option value="12">Max — 12 posts</option>
+      </select>
+    </div>
+    <div class="field-group">
       <div class="field-label">Topic / brief</div>
       <textarea class="field-input" id="tg-topic" rows="3" placeholder="e.g. Why most traders fail their first FTMO challenge"></textarea>
     </div>
@@ -558,13 +567,14 @@ function toggleTG() {
 async function generateThread() {
   const topic=document.getElementById('tg-topic').value.trim();
   const pillar=document.getElementById('tg-pillar').value;
+  const count=parseInt(document.getElementById('tg-count').value,10)||9;
   const out=document.getElementById('tg-output');
   const btn=document.getElementById('tgGenerate');
   if(!topic){showToast('Enter a topic first');return;}
   btn.classList.add('loading'); btn.textContent='Generating…';
   out.innerHTML='<div class="loading"><div class="spinner"></div><div class="loading-text">Writing your thread</div></div>';
   try {
-    const res=await fetch('/api/threads/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,pillar})});
+    const res=await fetch('/api/threads/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic,pillar,count})});
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||'Generation failed');
     lastThread=data;

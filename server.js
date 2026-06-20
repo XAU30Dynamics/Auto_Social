@@ -145,11 +145,22 @@ app.post('/api/threads/generate', async (req, res) => {
     return res.status(500).json({ error: 'MAKE_THREAD_WEBHOOK_URL is not set on the server' });
   }
 
+  // Total posts in the chain (hook + replies + CTA). Clamp to a sane range.
+  const total = Math.min(15, Math.max(3, parseInt(req.body?.count, 10) || 9));
+  const replies = total - 2; // one hook + N numbered replies + one CTA
+  // Fold an authoritative length instruction into the topic the webhook reads.
+  // This overrides the default range baked into the Make/Claude prompt without
+  // requiring a scenario edit (which would unbind the webhook).
+  const topicForGen =
+    `${topic}\n\n[LENGTH INSTRUCTION — this takes precedence over any default post-count range stated elsewhere: ` +
+    `produce a chain of EXACTLY ${total} posts total — 1 hook post, then EXACTLY ${replies} numbered reply posts ` +
+    `in the "posts" array, then 1 CTA post. "total_posts" must equal ${total}.]`;
+
   try {
     const upstream = await fetch(THREAD_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic, pillar }),
+      body: JSON.stringify({ topic: topicForGen, pillar, count: total }),
     });
 
     const raw = await upstream.text();
