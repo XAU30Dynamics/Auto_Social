@@ -145,16 +145,28 @@ app.post('/api/threads/generate', async (req, res) => {
     return res.status(500).json({ error: 'MAKE_THREAD_WEBHOOK_URL is not set on the server' });
   }
 
-  // Total posts in the chain (hook + replies + CTA). Clamp to a sane range.
-  const total = Math.min(15, Math.max(3, parseInt(req.body?.count, 10) || 7));
-  const replies = total - 2; // one hook + N numbered replies + one CTA
+  // Total posts in the chain (hook + replies + CTA). 1 = single standalone post;
+  // anything else clamps to the 3–15 chain range.
+  const requested = parseInt(req.body?.count, 10) || 7;
+  const total = requested === 1 ? 1 : Math.min(15, Math.max(3, requested));
   // Fold an authoritative length instruction into the topic the webhook reads.
   // This overrides the default range baked into the Make/Claude prompt without
   // requiring a scenario edit (which would unbind the webhook).
-  const topicForGen =
-    `${topic}\n\n[LENGTH INSTRUCTION — this takes precedence over any default post-count range stated elsewhere: ` +
-    `produce a chain of EXACTLY ${total} posts total — 1 hook post, then EXACTLY ${replies} numbered reply posts ` +
-    `in the "posts" array, then 1 CTA post. "total_posts" must equal ${total}.]`;
+  let topicForGen;
+  if (total === 1) {
+    topicForGen =
+      `${topic}\n\n[LENGTH INSTRUCTION — this takes precedence over any default post-count range or chain structure stated elsewhere: ` +
+      `produce a SINGLE standalone Threads post, NOT a chain. Put the ENTIRE post in the "hook" field — it must stand alone: ` +
+      `a hook opening, the core idea, and exactly one short CTA from the brief's CTA library folded into the same post. ` +
+      `It may be up to 500 characters, and unlike a chain hook it MAY include the CTA/link. ` +
+      `The "posts" array MUST be empty ([]), "cta" MUST be an empty string, and "total_posts" must equal 1.]`;
+  } else {
+    const replies = total - 2; // one hook + N numbered replies + one CTA
+    topicForGen =
+      `${topic}\n\n[LENGTH INSTRUCTION — this takes precedence over any default post-count range stated elsewhere: ` +
+      `produce a chain of EXACTLY ${total} posts total — 1 hook post, then EXACTLY ${replies} numbered reply posts ` +
+      `in the "posts" array, then 1 CTA post. "total_posts" must equal ${total}.]`;
+  }
 
   try {
     const upstream = await fetch(THREAD_WEBHOOK_URL, {
