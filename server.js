@@ -314,7 +314,7 @@ app.get('/api/threadlog', async (req, res) => {
     const sheets = getSheetsClient();
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'ThreadLog!A2:F',
+      range: 'ThreadLog!A2:G',
     });
     const rows = response.data.values || [];
     const cutoff = Date.now() - 2 * 86400 * 1000;
@@ -326,6 +326,7 @@ app.get('/api/threadlog', async (req, res) => {
         hook: r[3] || '',
         total_posts: r[4] || '',
         root_post_id: r[5] || '',
+        thread_text: r[6] || '',
       }))
       .filter((it) => {
         const d = parseThreadTs(it.ts);

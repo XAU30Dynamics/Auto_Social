@@ -284,6 +284,9 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
 .at-item-time { font-family:var(--font-mono); font-size:0.55rem; color:var(--muted2); margin-left:auto; }
 .at-item-topic { font-family:var(--font-body); font-size:0.85rem; color:var(--text); font-weight:500; line-height:1.4; }
 .at-item-hook { font-family:var(--font-body); font-size:0.75rem; color:var(--muted); line-height:1.5; margin-top:4px; }
+.at-item-body { max-height:150px; overflow-y:auto; margin-top:6px; padding:8px 10px; background:var(--bg2); border:1px solid rgba(255,255,255,0.05); border-radius:var(--radius-sm); font-family:var(--font-body); font-size:0.78rem; color:var(--text); line-height:1.55; white-space:pre-wrap; -webkit-overflow-scrolling:touch; }
+.at-item-body::-webkit-scrollbar { width:4px; }
+.at-item-body::-webkit-scrollbar-thumb { background:var(--muted2); border-radius:2px; }
 .at-item-meta { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; letter-spacing:0.06em; }
 
 </style>
@@ -730,8 +733,8 @@ async function loadThreadLog() {
     el.innerHTML=items.map(it=>
       '<div class="at-item"><div class="at-item-head"><span class="pillar-tag">'+esc(pillarShort(it.pillar))+'</span>'+
       '<span class="at-item-time">'+esc(fmtThreadTs(it.ts))+'</span></div>'+
-      '<div class="at-item-topic">'+esc(it.topic||it.hook||'Thread')+'</div>'+
-      (it.hook&&it.topic?'<div class="at-item-hook">'+esc(it.hook)+'</div>':'')+
+      '<div class="at-item-topic">'+esc(it.topic||'Thread')+'</div>'+
+      '<div class="at-item-body">'+esc(it.thread_text||it.hook||'')+'</div>'+
       '<div class="at-item-meta">'+esc(String(it.total_posts||'?'))+' posts'+(it.root_post_id?' · posted ✓':'')+'</div></div>'
     ).join('');
   } catch(e) {
