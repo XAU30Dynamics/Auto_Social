@@ -223,6 +223,19 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 }
 .toast.show { transform:translateX(-50%) translateY(0); }
 
+/* ─── Post Graphic ─── */
+.gfx-section { display:flex; flex-direction:column; gap:10px; background:linear-gradient(135deg, rgba(208,160,48,0.06), rgba(16,48,80,0.18)); border:1px solid var(--gold-border); border-radius:var(--radius-sm); padding:12px; }
+.gfx-preview { position:relative; width:100%; aspect-ratio:4/5; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg3); }
+.gfx-frame { position:absolute; top:0; left:0; width:1080px; height:1350px; border:0; transform-origin:top left; background:#0a0a0a; pointer-events:none; }
+.gfx-empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted2); font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; }
+.gfx-actions { display:flex; gap:8px; }
+.gfx-dl { flex:1; padding:12px; background:var(--gold); border:none; color:#0a0a0a; font-family:var(--font-mono); font-size:0.68rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; border-radius:var(--radius-sm); cursor:pointer; transition:all 0.2s; }
+.gfx-dl:active { transform:scale(0.98); }
+.gfx-dl.loading { opacity:0.55; pointer-events:none; }
+.gfx-dl:disabled { opacity:0.35; pointer-events:none; }
+.gfx-upd { padding:12px 14px; background:var(--bg3); border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:var(--radius-sm); cursor:pointer; }
+.gfx-code { font-family:var(--font-mono); font-size:0.62rem; line-height:1.5; min-height:130px; }
+
 /* ─── Thread Generator ─── */
 .tg-panel { margin:12px 16px 0; border:1px solid var(--gold-border); border-radius:var(--radius); background:linear-gradient(135deg, rgba(208,160,48,0.06), rgba(16,48,80,0.18)); overflow:hidden; }
 .tg-toggle { width:100%; display:flex; align-items:center; gap:10px; padding:13px 14px; background:transparent; border:none; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; }
@@ -361,8 +374,6 @@ function renderCard(post, idx) {
   const sc = post.status==='Approved'?'approved':post.status==='Rejected'?'rejected':'';
   const dc = post.status==='Approved'?'approved':post.status==='Rejected'?'rejected':'pending';
   const r = post.rowIndex;
-  const vs = post.bg_variant==='1'||post.bg_variant==='2';
-  const cu = post.bg_variant==='2'?CANVA_WHITE:CANVA_BLACK;
   const gt = post.graphic_text || '';
   const gtDim = gt ? '' : ' style="opacity:0.4"';
   const gtVal = esc(gt || '— not available on this post (predates this field)');
@@ -413,15 +424,7 @@ function renderCard(post, idx) {
       <div class="char-count ${post.threads_post.length>500?'over':''}" id="cc-threads_post-${r}">${post.threads_post.length} / 500</div>
     </div>
     <div class="divider"></div>
-    <div class="canva-section">
-      <div class="field-label">Canva Template</div>
-      <div class="variant-selector">
-        <button class="variant-btn ${post.bg_variant==='1'?'selected-black':''}" id="var1-${r}" onclick="selectVariant(${r},'1')">◼ Black</button>
-        <button class="variant-btn ${post.bg_variant==='2'?'selected-white':''}" id="var2-${r}" onclick="selectVariant(${r},'2')">◻ White</button>
-      </div>
-      <a class="canva-open-btn ${vs?'':' disabled'}" id="canva-btn-${r}" href="${cu}" target="_blank">Open Template in Canva →</a>
-      <div class="canva-hint">Select variant · Paste Headline, Subheading, CTA + Graphic Text into template · Swap chart image</div>
-    </div>
+    ${renderGfx(post,r)}
     <div class="divider"></div>
     <div class="field-group">
       <div class="field-label">Posted</div>
@@ -443,7 +446,114 @@ function renderCard(post, idx) {
 </div>`;
 }
 
-function toggleCard(r) { document.getElementById('body-'+r)?.classList.toggle('open'); }
+function toggleCard(r) {
+  const b=document.getElementById('body-'+r);
+  if(!b)return;
+  const open=b.classList.toggle('open');
+  if(open) populateGfx(r); // render the 1080×1350 preview lazily on first open
+}
+
+// ─── Post Graphic ───
+function renderGfx(post, r) {
+  const has=!!(post.graphic_html && post.graphic_html.trim());
+  return `<div class="gfx-section">
+    <div class="field-header">
+      <div class="field-label">Post Graphic · 1080×1350</div>
+      <button class="copy-btn" onclick="toggleGfxCode(${r})">Edit HTML</button>
+    </div>
+    <div class="gfx-preview" id="gfx-wrap-${r}">
+      <iframe class="gfx-frame" id="gfx-frame-${r}" sandbox="allow-same-origin"${has?'':' style="display:none"'}></iframe>
+      <div class="gfx-empty" id="gfx-empty-${r}"${has?' style="display:none"':''}>No graphic on this post yet</div>
+    </div>
+    <textarea class="field-input gfx-code" id="f-graphic_html-${r}" hidden spellcheck="false" oninput="markGfxDirty(${r})">${esc(post.graphic_html||'')}</textarea>
+    <div class="gfx-actions">
+      <button class="gfx-dl" id="gfx-dl-${r}" onclick="downloadGraphic(${r},this)"${has?'':' disabled'}>⬇ Download PNG</button>
+      <button class="gfx-upd" id="gfx-upd-${r}" onclick="refreshGfxPreview(${r})" hidden>Update preview</button>
+    </div>
+  </div>`;
+}
+
+function populateGfx(r) {
+  const ta=document.getElementById('f-graphic_html-'+r);
+  const frame=document.getElementById('gfx-frame-'+r);
+  const empty=document.getElementById('gfx-empty-'+r);
+  if(!ta||!frame)return;
+  const html=ta.value.trim();
+  if(html){ if(frame.srcdoc!==html)frame.srcdoc=html; frame.style.display=''; if(empty)empty.style.display='none'; }
+  else { frame.style.display='none'; if(empty)empty.style.display=''; }
+  sizeGfx(r);
+}
+
+function sizeGfx(r) {
+  const wrap=document.getElementById('gfx-wrap-'+r);
+  const frame=document.getElementById('gfx-frame-'+r);
+  if(!wrap||!frame)return;
+  const w=wrap.clientWidth;
+  if(!w)return;
+  frame.style.transform='scale('+(w/1080)+')';
+}
+
+function toggleGfxCode(r) {
+  const ta=document.getElementById('f-graphic_html-'+r);
+  const upd=document.getElementById('gfx-upd-'+r);
+  if(!ta)return;
+  const show=ta.hidden;
+  ta.hidden=!show;
+  if(upd)upd.hidden=!show;
+}
+
+function markGfxDirty(r) {
+  const dl=document.getElementById('gfx-dl-'+r);
+  const ta=document.getElementById('f-graphic_html-'+r);
+  if(dl&&ta)dl.disabled=!ta.value.trim();
+}
+
+function refreshGfxPreview(r) {
+  populateGfx(r);
+  markGfxDirty(r);
+  showToast('Preview updated');
+}
+
+async function downloadGraphic(r, btn) {
+  const ta=document.getElementById('f-graphic_html-'+r);
+  const html=ta?ta.value.trim():'';
+  if(!html){ showToast('No graphic on this post'); return; }
+  btn.classList.add('loading');
+  const orig=btn.textContent;
+  btn.textContent='Rendering…';
+  try {
+    const res=await fetch('/api/graphic/render',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html})});
+    if(!res.ok){ let m='Render failed'; try{ m=(await res.json()).detail||m; }catch{} throw new Error(m); }
+    const blob=await res.blob();
+    const post=allPosts.find(p=>p.rowIndex===r);
+    const base=(post&&post.headline?post.headline:'post-'+r).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50)||('post-'+r);
+    const name='sd-'+base+'.png';
+    const file=new File([blob],name,{type:'image/png'});
+    // On iOS the share sheet gives "Save Image" → straight to camera roll.
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      try{ await navigator.share({files:[file]}); showToast('Saved ✓'); return; }
+      catch(e){ if(e&&e.name==='AbortError')return; /* fall back to download */ }
+    }
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+    showToast('PNG downloaded');
+  } catch(e) {
+    showToast(e.message||'Render failed');
+  } finally {
+    btn.classList.remove('loading');
+    btn.textContent=orig;
+  }
+}
+
+window.addEventListener('resize',()=>{
+  document.querySelectorAll('.card-body.open').forEach(b=>{
+    const r=b.id.replace('body-','');
+    sizeGfx(r);
+  });
+});
 
 function updateCC(r,f,max) {
   const el=document.getElementById('f-'+f+'-'+r);
@@ -500,7 +610,7 @@ function selectVariant(r,v) {
 }
 
 async function saveEdits(r) {
-  const fields=['headline','subheading','cta_text','graphic_text','caption','x_post','threads_post'];
+  const fields=['headline','subheading','cta_text','graphic_text','graphic_html','caption','x_post','threads_post'];
   const u={};
   fields.forEach(f=>{const el=document.getElementById('f-'+f+'-'+r);if(el)u[f]=el.value;});
   await patch(r,u);

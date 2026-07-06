@@ -1,0 +1,36 @@
+# Railway (Nixpacks) build config.
+# Puppeteer's bundled Chromium needs these shared libraries + fonts at runtime,
+# and its downloaded Chrome must live somewhere both the build and the running
+# app agree on — hence the pinned cache dir below.
+
+[phases.setup]
+aptPkgs = [
+  "ca-certificates",
+  "fonts-liberation",
+  "fonts-noto-color-emoji",
+  "libasound2",
+  "libatk-bridge2.0-0",
+  "libatk1.0-0",
+  "libatspi2.0-0",
+  "libcairo2",
+  "libcups2",
+  "libdrm2",
+  "libgbm1",
+  "libgtk-3-0",
+  "libnspr4",
+  "libnss3",
+  "libpango-1.0-0",
+  "libx11-6",
+  "libxcb1",
+  "libxcomposite1",
+  "libxdamage1",
+  "libxext6",
+  "libxfixes3",
+  "libxi6",
+  "libxkbcommon0",
+  "libxrandr2",
+]
+
+[variables]
+# Chrome is downloaded here during `npm install` and read from here at runtime.
+PUPPETEER_CACHE_DIR = "/app/.cache/puppeteer"

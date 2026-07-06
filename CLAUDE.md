@@ -28,6 +28,8 @@ Mobile-first approval dashboard for the XAU30 Dynamics social media automation p
 
 There are no tests, no lint config, no TypeScript, and no build pipeline. Edits to `public/index.html` are picked up on next page load; edits to `server.js` need a restart (or `npm run dev` for nodemon).
 
+**Puppeteer / graphics rendering**: `POST /api/graphic/render` uses `puppeteer` (bundled Chromium) to screenshot Claude-designed HTML into 1080×1350 PNGs. `nixpacks.toml` installs Chromium's shared-library `aptPkgs` on Railway and pins `PUPPETEER_CACHE_DIR=/app/.cache/puppeteer` so the Chrome downloaded at `npm install` is found at runtime. The renderer waits on `domcontentloaded` + `document.fonts.ready`/images (hard-capped) — never `networkidle0`, which a stalled font request can hang. Screenshots come back as `Uint8Array` in Puppeteer v24 — wrap in `Buffer.from()` before `res.send()` or Express JSON-serializes them.
+
 ## Build / run commands
 
 ```bash
@@ -47,6 +49,7 @@ All routes live in `server.js`:
 | GET    | `/api/posts`        | Read rows `A2:T` from the `Posts` sheet, return newest-first as JSON         |
 | PATCH  | `/api/posts/:row`   | Per-field cell update via `batchUpdate` — body is `{ fieldName: value, ... }` where `fieldName` must be a key in the `COL` map |
 | POST   | `/api/threads/generate` | Body `{ topic, pillar }`. Proxies to the Make Thread Generator webhook (`MAKE_THREAD_WEBHOOK_URL`), which runs Claude with the brand brief and returns a Threads chain. Server parses/normalizes the JSON to `{ pillar, topic_tag, hook, posts[], cta, total_posts }`. 400 if `topic` empty; 500 if env var unset; 502 on upstream/parse failure. |
+| POST   | `/api/graphic/render` | Body `{ html }` — a full self-contained HTML document designed at 1080×1350. Renders it in headless Chromium (Puppeteer) and returns a pixel-exact **1080×1350 PNG** (`image/png`). 400 if `html` empty; 502 on render failure. Puppeteer is `require()`d lazily so a Chromium hiccup can't take down the rest of the app. Reuses one browser across requests. |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
 
 PATCH safety: unknown field names are silently skipped (see `if (COL[field] === undefined) continue;` in `server.js:111`). Sending only unknown fields returns `{ ok: true }` with no writes.
@@ -77,6 +80,7 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 | R   | posted_x         | Same                                                                  |
 | S   | posted_threads   | Same                                                                  |
 | T   | graphic_text     |                                                                       |
+| U   | graphic_html     | Full self-contained 1080×1350 HTML artwork (Claude-designed). Rendered to PNG by `POST /api/graphic/render`; dashboard shows a live scaled preview + Download PNG. Empty on posts predating this field. |
 
 `SHEET_NAME` defaults to `Posts` if unset.
 
@@ -124,7 +128,7 @@ The service account must have edit access to the spreadsheet — share the sheet
 
 - **`gitignore` is missing its leading dot** (`gitignore`, not `.gitignore`). Git is not ignoring `node_modules/`, `.env`, etc. Rename when convenient, but coordinate with whoever owns the working tree first.
 - **`env.example` is also missing its leading dot.** The README references `.env.example`. Both work as docs, but tools that expect the dotfile name won't find it.
-- **README claims Canva Autofill API integration** — there is no Canva API call in the server. The UI just deep-links to two static Canva brand-template URLs (`public/index.html:401-402`) and the operator copy/pastes fields into Canva manually. Don't promise Canva-API behavior without implementing it.
+- **Canva is being retired.** The manual Canva-template flow (deep-link + copy/paste fields) has been replaced by the auto-graphic engine: Claude designs a bespoke 1080×1350 HTML artwork per post (sheet column U `graphic_html`), the dashboard previews it live and renders a downloadable PNG via `POST /api/graphic/render`. The old Canva variant selector / "Open in Canva" button was removed from the card; `CANVA_*` constants and `selectVariant()` remain defined in `index.html` but are now dead. The README's "Canva Autofill API" claim was always false — there was never a Canva API call.
 - **The `hashtags` column is merged into `caption` on read.** `GET /api/posts` returns `caption = caption + "\n\n" + hashtags`, and the UI no longer renders a separate hashtags input. If you re-introduce a hashtags field, also unmerge in `server.js:63-68`. PATCH still accepts `hashtags` as a field name and writes to column H.
 - **Column map is positional.** Inserting a column mid-sheet (or in the `COL` map without matching the sheet) will silently corrupt every row. Append new columns at the end of both.
 - **Catch-all route serves `index.html` for any unmatched GET**, including paths that look like missing API routes. A typo'd API path won't 404 — it'll return the dashboard HTML. Check the response `Content-Type` when debugging.
