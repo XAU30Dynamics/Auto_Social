@@ -297,6 +297,48 @@ app.post('/api/graphic/render', async (req, res) => {
   }
 });
 
+// ─── GET /api/threadlog ───────────────────────────────────────────────────────
+// Recent auto-posted threads for the dashboard's "Auto Threads" panel.
+// Reads the `ThreadLog` tab (A ts YYYYMMDD-HHmmss, B pillar, C topic, D hook,
+// E total_posts, F root_post_id) and returns the last ~2 days, newest first.
+// Non-fatal: any read error (e.g. tab absent) returns [] so the panel just shows
+// its empty state rather than an error.
+function parseThreadTs(s) {
+  const m = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/.exec(String(s || '').trim());
+  if (!m) return null;
+  return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+}
+
+app.get('/api/threadlog', async (req, res) => {
+  try {
+    const sheets = getSheetsClient();
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: 'ThreadLog!A2:F',
+    });
+    const rows = response.data.values || [];
+    const cutoff = Date.now() - 2 * 86400 * 1000;
+    const items = rows
+      .map((r) => ({
+        ts: r[0] || '',
+        pillar: r[1] || '',
+        topic: r[2] || '',
+        hook: r[3] || '',
+        total_posts: r[4] || '',
+        root_post_id: r[5] || '',
+      }))
+      .filter((it) => {
+        const d = parseThreadTs(it.ts);
+        return d && d.getTime() >= cutoff;
+      })
+      .reverse();
+    res.json(items);
+  } catch (err) {
+    console.error('GET /api/threadlog error:', err.message);
+    res.json([]);
+  }
+});
+
 // ─── Serve dashboard ──────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

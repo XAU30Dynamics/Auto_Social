@@ -265,6 +265,27 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
 .tg-post-count { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; text-align:right; }
 .tg-post-count.over { color:var(--red); }
 
+/* ─── Home collapsible sections ─── */
+.home-section { margin:12px 16px 0; border:1px solid var(--gold-border); border-radius:var(--radius); background:linear-gradient(135deg, rgba(208,160,48,0.05), rgba(16,48,80,0.15)); overflow:hidden; }
+.home-section-head { width:100%; display:flex; align-items:center; gap:10px; padding:14px; background:transparent; border:none; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; }
+.home-section-head:active { background:rgba(255,255,255,0.02); }
+.home-section-title { font-family:var(--font-display); font-size:0.98rem; font-weight:600; color:var(--gold); white-space:nowrap; }
+.home-section-sub { flex:1; font-family:var(--font-mono); font-size:0.52rem; letter-spacing:0.06em; color:var(--muted); text-transform:uppercase; }
+.home-section-count { font-family:var(--font-mono); font-size:0.6rem; color:var(--gold); background:var(--gold-dim); border:1px solid var(--gold-border); border-radius:20px; padding:2px 9px; }
+.home-section-body { display:none; }
+.home-section-body.open { display:block; }
+.home-section .filter-bar { border-bottom:1px solid rgba(255,255,255,0.05); background:transparent; }
+
+/* Auto-Threads list */
+.at-empty { padding:20px 16px 24px; text-align:center; color:var(--muted2); font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; line-height:1.7; }
+.at-item { margin:0 14px 10px; padding:11px 12px; background:var(--bg3); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); }
+.at-item:first-child { margin-top:12px; }
+.at-item-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.at-item-time { font-family:var(--font-mono); font-size:0.55rem; color:var(--muted2); margin-left:auto; }
+.at-item-topic { font-family:var(--font-body); font-size:0.85rem; color:var(--text); font-weight:500; line-height:1.4; }
+.at-item-hook { font-family:var(--font-body); font-size:0.75rem; color:var(--muted); line-height:1.5; margin-top:4px; }
+.at-item-meta { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; letter-spacing:0.06em; }
+
 </style>
 </head>
 <body>
@@ -284,11 +305,22 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
   </div>
 </div>
 
-<div class="filter-bar">
-  <button class="filter-pill active" onclick="setFilter('Pending Review',this)">Pending</button>
-  <button class="filter-pill" onclick="setFilter('Approved',this)">Approved</button>
-  <button class="filter-pill" onclick="setFilter('Rejected',this)">Rejected</button>
-  <button class="filter-pill" onclick="setFilter('all',this)">All</button>
+<div class="home-section">
+  <button class="home-section-head" onclick="toggleSection('socialBody','socialChevron')">
+    <span class="home-section-title">📋 Social Posts</span>
+    <span class="home-section-sub">Review &amp; approve</span>
+    <span class="home-section-count" id="socialCount" style="display:none"></span>
+    <span class="card-chevron" id="socialChevron" style="transform:rotate(180deg)">▾</span>
+  </button>
+  <div class="home-section-body open" id="socialBody">
+    <div class="filter-bar">
+      <button class="filter-pill active" onclick="setFilter('Pending Review',this)">Pending</button>
+      <button class="filter-pill" onclick="setFilter('Approved',this)">Approved</button>
+      <button class="filter-pill" onclick="setFilter('Rejected',this)">Rejected</button>
+      <button class="filter-pill" onclick="setFilter('all',this)">All</button>
+    </div>
+    <div id="postsContainer" class="posts-container"></div>
+  </div>
 </div>
 
 <div class="tg-panel">
@@ -328,7 +360,17 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
   </div>
 </div>
 
-<div id="postsContainer" class="posts-container"></div>
+<div class="home-section">
+  <button class="home-section-head" onclick="toggleSection('autoBody','autoChevron', loadThreadLog)">
+    <span class="home-section-title">🤖 Auto Threads</span>
+    <span class="home-section-sub">Last 2 days · auto-posted</span>
+    <span class="card-chevron" id="autoChevron">▾</span>
+  </button>
+  <div class="home-section-body" id="autoBody">
+    <div id="autoThreadsList"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -362,6 +404,8 @@ function renderPosts() {
   const badge = document.getElementById('pendingBadge');
   badge.textContent = pending > 0 ? pending + ' pending' : '';
   badge.style.display = pending > 0 ? '' : 'none';
+  const sc = document.getElementById('socialCount');
+  if(sc){ sc.textContent = pending > 0 ? pending + ' pending' : ''; sc.style.display = pending > 0 ? '' : 'none'; }
   if (filtered.length === 0) {
     const ip = currentFilter === 'Pending Review';
     document.getElementById('postsContainer').innerHTML = '<div class="empty-state"><div class="empty-icon">' + (ip ? '✓' : '○') + '</div><div class="empty-text">' + (ip ? 'All clear' : 'Nothing here') + '</div><div class="empty-sub">' + (ip ? 'No posts pending review' : 'No posts match this filter') + '</div></div>';
@@ -660,6 +704,43 @@ function toggleTG() {
   const chev=document.getElementById('tgChevron');
   const open=body.classList.toggle('open');
   chev.style.transform=open?'rotate(180deg)':'';
+}
+
+// Generic collapsible home section (Social Posts / Auto Threads)
+function toggleSection(bodyId, chevronId, onOpen) {
+  const body=document.getElementById(bodyId), chev=document.getElementById(chevronId);
+  if(!body)return;
+  const open=body.classList.toggle('open');
+  if(chev) chev.style.transform=open?'rotate(180deg)':'';
+  if(open && typeof onOpen==='function') onOpen();
+}
+
+// ─── Auto Threads (recent auto-posted threads from the ThreadLog sheet) ───
+async function loadThreadLog() {
+  const el=document.getElementById('autoThreadsList');
+  if(!el)return;
+  el.innerHTML='<div class="at-empty">Loading…</div>';
+  try {
+    const res=await fetch('/api/threadlog');
+    const items=await res.json();
+    if(!Array.isArray(items)||!items.length){
+      el.innerHTML='<div class="at-empty">No auto-threads in the last couple of days.<br>The auto-poster goes live once Buffer is wired up.</div>';
+      return;
+    }
+    el.innerHTML=items.map(it=>
+      '<div class="at-item"><div class="at-item-head"><span class="pillar-tag">'+esc(pillarShort(it.pillar))+'</span>'+
+      '<span class="at-item-time">'+esc(fmtThreadTs(it.ts))+'</span></div>'+
+      '<div class="at-item-topic">'+esc(it.topic||it.hook||'Thread')+'</div>'+
+      (it.hook&&it.topic?'<div class="at-item-hook">'+esc(it.hook)+'</div>':'')+
+      '<div class="at-item-meta">'+esc(String(it.total_posts||'?'))+' posts'+(it.root_post_id?' · posted ✓':'')+'</div></div>'
+    ).join('');
+  } catch(e) {
+    el.innerHTML='<div class="at-empty">Couldn\'t load auto-threads.</div>';
+  }
+}
+function fmtThreadTs(s) {
+  const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/.exec(String(s||''));
+  return m?(m[3]+'/'+m[2]+' '+m[4]+':'+m[5]):(s||'');
 }
 
 async function generateThread() {
