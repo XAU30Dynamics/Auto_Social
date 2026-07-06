@@ -50,6 +50,9 @@ All routes live in `server.js`:
 | PATCH  | `/api/posts/:row`   | Per-field cell update via `batchUpdate` — body is `{ fieldName: value, ... }` where `fieldName` must be a key in the `COL` map |
 | POST   | `/api/threads/generate` | Body `{ topic, pillar }`. Proxies to the Make Thread Generator webhook (`MAKE_THREAD_WEBHOOK_URL`), which runs Claude with the brand brief and returns a Threads chain. Server parses/normalizes the JSON to `{ pillar, topic_tag, hook, posts[], cta, total_posts }`. 400 if `topic` empty; 500 if env var unset; 502 on upstream/parse failure. |
 | POST   | `/api/graphic/render` | Body `{ html }` — a full self-contained HTML document designed at 1080×1350. Renders it in headless Chromium (Puppeteer) and returns a pixel-exact **1080×1350 PNG** (`image/png`). 400 if `html` empty; 502 on render failure. Puppeteer is `require()`d lazily so a Chromium hiccup can't take down the rest of the app. Reuses one browser across requests. |
+| GET    | `/api/graphic/:row.png` | Renders the **saved** `graphic_html` for a post row to a 1080×1350 PNG at a stable URL (reads column U from the sheet). Exists so Buffer can fetch the graphic by link. 404 if the row has no graphic. |
+| GET    | `/api/threadlog`    | Recent auto-posted threads (`ThreadLog` tab, last ~2 days newest-first) for the dashboard's Auto Threads panel. Errors degrade to `[]`. |
+| POST   | `/api/buffer/send/:row` | Sends a reviewed post to Buffer. Body `{ channels?: ['instagram','x','threads'], mode?: 'now'|'queue' }`. Routes **Instagram by brand** (`ig_sd` vs `ig_md` channel); X + Threads each have one channel for any brand. Attaches the graphic as an image URL Buffer fetches (`/api/graphic/:row.png`). Needs `BUFFER_TOKEN`. Returns per-channel `{ok,id}`/`{ok:false,error}`. Buffer channel IDs are hardcoded in `server.js` (`BUFFER_CHANNELS`). |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
 
 PATCH safety: unknown field names are silently skipped (see `if (COL[field] === undefined) continue;` in `server.js:111`). Sending only unknown fields returns `{ ok: true }` with no writes.
@@ -81,6 +84,7 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 | S   | posted_threads   | Same                                                                  |
 | T   | graphic_text     |                                                                       |
 | U   | graphic_html     | Full self-contained 1080×1350 HTML artwork (Claude-designed). Rendered to PNG by `POST /api/graphic/render`; dashboard shows a live scaled preview + Download PNG. Empty on posts predating this field. |
+| V   | brand            | `StrategyDynamics` or `MarketDynamics` (chosen by the generator). Drives Buffer **Instagram** routing (SD→SD IG profile, MD→MD IG profile). Empty on older posts → treated as StrategyDynamics; editable via the dashboard brand badge. |
 
 `SHEET_NAME` defaults to `Posts` if unset.
 
@@ -111,6 +115,8 @@ Defined in `env.example`. All are required for full functionality:
 | `CANVA_TEMPLATE_BLACK`          | Unused server-side; templates are hardcoded in `public/index.html:401-402` |
 | `CANVA_TEMPLATE_WHITE`          | Same                                     |
 | `MAKE_THREAD_WEBHOOK_URL`        | `POST /api/threads/generate` (Thread Generator). Custom-webhook URL of the `XAU30 Social — 2. Thread Generator` Make scenario. Unset ⇒ that route 500s; rest of app unaffected. |
+| `BUFFER_TOKEN`                  | `POST /api/buffer/send/:row`. Buffer public API token (Bearer) for posting to IG/X/Threads via Buffer's GraphQL API (`https://api.buffer.com`). Unset ⇒ that route 500s. |
+| `PUBLIC_BASE_URL`              | Optional. Base URL Buffer uses to fetch the graphic image; defaults to the request's own `protocol://host` (correct on Railway). |
 | `PORT`                          | Optional, defaults to `3000`             |
 
 The service account must have edit access to the spreadsheet — share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` explicitly.

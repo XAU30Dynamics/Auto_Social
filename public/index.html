@@ -236,6 +236,26 @@ body { background: var(--bg); color: var(--text); font-family: var(--font-body);
 .gfx-upd { padding:12px 14px; background:var(--bg3); border:1px solid rgba(255,255,255,0.1); color:var(--muted); font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:var(--radius-sm); cursor:pointer; }
 .gfx-code { font-family:var(--font-mono); font-size:0.62rem; line-height:1.5; min-height:130px; }
 
+/* ─── Publish to Buffer ─── */
+.buf-section { display:flex; flex-direction:column; gap:9px; background:linear-gradient(135deg, rgba(46,204,113,0.06), rgba(16,48,80,0.15)); border:1px solid rgba(46,204,113,0.22); border-radius:var(--radius-sm); padding:12px; }
+.buf-brand { font-family:var(--font-mono); font-size:0.56rem; letter-spacing:0.04em; padding:4px 9px; border-radius:5px; cursor:pointer; border:1px solid; }
+.buf-brand.sd { color:var(--green); background:var(--green-dim); border-color:rgba(46,204,113,0.3); }
+.buf-brand.md { color:var(--gold); background:var(--gold-dim); border-color:var(--gold-border); }
+.buf-mode { display:flex; gap:6px; }
+.buf-mode-btn { flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--bg3); color:var(--muted); font-family:var(--font-mono); font-size:0.56rem; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; }
+.buf-mode-btn.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
+.buf-sendall { padding:13px; background:var(--green); border:none; color:#062012; font-family:var(--font-mono); font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; border-radius:var(--radius-sm); cursor:pointer; transition:all 0.2s; }
+.buf-sendall:active { transform:scale(0.98); }
+.buf-sendall:disabled { opacity:0.55; pointer-events:none; }
+.buf-row { display:flex; gap:6px; }
+.buf-chan { flex:1; padding:9px 6px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.1); background:var(--bg3); color:var(--muted); font-family:var(--font-mono); font-size:0.56rem; letter-spacing:0.04em; cursor:pointer; }
+.buf-chan:active { transform:scale(0.97); }
+.buf-chan:disabled { opacity:0.55; pointer-events:none; }
+.buf-result { display:flex; flex-direction:column; gap:3px; }
+.buf-result:empty { display:none; }
+.buf-ok { font-family:var(--font-mono); font-size:0.58rem; color:var(--green); }
+.buf-err { font-family:var(--font-mono); font-size:0.58rem; color:var(--red); line-height:1.4; }
+
 /* ─── Thread Generator ─── */
 .tg-panel { margin:12px 16px 0; border:1px solid var(--gold-border); border-radius:var(--radius); background:linear-gradient(135deg, rgba(208,160,48,0.06), rgba(16,48,80,0.18)); overflow:hidden; }
 .tg-toggle { width:100%; display:flex; align-items:center; gap:10px; padding:13px 14px; background:transparent; border:none; cursor:pointer; text-align:left; -webkit-tap-highlight-color:transparent; }
@@ -450,6 +470,8 @@ function renderCard(post, idx) {
     <div class="divider"></div>
     ${renderGfx(post,r)}
     <div class="divider"></div>
+    ${renderBuffer(post,r)}
+    <div class="divider"></div>
     <div class="field-group">
       <div class="field-label">Posted</div>
       <div class="posted-row">
@@ -637,12 +659,84 @@ function selectVariant(r,v) {
   patch(r,{bg_variant:v});
 }
 
-async function saveEdits(r) {
+async function savePost(r) {
   const fields=['graphic_html','caption','x_post','threads_post'];
   const u={};
   fields.forEach(f=>{const el=document.getElementById('f-'+f+'-'+r);if(el)u[f]=el.value;});
   await patch(r,u);
+}
+async function saveEdits(r) {
+  await savePost(r);
   showToast('Saved ✓');
+}
+
+// ─── Publish to Buffer ───
+let bufMode = {};
+function renderBuffer(post, r) {
+  const isMD = String(post.brand||'').toLowerCase().includes('market');
+  const igTarget = isMD ? 'MD Instagram' : 'SD Instagram';
+  return `<div class="buf-section">
+    <div class="field-header">
+      <div class="field-label">Publish to Buffer</div>
+      <button class="buf-brand ${isMD?'md':'sd'}" id="buf-brand-${r}" onclick="toggleBrand(${r})">◆ ${isMD?'MarketDynamics':'StrategyDynamics'}</button>
+    </div>
+    <div class="buf-mode">
+      <button class="buf-mode-btn active" onclick="setBufMode(${r},'queue',this)">Add to queue</button>
+      <button class="buf-mode-btn" onclick="setBufMode(${r},'now',this)">Post now</button>
+    </div>
+    <button class="buf-sendall" onclick="sendBuffer(${r},['instagram','x','threads'],this)">⚡ Send all to Buffer</button>
+    <div class="buf-row">
+      <button class="buf-chan" id="buf-ig-${r}" onclick="sendBuffer(${r},['instagram'],this)">${igTarget}</button>
+      <button class="buf-chan" onclick="sendBuffer(${r},['x'],this)">X</button>
+      <button class="buf-chan" onclick="sendBuffer(${r},['threads'],this)">Threads</button>
+    </div>
+    <div class="buf-result" id="buf-result-${r}"></div>
+  </div>`;
+}
+
+function setBufMode(r, mode, btn) {
+  bufMode[r]=mode;
+  btn.parentElement.querySelectorAll('.buf-mode-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function toggleBrand(r) {
+  const post=allPosts.find(p=>p.rowIndex===r); if(!post)return;
+  const isMD=String(post.brand||'').toLowerCase().includes('market');
+  const next=isMD?'StrategyDynamics':'MarketDynamics';
+  post.brand=next;
+  const md=next==='MarketDynamics';
+  const bb=document.getElementById('buf-brand-'+r);
+  if(bb){ bb.className='buf-brand '+(md?'md':'sd'); bb.textContent='◆ '+next; }
+  const ig=document.getElementById('buf-ig-'+r);
+  if(ig) ig.textContent = md?'MD Instagram':'SD Instagram';
+  await patch(r,{brand:next});
+  showToast('Brand set: '+next);
+}
+
+async function sendBuffer(r, channels, btn) {
+  const mode = bufMode[r]||'queue';
+  const label = channels.length>1?'all channels':channels[0];
+  if(mode==='now' && !confirm('Post to '+label+' NOW — this goes live. Continue?')) return;
+  const orig=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
+  const out=document.getElementById('buf-result-'+r); if(out)out.innerHTML='';
+  try {
+    await savePost(r); // make sure the sheet has the current captions + graphic before Buffer fetches the image
+    const resp=await fetch('/api/buffer/send/'+r,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({channels,mode})});
+    const data=await resp.json();
+    if(!resp.ok) throw new Error(data.error||'Send failed');
+    const results=data.results||{};
+    if(out) out.innerHTML=Object.entries(results).map(([k,v])=>
+      v.ok?('<div class="buf-ok">✓ '+esc(k)+' — '+(mode==='now'?'posted':'queued')+'</div>')
+          :('<div class="buf-err">✕ '+esc(k)+' — '+esc(v.error||'failed')+'</div>')).join('');
+    const anyFail=Object.values(results).some(v=>!v.ok);
+    showToast(anyFail?'Sent — some channels failed':(mode==='now'?'Posted to Buffer ✓':'Queued in Buffer ✓'));
+  } catch(e) {
+    if(out) out.innerHTML='<div class="buf-err">'+esc(e.message)+'</div>';
+    showToast('Send failed');
+  } finally {
+    btn.disabled=false; btn.textContent=orig;
+  }
 }
 
 async function setStatus(r,status) {

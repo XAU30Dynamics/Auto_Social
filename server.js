@@ -47,6 +47,7 @@ const COL = {
   posted_threads: 18, // S
   graphic_text: 19,   // T
   graphic_html: 20,   // U — full self-contained 1080×1350 HTML artwork (Claude-designed)
+  brand: 21,          // V — 'StrategyDynamics' | 'MarketDynamics' (chosen by the generator; drives IG routing)
 };
 
 // ─── GET /api/posts ───────────────────────────────────────────────────────────
@@ -55,7 +56,7 @@ app.get('/api/posts', async (req, res) => {
     const sheets = getSheetsClient();
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A2:U`,
+      range: `${SHEET_NAME}!A2:V`,
     });
 
     const rows = response.data.values || [];
@@ -89,6 +90,7 @@ app.get('/api/posts', async (req, res) => {
         posted_threads: row[COL.posted_threads] || '',
         graphic_text: row[COL.graphic_text] || '',
         graphic_html: row[COL.graphic_html] || '',
+        brand: row[COL.brand] || '',
       };
     });
 
@@ -252,10 +254,10 @@ async function getBrowser() {
   return browserPromise;
 }
 
-app.post('/api/graphic/render', async (req, res) => {
-  const html = String(req.body?.html || '').trim();
-  if (!html) return res.status(400).json({ error: 'html is required' });
-
+// Render a full 1080×1350 HTML document to a PNG Buffer. Puppeteer v24 returns a
+// Uint8Array, so callers get a Node Buffer (res.send would JSON-serialize a raw
+// Uint8Array into {"0":137,...}).
+async function renderHtmlToPng(html) {
   let page;
   try {
     const browser = await getBrowser();
@@ -284,16 +286,130 @@ app.post('/api/graphic/render', async (req, res) => {
       type: 'png',
       clip: { x: 0, y: 0, width: GRAPHIC_W, height: GRAPHIC_H },
     });
-    // Puppeteer v24 returns a Uint8Array; wrap in Buffer or res.send() will
-    // JSON-serialize it into {"0":137,...} instead of sending raw PNG bytes.
+    return Buffer.from(png);
+  } finally {
+    if (page) { try { await page.close(); } catch {} }
+  }
+}
+
+// Read a single cell (e.g. graphic_html for one row) as a string.
+async function readCell(a1) {
+  const sheets = getSheetsClient();
+  const resp = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${SHEET_NAME}!${a1}` });
+  return ((resp.data.values || [])[0] || [])[0] || '';
+}
+
+app.post('/api/graphic/render', async (req, res) => {
+  const html = String(req.body?.html || '').trim();
+  if (!html) return res.status(400).json({ error: 'html is required' });
+  try {
+    const png = await renderHtmlToPng(html);
     res.set('Content-Type', 'image/png');
     res.set('Cache-Control', 'no-store');
-    res.send(Buffer.from(png));
+    res.send(png);
   } catch (err) {
     console.error('POST /api/graphic/render error:', err.message);
     res.status(502).json({ error: 'Render failed', detail: err.message });
-  } finally {
-    if (page) { try { await page.close(); } catch {} }
+  }
+});
+
+// ─── GET /api/graphic/:row.png ────────────────────────────────────────────────
+// Renders the saved graphic_html for a post row to a PNG at a STABLE URL, so
+// Buffer (and anything else) can fetch the image by link. Reads from the sheet,
+// so save edits before relying on it.
+app.get('/api/graphic/:row.png', async (req, res) => {
+  const row = parseInt(req.params.row, 10);
+  if (!row || row < 2) return res.status(400).send('bad row');
+  try {
+    const colU = String.fromCharCode(65 + COL.graphic_html); // 'U'
+    const html = String(await readCell(`${colU}${row}`)).trim();
+    if (!html) return res.status(404).send('no graphic on this post');
+    const png = await renderHtmlToPng(html);
+    res.set('Content-Type', 'image/png');
+    res.set('Cache-Control', 'public, max-age=600'); // let Buffer fetch it
+    res.send(png);
+  } catch (err) {
+    console.error('GET /api/graphic/:row.png error:', err.message);
+    res.status(502).send('render failed');
+  }
+});
+
+// ─── POST /api/buffer/send/:row ───────────────────────────────────────────────
+// Sends a reviewed post to Buffer. Body: { channels?: ['instagram','x','threads'],
+// mode?: 'now'|'queue' }. Routes Instagram by brand (SD vs MD profile); X and
+// Threads each have one channel that takes any brand. The graphic is attached as
+// an image URL Buffer fetches (GET /api/graphic/:row.png).
+const BUFFER_TOKEN = process.env.BUFFER_TOKEN;
+const BUFFER_CHANNELS = {
+  threads: '6a4b8557404834462875a0b7', // strategy_dynamics (Threads)
+  x: '6a4bb6e7404834462876920b',       // stratdynamics (X)
+  ig_sd: '6a4bbf26404834462876b88b',   // strategy_dynamics (Instagram)
+  ig_md: '6a4bc28f404834462876c3a5',   // marketdynamics_app (Instagram)
+};
+
+async function bufferCreatePost({ channelId, text, imageUrl, mode }) {
+  const input = {
+    channelId,
+    schedulingType: 'automatic',
+    mode: mode === 'now' ? 'shareNow' : 'addToQueue',
+    text: text || '',
+    assets: imageUrl ? [{ image: { url: imageUrl } }] : [],
+  };
+  const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on RestProxyError{message code} ... on UnexpectedError{message} ... on NotFoundError{message} ... on UnauthorizedError{message} ... on LimitReachedError{message}}}';
+  const resp = await fetch('https://api.buffer.com', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${BUFFER_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables: { input } }),
+  });
+  const json = await resp.json().catch(() => ({}));
+  const cp = json?.data?.createPost;
+  if (cp?.__typename === 'PostActionSuccess') return { ok: true, id: cp.post?.id };
+  const error = cp?.message || json?.errors?.[0]?.message || `HTTP ${resp.status}`;
+  return { ok: false, error };
+}
+
+app.post('/api/buffer/send/:row', async (req, res) => {
+  if (!BUFFER_TOKEN) return res.status(500).json({ error: 'BUFFER_TOKEN is not set on the server' });
+  const row = parseInt(req.params.row, 10);
+  if (!row || row < 2) return res.status(400).json({ error: 'bad row' });
+  const wanted = Array.isArray(req.body?.channels) && req.body.channels.length
+    ? req.body.channels : ['instagram', 'x', 'threads'];
+  const mode = req.body?.mode === 'now' ? 'now' : 'queue';
+
+  try {
+    const sheets = getSheetsClient();
+    const resp = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${SHEET_NAME}!A${row}:V${row}`,
+    });
+    const r = (resp.data.values || [])[0] || [];
+    const graphicHtml = String(r[COL.graphic_html] || '').trim();
+    if (!graphicHtml) return res.status(400).json({ error: 'This post has no graphic to send' });
+
+    const isMD = String(r[COL.brand] || '').toLowerCase().includes('market');
+    const caption = r[COL.caption] || '';
+    const hashtags = r[COL.hashtags] || '';
+    const igText = hashtags ? `${caption}\n\n${hashtags}` : caption;
+    const xText = r[COL.x_post] || '';
+    const threadsText = r[COL.threads_post] || '';
+
+    const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${base}/api/graphic/${row}.png`;
+
+    const plan = [];
+    if (wanted.includes('instagram')) plan.push(['instagram', isMD ? BUFFER_CHANNELS.ig_md : BUFFER_CHANNELS.ig_sd, igText]);
+    if (wanted.includes('x')) plan.push(['x', BUFFER_CHANNELS.x, xText]);
+    if (wanted.includes('threads')) plan.push(['threads', BUFFER_CHANNELS.threads, threadsText]);
+
+    const results = {};
+    // Sequential so Buffer fetches the image URL one at a time (kinder on render).
+    for (const [name, channelId, text] of plan) {
+      results[name] = await bufferCreatePost({ channelId, text, imageUrl, mode });
+    }
+    res.json({ ok: true, brand: isMD ? 'MarketDynamics' : 'StrategyDynamics', mode, results });
+  } catch (err) {
+    console.error('POST /api/buffer/send error:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
