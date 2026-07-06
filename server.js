@@ -347,7 +347,7 @@ const BUFFER_CHANNELS = {
   ig_md: '6a4bc28f404834462876c3a5',   // marketdynamics_app (Instagram)
 };
 
-async function bufferCreatePost({ channelId, text, imageUrl, mode }) {
+async function bufferCreatePost({ channelId, text, imageUrl, mode, platform }) {
   const input = {
     channelId,
     schedulingType: 'automatic',
@@ -355,6 +355,10 @@ async function bufferCreatePost({ channelId, text, imageUrl, mode }) {
     text: text || '',
     assets: imageUrl ? [{ image: { url: imageUrl } }] : [],
   };
+  // Instagram requires post metadata (type + shouldShareToFeed); X/Threads don't.
+  if (platform === 'instagram') {
+    input.metadata = { instagram: { type: 'post', shouldShareToFeed: true } };
+  }
   const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on RestProxyError{message code} ... on UnexpectedError{message} ... on NotFoundError{message} ... on UnauthorizedError{message} ... on LimitReachedError{message}}}';
   const resp = await fetch('https://api.buffer.com', {
     method: 'POST',
@@ -404,7 +408,7 @@ app.post('/api/buffer/send/:row', async (req, res) => {
     const results = {};
     // Sequential so Buffer fetches the image URL one at a time (kinder on render).
     for (const [name, channelId, text] of plan) {
-      results[name] = await bufferCreatePost({ channelId, text, imageUrl, mode });
+      results[name] = await bufferCreatePost({ channelId, text, imageUrl, mode, platform: name });
     }
     res.json({ ok: true, brand: isMD ? 'MarketDynamics' : 'StrategyDynamics', mode, results });
   } catch (err) {
