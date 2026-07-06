@@ -374,9 +374,6 @@ function renderCard(post, idx) {
   const sc = post.status==='Approved'?'approved':post.status==='Rejected'?'rejected':'';
   const dc = post.status==='Approved'?'approved':post.status==='Rejected'?'rejected':'pending';
   const r = post.rowIndex;
-  const gt = post.graphic_text || '';
-  const gtDim = gt ? '' : ' style="opacity:0.4"';
-  const gtVal = esc(gt || '— not available on this post (predates this field)');
   return `<div class="post-card ${sc}" id="card-${r}" style="animation-delay:${idx*40}ms">
   <div class="card-header" onclick="toggleCard(${r})">
     <div class="status-dot ${dc}"></div>
@@ -387,40 +384,20 @@ function renderCard(post, idx) {
   </div>
   <div class="card-body" id="body-${r}">
     ${post.image_url?`<div class="image-preview"><img src="${post.image_url}" alt="Post image" onerror="this.parentElement.innerHTML='<div class=image-preview-placeholder>Image expired</div>'"></div>`:''}
-    <div class="field-group">
-      <div class="field-header"><div class="field-label">Headline</div><button class="copy-btn" onclick="copyEl('f-headline-${r}',this)">Copy</button></div>
-      <input class="field-input" id="f-headline-${r}" value="${escAttr(post.headline)}">
-    </div>
-    <div class="field-group">
-      <div class="field-header"><div class="field-label">Subheading</div><button class="copy-btn" onclick="copyEl('f-subheading-${r}',this)">Copy</button></div>
-      <input class="field-input" id="f-subheading-${r}" value="${escAttr(post.subheading)}">
-    </div>
-    <div class="field-group">
-      <div class="field-header"><div class="field-label">CTA Text</div><button class="copy-btn" onclick="copyEl('f-cta_text-${r}',this)">Copy</button></div>
-      <input class="field-input" id="f-cta_text-${r}" value="${escAttr(post.cta_text)}">
-    </div>
-    <div class="graphic-block">
-      <div class="field-header" style="margin-bottom:8px">
-        <div class="platform-label">Graphic Text</div>
-        <button class="copy-btn" onclick="copyEl('f-graphic_text-${r}',this)">Copy</button>
-      </div>
-      <textarea class="field-input" id="f-graphic_text-${r}" rows="4"${gtDim}>${gtVal}</textarea>
-    </div>
-    <div class="divider"></div>
     <div class="platform-block">
       <div class="platform-header"><div class="platform-label">Instagram</div><button class="copy-btn" onclick="copyIG(${r},this)">Copy IG</button></div>
-      <textarea class="field-input" id="f-caption-${r}" rows="5" oninput="updateCC(${r},'caption',2200)">${esc(post.caption)}</textarea>
+      <textarea class="field-input" id="f-caption-${r}" rows="3" oninput="updateCC(${r},'caption',2200);autosize(this)">${esc(post.caption)}</textarea>
       <div class="char-count" id="cc-caption-${r}">${post.caption.length} / 2200</div>
 
     </div>
     <div class="platform-block">
       <div class="platform-header"><div class="platform-label">X / Twitter</div><button class="copy-btn" onclick="copyEl('f-x_post-${r}',this)">Copy</button></div>
-      <textarea class="field-input mono" id="f-x_post-${r}" rows="3" oninput="updateCC(${r},'x_post',280)">${esc(post.x_post)}</textarea>
+      <textarea class="field-input mono" id="f-x_post-${r}" rows="2" oninput="updateCC(${r},'x_post',280);autosize(this)">${esc(post.x_post)}</textarea>
       <div class="char-count ${post.x_post.length>280?'over':''}" id="cc-x_post-${r}">${post.x_post.length} / 280</div>
     </div>
     <div class="platform-block">
       <div class="platform-header"><div class="platform-label">Threads</div><button class="copy-btn" onclick="copyEl('f-threads_post-${r}',this)">Copy</button></div>
-      <textarea class="field-input" id="f-threads_post-${r}" rows="3" oninput="updateCC(${r},'threads_post',500)">${esc(post.threads_post)}</textarea>
+      <textarea class="field-input" id="f-threads_post-${r}" rows="2" oninput="updateCC(${r},'threads_post',500);autosize(this)">${esc(post.threads_post)}</textarea>
       <div class="char-count ${post.threads_post.length>500?'over':''}" id="cc-threads_post-${r}">${post.threads_post.length} / 500</div>
     </div>
     <div class="divider"></div>
@@ -450,8 +427,12 @@ function toggleCard(r) {
   const b=document.getElementById('body-'+r);
   if(!b)return;
   const open=b.classList.toggle('open');
-  if(open) populateGfx(r); // render the 1080×1350 preview lazily on first open
+  if(open){ populateGfx(r); sizeCardText(r); } // render the 1080×1350 preview + fit captions on open
 }
+
+// Grow a textarea to fit its content so the whole post is always visible
+function autosize(el){ if(!el)return; el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
+function sizeCardText(r){ ['caption','x_post','threads_post'].forEach(f=>autosize(document.getElementById('f-'+f+'-'+r))); }
 
 // ─── Post Graphic ───
 function renderGfx(post, r) {
@@ -610,7 +591,7 @@ function selectVariant(r,v) {
 }
 
 async function saveEdits(r) {
-  const fields=['headline','subheading','cta_text','graphic_text','graphic_html','caption','x_post','threads_post'];
+  const fields=['graphic_html','caption','x_post','threads_post'];
   const u={};
   fields.forEach(f=>{const el=document.getElementById('f-'+f+'-'+r);if(el)u[f]=el.value;});
   await patch(r,u);
