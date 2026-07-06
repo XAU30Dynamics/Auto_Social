@@ -63,8 +63,10 @@ app.get('/api/posts', async (req, res) => {
     const posts = rows.map((row, index) => {
       const caption = row[COL.caption] || '';
       const hashtags = row[COL.hashtags] || '';
-      // Merge caption + hashtags for the dashboard — single block, ready to copy
-      const captionWithHashtags = hashtags
+      // Merge caption + hashtags for the dashboard — single block, ready to copy.
+      // Idempotent: saving writes the merged text back into the caption column, so
+      // only append hashtags when they're not already present (else they double up).
+      const captionWithHashtags = (hashtags && !caption.includes(hashtags))
         ? `${caption}\n\n${hashtags}`
         : caption;
 
@@ -393,7 +395,9 @@ app.post('/api/buffer/send/:row', async (req, res) => {
     const isMD = String(r[COL.brand] || '').toLowerCase().includes('market');
     const caption = r[COL.caption] || '';
     const hashtags = r[COL.hashtags] || '';
-    const igText = hashtags ? `${caption}\n\n${hashtags}` : caption;
+    // Idempotent: the caption column may already contain the hashtags (saved from
+    // the merged dashboard field), so only append them if they're not already there.
+    const igText = (hashtags && !caption.includes(hashtags)) ? `${caption}\n\n${hashtags}` : caption;
     const xText = r[COL.x_post] || '';
     const threadsText = r[COL.threads_post] || '';
 
