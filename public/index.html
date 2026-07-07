@@ -821,7 +821,7 @@ async function loadThreadLog() {
     const res=await fetch('/api/threadlog');
     const items=await res.json();
     if(!Array.isArray(items)||!items.length){
-      el.innerHTML='<div class="at-empty">No auto-threads in the last couple of days.<br>The auto-poster goes live once Buffer is wired up.</div>';
+      el.innerHTML='<div class="at-empty">No auto-threads in the last 24 hours.</div>';
       return;
     }
     el.innerHTML=items.map(it=>
@@ -872,7 +872,30 @@ function renderThread(t) {
   if(t.hook)parts.push(threadPost(single?'Single post':'Hook · Post 1',t.hook,'hook'));
   (t.posts||[]).forEach((p,i)=>parts.push(threadPost('Reply · Post '+(i+2),p,'')));
   if(t.cta)parts.push(threadPost('CTA · Final post',t.cta,'cta'));
+  parts.push('<div class="buf-row" style="margin-top:2px">'+
+    '<button class="buf-sendall" style="flex:2" onclick="sendThreadToBuffer(\'queue\',this)">⚡ Queue in Buffer</button>'+
+    '<button class="buf-chan" onclick="sendThreadToBuffer(\'now\',this)">Post now</button></div>');
   out.innerHTML=parts.join('');
+}
+
+// Send the generated thread to the Threads channel via Buffer — whole chain in
+// one shot (root + self-replies). Queue = stage it in Buffer's scheduler; now =
+// live on Threads immediately.
+async function sendThreadToBuffer(mode, btn) {
+  if(!lastThread||!lastThread.hook){showToast('Generate a thread first');return;}
+  if(mode==='now' && !confirm('Post this thread to Threads NOW — it goes live. Continue?'))return;
+  const orig=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
+  try {
+    const res=await fetch('/api/threads/send',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({hook:lastThread.hook,posts:lastThread.posts||[],cta:lastThread.cta||'',topic_tag:lastThread.topic_tag||'',mode})});
+    const data=await res.json();
+    if(!res.ok||!data.ok)throw new Error(data.error||'Send failed');
+    btn.textContent=mode==='now'?'Posted ✓':'Queued ✓';
+    showToast(mode==='now'?'Posted to Threads ✓':'Queued in Buffer ✓');
+  } catch(e) {
+    btn.textContent=orig; btn.disabled=false;
+    showToast('Buffer: '+e.message);
+  }
 }
 
 function threadPost(label,text,cls) {

@@ -349,7 +349,7 @@ const BUFFER_CHANNELS = {
   ig_md: '6a4bc28f404834462876c3a5',   // marketdynamics_app (Instagram)
 };
 
-async function bufferCreatePost({ channelId, text, imageUrl, mode, platform }) {
+async function bufferCreatePost({ channelId, text, imageUrl, mode, platform, thread }) {
   const input = {
     channelId,
     schedulingType: 'automatic',
@@ -360,6 +360,11 @@ async function bufferCreatePost({ channelId, text, imageUrl, mode, platform }) {
   // Instagram requires post metadata (type + shouldShareToFeed); X/Threads don't.
   if (platform === 'instagram') {
     input.metadata = { instagram: { type: 'post', shouldShareToFeed: true } };
+  }
+  // Threads chain: posts after the root live in metadata.threads.thread[] and the
+  // whole chain publishes atomically (root, then self-replies in order).
+  if (thread && thread.length) {
+    input.metadata = { ...(input.metadata || {}), threads: { thread: thread.map((t) => ({ text: t, assets: [] })) } };
   }
   const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on RestProxyError{message code} ... on UnexpectedError{message} ... on NotFoundError{message} ... on UnauthorizedError{message} ... on LimitReachedError{message}}}';
   const resp = await fetch('https://api.buffer.com', {
@@ -421,10 +426,50 @@ app.post('/api/buffer/send/:row', async (req, res) => {
   }
 });
 
+// ─── POST /api/threads/send ───────────────────────────────────────────────────
+// Sends a generated thread (from the Thread Generator) straight to the Threads
+// channel via Buffer. Body: { hook, posts?: [], cta?, topic_tag?, mode?: 'now'|'queue' }.
+// The whole chain goes up in ONE createPost (root = hook, replies in order, CTA
+// last), so there's no partial-post risk. Threads rejects any post over 500 chars
+// and that fails the entire chain, so every post is hard-clamped as a safety net.
+app.post('/api/threads/send', async (req, res) => {
+  if (!BUFFER_TOKEN) return res.status(500).json({ error: 'BUFFER_TOKEN is not set on the server' });
+  const hook = String(req.body?.hook || '').trim();
+  if (!hook) return res.status(400).json({ error: 'hook is required' });
+  const posts = Array.isArray(req.body?.posts)
+    ? req.body.posts.map((p) => String(p).trim()).filter(Boolean) : [];
+  const cta = String(req.body?.cta || '').trim();
+  const mode = req.body?.mode === 'now' ? 'now' : 'queue';
+  const clamp = (s) => (s.length > 500 ? s.slice(0, 497) + '…' : s);
+
+  // Threads supports ONE topic tag per post: the first hashtag becomes the tag.
+  // Append it to the root so the post gets categorised (any further inline
+  // hashtags would just be dead text, so we never add more than this one).
+  const tag = String(req.body?.topic_tag || '').replace(/^#/, '').trim();
+  let root = hook;
+  if (tag && !root.includes('#') && (root.length + tag.length + 2) <= 500) root = `${root} #${tag}`;
+
+  try {
+    const chain = [...posts, ...(cta ? [cta] : [])].map(clamp);
+    const result = await bufferCreatePost({
+      channelId: BUFFER_CHANNELS.threads,
+      text: clamp(root),
+      mode,
+      platform: 'threads',
+      thread: chain,
+    });
+    if (!result.ok) return res.status(502).json(result);
+    res.json({ ok: true, id: result.id, mode, total: 1 + chain.length });
+  } catch (err) {
+    console.error('POST /api/threads/send error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── GET /api/threadlog ───────────────────────────────────────────────────────
 // Recent auto-posted threads for the dashboard's "Auto Threads" panel.
 // Reads the `ThreadLog` tab (A ts YYYYMMDD-HHmmss, B pillar, C topic, D hook,
-// E total_posts, F root_post_id) and returns the last ~2 days, newest first.
+// E total_posts, F root_post_id) and returns the last 24 hours, newest first.
 // Non-fatal: any read error (e.g. tab absent) returns [] so the panel just shows
 // its empty state rather than an error.
 function parseThreadTs(s) {
@@ -441,7 +486,7 @@ app.get('/api/threadlog', async (req, res) => {
       range: 'ThreadLog!A2:G',
     });
     const rows = response.data.values || [];
-    const cutoff = Date.now() - 2 * 86400 * 1000;
+    const cutoff = Date.now() - 86400 * 1000;
     const items = rows
       .map((r) => ({
         ts: r[0] || '',
