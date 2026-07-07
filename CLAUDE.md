@@ -88,6 +88,12 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 
 `SHEET_NAME` defaults to `Posts` if unset.
 
+## Brand brief — source of truth
+
+The AI brand brief that drives ALL generated content lives in **cell `A1` of the `Brief` tab** of the Posts spreadsheet. Every Make scenario (content generation, thread generator, threads auto-poster) reads that cell fresh on each run — the cell is what the AI obeys.
+
+**`BRIEF.md` in this repo is an exact, git-versioned mirror of that cell** (verified byte-identical 7 Jul 2026). Workflow for changing the brief: edit `BRIEF.md`, commit, then push the ENTIRE file content into `Brief!A1` (full overwrite — via a temp Make scenario `updateCell` with `valueInputOption:"RAW"`, since this repo has no Google creds locally). Never edit the cell without updating `BRIEF.md` (and vice versa) or they drift. `StrategyDynamics- Marketing_Brief.docx` is the original seed document and is STALE — do not treat it as current.
+
 ## Make.com + Telegram integration
 
 This repo does **not** contain any Make.com or Telegram code — those integrations live in Make scenarios outside this repo and interact with the system exclusively through the same Google Sheet. Typical flow:
