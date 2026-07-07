@@ -411,7 +411,16 @@ app.post('/api/buffer/send/:row', async (req, res) => {
     // the merged dashboard field), so only append them if they're not already there.
     const igText = (hashtags && !caption.includes(hashtags)) ? `${caption}\n\n${hashtags}` : caption;
     const xText = r[COL.x_post] || '';
-    const threadsText = r[COL.threads_post] || '';
+    // Threads: a single trailing hashtag becomes the linked topic tag (sent via
+    // metadata.threads.topic) and is stripped from the text — inline hashtags
+    // don't link on Threads.
+    let threadsText = r[COL.threads_post] || '';
+    let threadsTopic;
+    const tagMatch = threadsText.match(/(?:^|\s)#(\w+)\s*$/);
+    if (tagMatch) {
+      threadsTopic = tagMatch[1];
+      threadsText = threadsText.slice(0, tagMatch.index).trimEnd();
+    }
 
     const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get('host')}`;
     const imageUrl = `${base}/api/graphic/${row}.png`;
@@ -424,7 +433,10 @@ app.post('/api/buffer/send/:row', async (req, res) => {
     const results = {};
     // Sequential so Buffer fetches the image URL one at a time (kinder on render).
     for (const [name, channelId, text] of plan) {
-      results[name] = await bufferCreatePost({ channelId, text, imageUrl, mode, platform: name });
+      results[name] = await bufferCreatePost({
+        channelId, text, imageUrl, mode, platform: name,
+        threadsTopic: name === 'threads' ? threadsTopic : undefined,
+      });
     }
     res.json({ ok: true, brand: isMD ? 'MarketDynamics' : 'StrategyDynamics', mode, results });
   } catch (err) {

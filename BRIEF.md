@@ -502,7 +502,7 @@ X penalises hashtag-heavy posts. Use 1–2, only when essential. Better to use $
 
 ### Threads (1 hashtag max)
 
-Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted into the post's official 'topic tag' (shown beside the account name). Any additional hashtags are dead plain text — they do not link and look broken. RULE: a Threads post (or the final post of a chain) may end with AT MOST one hashtag, and no other hashtags anywhere in the chain.
+Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted into the post's official 'topic tag' (shown beside the account name). Any additional hashtags are dead plain text — they do not link and look broken. RULE: a Threads post (or the final post of a chain) may end with AT MOST one hashtag, and no other hashtags anywhere in the chain. TOPIC TAG SELECTION (for the topic_tag field and any single hashtag): pick a BROAD, high-traffic community topic that real users actually follow and search on Threads — the topic is a discovery channel. Good examples: AlgoTrading, DayTrading, Trading, XAUUSD, Gold, PropFirm, FTMO, AI, Automation, TradingBots, Backtesting, iOSApps, AppDevelopment, Fintech, MachineLearning. ROTATE topics across posts to reach different communities — never default to the same one every time, and match the topic to the post's subject. NEVER use own brand names (MarketDynamics, StrategyDynamics) as the topic — they are not communities anyone browses; put the brand in the post text and use the topic slot for audience reach.
 
 # 8. Calls to Action
 
