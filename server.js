@@ -349,7 +349,7 @@ const BUFFER_CHANNELS = {
   ig_md: '6a4bc28f404834462876c3a5',   // marketdynamics_app (Instagram)
 };
 
-async function bufferCreatePost({ channelId, text, imageUrl, mode, platform, thread }) {
+async function bufferCreatePost({ channelId, text, imageUrl, mode, platform, thread, threadsTopic }) {
   const input = {
     channelId,
     schedulingType: 'automatic',
@@ -361,10 +361,17 @@ async function bufferCreatePost({ channelId, text, imageUrl, mode, platform, thr
   if (platform === 'instagram') {
     input.metadata = { instagram: { type: 'post', shouldShareToFeed: true } };
   }
-  // Threads chain: posts after the root live in metadata.threads.thread[] and the
-  // whole chain publishes atomically (root, then self-replies in order).
-  if (thread && thread.length) {
-    input.metadata = { ...(input.metadata || {}), threads: { thread: thread.map((t) => ({ text: t, assets: [] })) } };
+  // Threads chain: metadata.threads.thread is the SOURCE OF TRUTH for what gets
+  // published and must contain EVERY post INCLUDING the root as its first element
+  // (matching the top-level text) — Buffer publishes the array, not `text`
+  // (contract clarified in Buffer's 16 Jun 2026 API changelog; sending only the
+  // replies makes the chain publish without its hook). `topic` sets the Threads
+  // topic tag shown beside the account name.
+  if ((thread && thread.length) || threadsTopic) {
+    const threads = {};
+    if (thread && thread.length) threads.thread = thread.map((t) => ({ text: t, assets: [] }));
+    if (threadsTopic) threads.topic = threadsTopic;
+    input.metadata = { ...(input.metadata || {}), threads };
   }
   const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on RestProxyError{message code} ... on UnexpectedError{message} ... on NotFoundError{message} ... on UnauthorizedError{message} ... on LimitReachedError{message}}}';
   const resp = await fetch('https://api.buffer.com', {
@@ -441,25 +448,24 @@ app.post('/api/threads/send', async (req, res) => {
   const cta = String(req.body?.cta || '').trim();
   const mode = req.body?.mode === 'now' ? 'now' : 'queue';
   const clamp = (s) => (s.length > 500 ? s.slice(0, 497) + '…' : s);
-
-  // Threads supports ONE topic tag per post: the first hashtag becomes the tag.
-  // Append it to the root so the post gets categorised (any further inline
-  // hashtags would just be dead text, so we never add more than this one).
+  // The Threads topic tag is set via metadata.threads.topic (no # symbol) — it
+  // shows beside the account name. Inline hashtags don't link on Threads, so we
+  // never put the tag in the post text.
   const tag = String(req.body?.topic_tag || '').replace(/^#/, '').trim();
-  let root = hook;
-  if (tag && !root.includes('#') && (root.length + tag.length + 2) <= 500) root = `${root} #${tag}`;
 
   try {
-    const chain = [...posts, ...(cta ? [cta] : [])].map(clamp);
+    // Full chain, root first — Buffer publishes metadata.threads.thread verbatim.
+    const chain = [hook, ...posts, ...(cta ? [cta] : [])].map(clamp);
     const result = await bufferCreatePost({
       channelId: BUFFER_CHANNELS.threads,
-      text: clamp(root),
+      text: chain[0],
       mode,
       platform: 'threads',
       thread: chain,
+      threadsTopic: tag || undefined,
     });
     if (!result.ok) return res.status(502).json(result);
-    res.json({ ok: true, id: result.id, mode, total: 1 + chain.length });
+    res.json({ ok: true, id: result.id, mode, total: chain.length });
   } catch (err) {
     console.error('POST /api/threads/send error:', err.message);
     res.status(500).json({ error: err.message });

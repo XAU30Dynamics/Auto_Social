@@ -869,7 +869,7 @@ function renderThread(t) {
     (tag?'<button class="tg-tag" onclick="copyTag(this)">'+esc(tag)+' · copy</button>':'')+
     '<button class="tg-copyall" onclick="copyWholeThread(this)">Copy all</button></div>'];
   if(tag)parts.push('<div style="font-family:var(--font-mono);font-size:0.52rem;letter-spacing:0.04em;color:var(--muted2);line-height:1.5">'+
-    esc(tag)+' is added to Post 1 automatically when sending to Buffer — Threads links only one tag per post, so none are baked into the text.</div>');
+    esc(tag)+' is sent as the Threads topic tag (shown beside the account name) when publishing via Buffer — inline hashtags don\'t link on Threads, so none are baked into the text.</div>');
   const single=!(t.posts||[]).length&&!t.cta;
   if(t.hook)parts.push(threadPost(single?'Single post':'Hook · Post 1',t.hook,'hook'));
   (t.posts||[]).forEach((p,i)=>parts.push(threadPost('Reply · Post '+(i+2),p,'')));
