@@ -603,7 +603,11 @@ async function bufferSentPosts() {
 // Threads chains publish the whole thread under the root post, so Buffer's
 // `comments` metric counts our own chain replies. Subtract them where Buffer
 // knows the chain structure (metadata.thread) so the number means real people.
+// Before 8 Jul 2026 chains were added manually in the Threads app (invisible to
+// Buffer), so those counts are unfixable self-replies — treat as 0.
+const THREADS_COMMENTS_RELIABLE_FROM = Date.parse('2026-07-08T00:00:00Z');
 function realComments(post) {
+  if (post.channelService === 'threads' && Date.parse(post.sentAt) < THREADS_COMMENTS_RELIABLE_FROM) return 0;
   const raw = Number(metricVal(post, 'comments')) || 0;
   const chainLen = post.metadata?.thread?.length || 1;
   return Math.max(0, raw - (chainLen - 1));
