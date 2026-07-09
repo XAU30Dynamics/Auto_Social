@@ -41,7 +41,8 @@ app.post('/api/login', (req, res) => {
 
 app.use('/api', (req, res, next) => {
   if (!DASHBOARD_PASSWORD) return next();
-  if (req.method === 'GET' && /^\/graphic\/\d+\.png$/.test(req.path)) return next();
+  // GET for the image itself, HEAD for Buffer's URL validation probe.
+  if ((req.method === 'GET' || req.method === 'HEAD') && /^\/graphic\/\d+\.png$/.test(req.path)) return next();
   if (getCookie(req, AUTH_COOKIE) === authToken) return next();
   res.status(401).json({ error: 'auth required' });
 });
