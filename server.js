@@ -593,10 +593,20 @@ async function bufferGql(query, variables = {}) {
 async function bufferSentPosts() {
   const data = await bufferGql(`query($input: PostsInput!) {
     posts(input: $input, first: 100) {
-      edges { node { id sentAt channelService text metrics { type value } } }
+      edges { node { id sentAt channelService text metrics { type value }
+        metadata { ... on ThreadsPostMetadata { thread { text } } } } }
     }
   }`, { input: { organizationId: BUFFER_ORG_ID, filter: { status: ['sent'] }, sort: [{ field: 'dueAt', direction: 'desc' }] } });
   return (data?.posts?.edges || []).map((e) => e.node).filter((p) => p.sentAt);
+}
+
+// Threads chains publish the whole thread under the root post, so Buffer's
+// `comments` metric counts our own chain replies. Subtract them where Buffer
+// knows the chain structure (metadata.thread) so the number means real people.
+function realComments(post) {
+  const raw = Number(metricVal(post, 'comments')) || 0;
+  const chainLen = post.metadata?.thread?.length || 1;
+  return Math.max(0, raw - (chainLen - 1));
 }
 
 function metricVal(post, ...types) {
@@ -645,7 +655,7 @@ async function collectInsights() {
       .map((p) => [pulledAt, p.sentAt, p.channelService, p.id,
         String(p.text || '').replace(/\s+/g, ' ').slice(0, 180),
         metricVal(p, 'views', 'impressions'), metricVal(p, 'reach'),
-        metricVal(p, 'reactions', 'likes'), metricVal(p, 'comments'),
+        metricVal(p, 'reactions', 'likes'), realComments(p),
         metricSum(p, 'shares', 'reposts', 'quotes'), metricVal(p, 'saves'),
         metricVal(p, 'follows'), metricVal(p, 'engagementRate'), metricVal(p, 'clicks')]);
     if (!rows.length) return;
@@ -682,7 +692,7 @@ app.get('/api/insights', async (req, res) => {
         text: String(p.text || '').replace(/\s+/g, ' ').slice(0, 140),
         views: Number(metricVal(p, 'views', 'impressions')) || 0,
         reactions: Number(metricVal(p, 'reactions', 'likes')) || 0,
-        comments: Number(metricVal(p, 'comments')) || 0,
+        comments: realComments(p),
       }));
     const perChannel = {};
     for (const p of recent) {

@@ -94,7 +94,7 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 
 `server.js` runs a background job (1 min after boot, then every 6 h) that snapshots each sent Buffer post's engagement metrics into the **`Insights` tab** of the Posts spreadsheet — **once per post, after the post is 7 days old** (metrics matured; append-only, no updates). State lives entirely in the sheet: the window is (newest logged `sent_at`, now−7d], so missed runs self-heal and restarts can't duplicate rows. Tab + header row are auto-created if missing. Any error is logged and skipped — the collector can never affect posting or the rest of the app. Columns: `pulled_at, sent_at, channel, post_id, text (first 180 chars), views (views|impressions), reach, reactions, comments, shares (shares+reposts+quotes), saves, follows, eng_rate, clicks`.
 
-The purpose is a permanent engagement history for periodically distilling "what's working" guidance into the brand brief (human-in-the-loop — the brief is never auto-edited). Note: `eng_rate` units are inconsistent across services in Buffer's API (Instagram returns a fraction, X/Threads a percentage) — compare within a channel, not across.
+The purpose is a permanent engagement history for periodically distilling "what's working" guidance into the brand brief (human-in-the-loop — the brief is never auto-edited). Note: `eng_rate` units are inconsistent across services in Buffer's API (Instagram returns a fraction, X/Threads a percentage) — compare within a channel, not across. `comments` has known self-reply inflation on Threads chains subtracted (`realComments()` — Buffer counts our own chain posts as comments); rows logged before 9 Jul 2026 afternoon hold the raw value.
 
 ## Brand brief — source of truth
 
