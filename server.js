@@ -564,6 +564,146 @@ app.get('/api/threadlog', async (req, res) => {
   }
 });
 
+// ─── Insights (Buffer engagement metrics) ─────────────────────────────────────
+// Two independent, deliberately-dumb pieces (neither can affect posting):
+//  1. A background collector that snapshots each sent post's metrics to the
+//     `Insights` sheet tab ONCE, after the post is 7 days old (metrics matured).
+//     Append-only, self-healing (window = newest logged sent_at → now-7d), no
+//     state outside the sheet itself. Any error is logged and skipped.
+//  2. GET /api/insights — live 30-day rollup straight from Buffer for the
+//     dashboard panel. Read-only.
+const BUFFER_ORG_ID = '6a4b7b7d1ee432a8454c6455';
+const INSIGHTS_SHEET = 'Insights';
+const INSIGHTS_HEADER = ['pulled_at', 'sent_at', 'channel', 'post_id', 'text',
+  'views', 'reach', 'reactions', 'comments', 'shares', 'saves', 'follows', 'eng_rate', 'clicks'];
+
+async function bufferGql(query, variables = {}) {
+  const resp = await fetch('https://api.buffer.com', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${BUFFER_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+  });
+  const json = await resp.json().catch(() => ({}));
+  if (json.errors) throw new Error(json.errors[0]?.message || `Buffer HTTP ${resp.status}`);
+  return json.data;
+}
+
+// Newest-first sent posts with metrics. 100 covers ~6 weeks at current volume;
+// both consumers only look days back, so no pagination needed.
+async function bufferSentPosts() {
+  const data = await bufferGql(`query($input: PostsInput!) {
+    posts(input: $input, first: 100) {
+      edges { node { id sentAt channelService text metrics { type value } } }
+    }
+  }`, { input: { organizationId: BUFFER_ORG_ID, filter: { status: ['sent'] }, sort: [{ field: 'dueAt', direction: 'desc' }] } });
+  return (data?.posts?.edges || []).map((e) => e.node).filter((p) => p.sentAt);
+}
+
+function metricVal(post, ...types) {
+  for (const t of types) {
+    const m = (post.metrics || []).find((x) => x.type === t);
+    if (m && m.value != null) return m.value;
+  }
+  return '';
+}
+function metricSum(post, ...types) {
+  const vals = types.map((t) => metricVal(post, t)).filter((v) => v !== '');
+  return vals.length ? vals.reduce((a, b) => a + Number(b), 0) : '';
+}
+
+async function ensureInsightsTab(sheets) {
+  try {
+    await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!A1` });
+  } catch {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: INSIGHTS_SHEET } } }] },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!A1`,
+      valueInputOption: 'RAW', requestBody: { values: [INSIGHTS_HEADER] },
+    });
+  }
+}
+
+async function collectInsights() {
+  if (!BUFFER_TOKEN || !SPREADSHEET_ID) return;
+  try {
+    const sheets = getSheetsClient();
+    await ensureInsightsTab(sheets);
+    const existing = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!B2:B`,
+    });
+    const logged = (existing.data.values || []).map((r) => Date.parse(r[0])).filter(Boolean);
+    const since = logged.length ? Math.max(...logged) : Date.now() - 14 * 86400e3;
+    const matured = Date.now() - 7 * 86400e3;
+    if (since >= matured) return;
+    const pulledAt = new Date().toISOString();
+    const rows = (await bufferSentPosts())
+      .filter((p) => { const t = Date.parse(p.sentAt); return t > since && t <= matured; })
+      .sort((a, b) => Date.parse(a.sentAt) - Date.parse(b.sentAt))
+      .map((p) => [pulledAt, p.sentAt, p.channelService, p.id,
+        String(p.text || '').replace(/\s+/g, ' ').slice(0, 180),
+        metricVal(p, 'views', 'impressions'), metricVal(p, 'reach'),
+        metricVal(p, 'reactions', 'likes'), metricVal(p, 'comments'),
+        metricSum(p, 'shares', 'reposts', 'quotes'), metricVal(p, 'saves'),
+        metricVal(p, 'follows'), metricVal(p, 'engagementRate'), metricVal(p, 'clicks')]);
+    if (!rows.length) return;
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!A1`,
+      valueInputOption: 'RAW', requestBody: { values: rows },
+    });
+    console.log(`Insights: snapshotted ${rows.length} matured post(s)`);
+  } catch (err) {
+    console.error('collectInsights error:', err.message);
+  }
+}
+setTimeout(collectInsights, 60 * 1000);            // shortly after boot
+setInterval(collectInsights, 6 * 3600 * 1000);     // then every 6 hours
+
+app.get('/api/insights', async (req, res) => {
+  if (!BUFFER_TOKEN) return res.status(500).json({ error: 'BUFFER_TOKEN is not set on the server' });
+  try {
+    const since = Date.now() - 30 * 86400e3;
+    const [posts, agg] = await Promise.all([
+      bufferSentPosts(),
+      bufferGql(`query($input: AggregatedPostMetricsInput!) {
+        aggregatedPostMetrics(input: $input) { metrics { type name value unit } }
+      }`, { input: {
+        organizationId: BUFFER_ORG_ID,
+        startDateTime: new Date(since).toISOString(),
+        endDateTime: new Date().toISOString(),
+      } }),
+    ]);
+    const recent = posts
+      .filter((p) => Date.parse(p.sentAt) >= since)
+      .map((p) => ({
+        sentAt: p.sentAt, channel: p.channelService,
+        text: String(p.text || '').replace(/\s+/g, ' ').slice(0, 140),
+        views: Number(metricVal(p, 'views', 'impressions')) || 0,
+        reactions: Number(metricVal(p, 'reactions', 'likes')) || 0,
+        comments: Number(metricVal(p, 'comments')) || 0,
+      }));
+    const perChannel = {};
+    for (const p of recent) {
+      const c = perChannel[p.channel] || (perChannel[p.channel] = { posts: 0, views: 0, reactions: 0, comments: 0 });
+      c.posts += 1; c.views += p.views; c.reactions += p.reactions; c.comments += p.comments;
+    }
+    const byViews = [...recent].sort((a, b) => b.views - a.views);
+    res.json({
+      days: 30,
+      totalPosts: recent.length,
+      aggregate: agg?.aggregatedPostMetrics?.metrics || [],
+      perChannel,
+      top: byViews.slice(0, 5),
+      bottom: byViews.filter((p) => Date.parse(p.sentAt) <= Date.now() - 2 * 86400e3).slice(-3).reverse(),
+    });
+  } catch (err) {
+    console.error('GET /api/insights error:', err.message);
+    res.status(502).json({ error: err.message });
+  }
+});
+
 // ─── Serve dashboard ──────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

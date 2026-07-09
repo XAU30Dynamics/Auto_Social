@@ -53,6 +53,7 @@ All routes live in `server.js`:
 | POST   | `/api/graphic/render` | Body `{ html }` — a full self-contained HTML document designed at 1080×1350. Renders it in headless Chromium (Puppeteer) and returns a pixel-exact **1080×1350 PNG** (`image/png`). 400 if `html` empty; 502 on render failure. Puppeteer is `require()`d lazily so a Chromium hiccup can't take down the rest of the app. Reuses one browser across requests. |
 | GET    | `/api/graphic/:row.png` | Renders the **saved** `graphic_html` for a post row to a 1080×1350 PNG at a stable URL (reads column U from the sheet). Exists so Buffer can fetch the graphic by link. 404 if the row has no graphic. |
 | GET    | `/api/threadlog`    | Recent auto-posted threads (`ThreadLog` tab, last ~2 days newest-first) for the dashboard's Auto Threads panel. Errors degrade to `[]`. |
+| GET    | `/api/insights`     | Live 30-day engagement rollup from Buffer's GraphQL API (per-channel totals, aggregate metrics, top/weakest posts by views) for the dashboard's Insights panel. Needs `BUFFER_TOKEN`; org id is hardcoded (`BUFFER_ORG_ID`). Read-only. |
 | POST   | `/api/buffer/send/:row` | Sends a reviewed post to Buffer. Body `{ channels?: ['instagram','x','threads'], mode?: 'now'|'queue' }`. Routes **Instagram by brand** (`ig_sd` vs `ig_md` channel); X + Threads each have one channel for any brand. Attaches the graphic as an image URL Buffer fetches (`/api/graphic/:row.png`). Needs `BUFFER_TOKEN`. Returns per-channel `{ok,id}`/`{ok:false,error}`. Buffer channel IDs are hardcoded in `server.js` (`BUFFER_CHANNELS`). |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
 
@@ -88,6 +89,12 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 | V   | brand            | `StrategyDynamics` or `MarketDynamics` (chosen by the generator). Drives Buffer **Instagram** routing (SD→SD IG profile, MD→MD IG profile). Empty on older posts → treated as StrategyDynamics; editable via the dashboard brand badge. |
 
 `SHEET_NAME` defaults to `Posts` if unset.
+
+## Insights collector (engagement history)
+
+`server.js` runs a background job (1 min after boot, then every 6 h) that snapshots each sent Buffer post's engagement metrics into the **`Insights` tab** of the Posts spreadsheet — **once per post, after the post is 7 days old** (metrics matured; append-only, no updates). State lives entirely in the sheet: the window is (newest logged `sent_at`, now−7d], so missed runs self-heal and restarts can't duplicate rows. Tab + header row are auto-created if missing. Any error is logged and skipped — the collector can never affect posting or the rest of the app. Columns: `pulled_at, sent_at, channel, post_id, text (first 180 chars), views (views|impressions), reach, reactions, comments, shares (shares+reposts+quotes), saves, follows, eng_rate, clicks`.
+
+The purpose is a permanent engagement history for periodically distilling "what's working" guidance into the brand brief (human-in-the-loop — the brief is never auto-edited). Note: `eng_rate` units are inconsistent across services in Buffer's API (Instagram returns a fraction, X/Threads a percentage) — compare within a channel, not across.
 
 ## Brand brief — source of truth
 

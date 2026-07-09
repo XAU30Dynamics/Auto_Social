@@ -309,6 +309,17 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
 .at-item-body::-webkit-scrollbar-thumb { background:var(--muted2); border-radius:2px; }
 .at-item-meta { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; letter-spacing:0.06em; }
 
+/* ── Insights panel ── */
+.ins-summary { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); letter-spacing: 0.04em; padding: 10px 2px 12px; }
+.ins-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.ins-table th { font-family: var(--font-mono); font-size: 0.56rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; text-align: right; padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.ins-table th:first-child, .ins-table td:first-child { text-align: left; }
+.ins-table td { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text); text-align: right; padding: 6px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ins-label { font-family: var(--font-mono); font-size: 0.56rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 12px 2px 6px; }
+.ins-post { padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ins-post-meta { font-family: var(--font-mono); font-size: 0.6rem; color: var(--gold); margin-bottom: 3px; }
+.ins-post-text { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+
 /* ── Login overlay ── */
 .login-overlay {
   position: fixed; inset: 0; z-index: 1000; display: none;
@@ -431,6 +442,17 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
   </button>
   <div class="home-section-body" id="autoBody">
     <div id="autoThreadsList"></div>
+  </div>
+</div>
+
+<div class="home-section">
+  <button class="home-section-head" onclick="toggleSection('insightsBody','insightsChevron', loadInsights)">
+    <span class="home-section-title">📊 Insights</span>
+    <span class="home-section-sub">Last 30 days · engagement</span>
+    <span class="card-chevron" id="insightsChevron">▾</span>
+  </button>
+  <div class="home-section-body" id="insightsBody">
+    <div id="insightsPanel"></div>
   </div>
 </div>
 
@@ -911,6 +933,41 @@ async function loadThreadLog() {
 function fmtThreadTs(s) {
   const m=/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/.exec(String(s||''));
   return m?(m[3]+'/'+m[2]+' '+m[4]+':'+m[5]):(s||'');
+}
+
+// ─── Insights (live 30-day Buffer engagement rollup) ───
+async function loadInsights() {
+  const el=document.getElementById('insightsPanel');
+  if(!el)return;
+  el.innerHTML='<div class="at-empty">Loading…</div>';
+  try {
+    const res=await fetch('/api/insights');
+    const d=await res.json();
+    if(!res.ok)throw new Error(d.error||'failed');
+    const agg=Object.fromEntries((d.aggregate||[]).map(m=>[m.type,m.value]));
+    const chs=Object.entries(d.perChannel||{});
+    const totViews=chs.reduce((a,[,c])=>a+c.views,0);
+    let html='<div class="ins-summary">'+d.totalPosts+' posts · '+totViews+' views · '
+      +(agg.engagementRate!=null?agg.engagementRate.toFixed(1)+'% eng rate':'')+'</div>';
+    if(chs.length){
+      html+='<table class="ins-table"><tr><th>Channel</th><th>Posts</th><th>Views</th><th>Avg</th><th>💬</th><th>❤️</th></tr>';
+      for(const [name,c] of chs){
+        html+='<tr><td>'+esc(name)+'</td><td>'+c.posts+'</td><td>'+c.views+'</td><td>'
+          +(c.posts?Math.round(c.views/c.posts):0)+'</td><td>'+c.comments+'</td><td>'+c.reactions+'</td></tr>';
+      }
+      html+='</table>';
+    }
+    const list=(label,items)=>items&&items.length
+      ? '<div class="ins-label">'+label+'</div>'+items.map(p=>
+          '<div class="ins-post"><div class="ins-post-meta">'+p.views+' views · '+esc(p.channel)+' · '
+          +esc(String(p.sentAt).slice(5,10).split('-').reverse().join('/'))+'</div>'
+          +'<div class="ins-post-text">'+esc(p.text)+'</div></div>').join('')
+      : '';
+    html+=list('Top posts',d.top)+list('Weakest posts',d.bottom);
+    el.innerHTML=html;
+  } catch(e) {
+    el.innerHTML='<div class="at-empty">Couldn\'t load insights.</div>';
+  }
 }
 
 async function generateThread() {
