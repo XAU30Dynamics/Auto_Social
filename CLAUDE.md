@@ -46,6 +46,7 @@ All routes live in `server.js`:
 
 | Method | Route               | Purpose                                                                      |
 |--------|---------------------|------------------------------------------------------------------------------|
+| POST   | `/api/login`        | Body `{ password }`. Checks against `DASHBOARD_PASSWORD`; on success sets a 1-year HttpOnly `sd_auth` cookie. All other `/api/*` routes (except `GET /api/graphic/:row.png`, which Buffer fetches cookie-less) return 401 without that cookie. If `DASHBOARD_PASSWORD` is unset, auth is disabled entirely. |
 | GET    | `/api/posts`        | Read rows `A2:T` from the `Posts` sheet, return newest-first as JSON         |
 | PATCH  | `/api/posts/:row`   | Per-field cell update via `batchUpdate` — body is `{ fieldName: value, ... }` where `fieldName` must be a key in the `COL` map |
 | POST   | `/api/threads/generate` | Body `{ topic, pillar }`. Proxies to the Make Thread Generator webhook (`MAKE_THREAD_WEBHOOK_URL`), which runs Claude with the brand brief and returns a Threads chain. Server parses/normalizes the JSON to `{ pillar, topic_tag, hook, posts[], cta, total_posts }`. 400 if `topic` empty; 500 if env var unset; 502 on upstream/parse failure. |
@@ -123,6 +124,7 @@ Defined in `env.example`. All are required for full functionality:
 | `MAKE_THREAD_WEBHOOK_URL`        | `POST /api/threads/generate` (Thread Generator). Custom-webhook URL of the `XAU30 Social — 2. Thread Generator` Make scenario. Unset ⇒ that route 500s; rest of app unaffected. |
 | `BUFFER_TOKEN`                  | `POST /api/buffer/send/:row`. Buffer public API token (Bearer) for posting to IG/X/Threads via Buffer's GraphQL API (`https://api.buffer.com`). Unset ⇒ that route 500s. |
 | `PUBLIC_BASE_URL`              | Optional. Base URL Buffer uses to fetch the graphic image; defaults to the request's own `protocol://host` (correct on Railway). |
+| `DASHBOARD_PASSWORD`           | Single shared password for the dashboard (see `POST /api/login`). Unset ⇒ auth disabled (local dev convenience). |
 | `PORT`                          | Optional, defaults to `3000`             |
 
 The service account must have edit access to the spreadsheet — share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` explicitly.
@@ -145,4 +147,4 @@ The service account must have edit access to the spreadsheet — share the sheet
 - **Column map is positional.** Inserting a column mid-sheet (or in the `COL` map without matching the sheet) will silently corrupt every row. Append new columns at the end of both.
 - **Catch-all route serves `index.html` for any unmatched GET**, including paths that look like missing API routes. A typo'd API path won't 404 — it'll return the dashboard HTML. Check the response `Content-Type` when debugging.
 - **`GOOGLE_PRIVATE_KEY` newline handling**: the value is stored with literal `\n` escapes and unescaped via `.replace(/\\n/g, '\n')` (`server.js:18`). When pasting into Railway, keep the `\n` escapes — don't paste real newlines.
-- **No request auth.** Anyone who can reach the deployed URL can read and write the sheet via `/api/posts` and `/api/posts/:row`. Keep the Railway URL private, or add auth before exposing it.
+- **Auth is a single shared password** (`DASHBOARD_PASSWORD` + 1-year HttpOnly cookie, added 9 Jul 2026). The frontend wraps `window.fetch` — any `/api/*` 401 pops the login overlay. `GET /api/graphic/:row.png` is deliberately unauthenticated (Buffer fetches it with no cookies), so saved graphics are viewable by anyone who guesses a row number — acceptable, they're published posts anyway. If `DASHBOARD_PASSWORD` is unset (e.g. local dev with no `.env`), everything is open, matching pre-auth behaviour.

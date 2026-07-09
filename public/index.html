@@ -309,9 +309,49 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
 .at-item-body::-webkit-scrollbar-thumb { background:var(--muted2); border-radius:2px; }
 .at-item-meta { font-family:var(--font-mono); font-size:0.5rem; color:var(--muted2); margin-top:6px; letter-spacing:0.06em; }
 
+/* ── Login overlay ── */
+.login-overlay {
+  position: fixed; inset: 0; z-index: 1000; display: none;
+  align-items: center; justify-content: center;
+  background: var(--bg); padding: 24px;
+}
+.login-overlay.show { display: flex; }
+.login-card {
+  width: 100%; max-width: 340px; text-align: center;
+  background: var(--bg2); border: 1px solid var(--gold-border); border-radius: 14px;
+  padding: 32px 24px;
+}
+.login-card img { width: 44px; height: 44px; margin-bottom: 12px; }
+.login-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.login-title span { color: var(--gold); }
+.login-sub { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
+.login-card input {
+  width: 100%; padding: 12px 14px; border-radius: 8px; margin-bottom: 12px;
+  background: var(--bg3); border: 1px solid rgba(255,255,255,0.08); color: var(--text);
+  font-family: var(--font-body); font-size: 1rem; outline: none;
+}
+.login-card input:focus { border-color: var(--gold); }
+.login-card button {
+  width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--gold-border);
+  background: var(--gold-dim); color: var(--gold); cursor: pointer;
+  font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.login-card button:hover { border-color: var(--gold); }
+.login-error { color: #E05252; font-size: 0.75rem; margin-top: 10px; min-height: 1em; }
 </style>
 </head>
 <body>
+
+<div class="login-overlay" id="loginOverlay">
+  <form class="login-card" onsubmit="return submitLogin(event)">
+    <img src="/images/sd_icon.png" alt="">
+    <div class="login-title">Strategy<span>Dynamics</span></div>
+    <div class="login-sub">Auto Social — Sign in</div>
+    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" autofocus>
+    <button type="submit">Unlock</button>
+    <div class="login-error" id="loginError"></div>
+  </form>
+</div>
 
 <div class="header">
   <div class="header-logo">
@@ -400,6 +440,39 @@ select.field-input { -webkit-appearance:none; appearance:none; background-image:
 const CANVA_BLACK = 'https://www.canva.com/brand/brand-templates/EAHIhYHj5tQ';
 const CANVA_WHITE = 'https://www.canva.com/brand/brand-templates/EAHIhW1SMO4';
 let allPosts = [], currentFilter = 'Pending Review';
+
+// ── Auth gate ── every /api fetch that comes back 401 pops the login overlay.
+// After a successful login the server sets a 1-year HttpOnly cookie, so each
+// device only sees this once.
+const _fetch = window.fetch.bind(window);
+window.fetch = async (url, opts) => {
+  const res = await _fetch(url, opts);
+  if (res.status === 401 && String(url).startsWith('/api/')) showLogin();
+  return res;
+};
+
+function showLogin() {
+  const ov = document.getElementById('loginOverlay');
+  if (!ov.classList.contains('show')) {
+    ov.classList.add('show');
+    setTimeout(() => document.getElementById('loginPassword').focus(), 50);
+  }
+}
+
+async function submitLogin(e) {
+  e.preventDefault();
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+  try {
+    const res = await _fetch('/api/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: document.getElementById('loginPassword').value }),
+    });
+    if (!res.ok) { err.textContent = 'Wrong password'; return false; }
+    location.reload();
+  } catch { err.textContent = 'Connection failed'; }
+  return false;
+}
 
 async function loadPosts() {
   const btn = document.getElementById('refreshBtn');

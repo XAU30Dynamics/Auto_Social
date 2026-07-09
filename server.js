@@ -9,6 +9,43 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ─── Dashboard auth ───────────────────────────────────────────────────────────
+// Single shared password (DASHBOARD_PASSWORD env). On successful login the
+// browser gets a 1-year HttpOnly cookie, so each device logs in once. If the
+// env var is unset, auth is disabled entirely (local dev convenience).
+// GET /api/graphic/:row.png stays open — Buffer fetches it with no cookies.
+const crypto = require('crypto');
+const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || '';
+const AUTH_COOKIE = 'sd_auth';
+const authToken = DASHBOARD_PASSWORD
+  ? crypto.createHash('sha256').update(`sd-dash:${DASHBOARD_PASSWORD}`).digest('hex')
+  : '';
+
+function getCookie(req, name) {
+  for (const part of String(req.headers.cookie || '').split(';')) {
+    const [k, ...v] = part.trim().split('=');
+    if (k === name) return v.join('=');
+  }
+  return '';
+}
+
+app.post('/api/login', (req, res) => {
+  if (!DASHBOARD_PASSWORD) return res.json({ ok: true });
+  if (String(req.body?.password || '') !== DASHBOARD_PASSWORD) {
+    return res.status(401).json({ error: 'Wrong password' });
+  }
+  const secure = (req.secure || req.get('x-forwarded-proto') === 'https') ? '; Secure' : '';
+  res.set('Set-Cookie', `${AUTH_COOKIE}=${authToken}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Lax${secure}`);
+  res.json({ ok: true });
+});
+
+app.use('/api', (req, res, next) => {
+  if (!DASHBOARD_PASSWORD) return next();
+  if (req.method === 'GET' && /^\/graphic\/\d+\.png$/.test(req.path)) return next();
+  if (getCookie(req, AUTH_COOKIE) === authToken) return next();
+  res.status(401).json({ error: 'auth required' });
+});
+
 // ─── Google Sheets Auth ───────────────────────────────────────────────────────
 function getSheetsClient() {
   const auth = new google.auth.GoogleAuth({
