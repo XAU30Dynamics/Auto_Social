@@ -279,7 +279,11 @@ let browserPromise = null;
 // graphic_html in the sheet is never modified — only the rendered output.
 const LOGO_GUARD_STYLE =
   "<style>img[src*='/images/brand/'][src*='-logo']{height:56px !important;width:auto !important;" +
-  "max-width:none !important;min-width:0 !important;object-fit:contain !important;flex:none !important;}</style>";
+  "max-width:none !important;min-width:0 !important;object-fit:contain !important;flex:none !important;" +
+  // Left-align regardless of container centring: block + margin-right:auto beats
+  // text-align:center and flex justify-content:center; justify-self covers grid.
+  "display:block !important;margin-left:0 !important;margin-right:auto !important;" +
+  "align-self:flex-start !important;justify-self:start !important;}</style>";
 
 function injectLogoGuard(html) {
   const i = html.search(/<\/head\s*>/i);
