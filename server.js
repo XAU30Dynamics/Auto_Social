@@ -272,6 +272,21 @@ const GRAPHIC_W = 1080;
 const GRAPHIC_H = 1350;
 let browserPromise = null;
 
+// The generator's prompt mandates the brand logo render at height:56px/width:auto,
+// but being a prompt rule it's occasionally ignored (logo stretched into a
+// full-width header banner). Enforce it deterministically at render time instead:
+// inject a style override targeting the hosted brand-logo images. The saved
+// graphic_html in the sheet is never modified — only the rendered output.
+const LOGO_GUARD_STYLE =
+  "<style>img[src*='/images/brand/'][src*='-logo']{height:56px !important;width:auto !important;" +
+  "max-width:none !important;min-width:0 !important;object-fit:contain !important;flex:none !important;}</style>";
+
+function injectLogoGuard(html) {
+  const i = html.search(/<\/head\s*>/i);
+  if (i !== -1) return html.slice(0, i) + LOGO_GUARD_STYLE + html.slice(i);
+  return LOGO_GUARD_STYLE + html;
+}
+
 async function getBrowser() {
   const puppeteer = require('puppeteer');
   // Reuse one browser across requests; relaunch if it died/disconnected.
@@ -307,7 +322,7 @@ async function renderHtmlToPng(html) {
     // domcontentloaded (not networkidle0): a single stalled font/image request
     // must never hang the render. We then explicitly wait for fonts + images
     // with hard caps so text/images are painted before the screenshot.
-    await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    await page.setContent(injectLogoGuard(html), { waitUntil: 'domcontentloaded', timeout: 20000 });
     try {
       await page.evaluate(async () => {
         const cap = (ms) => new Promise((r) => setTimeout(r, ms));

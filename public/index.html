@@ -618,12 +618,20 @@ function renderGfx(post, r) {
   </div>`;
 }
 
+// Mirror of the server's render-time logo guard (see injectLogoGuard in
+// server.js) so the on-card preview matches the PNG Buffer/Download produce.
+const LOGO_GUARD_STYLE="<style>img[src*='/images/brand/'][src*='-logo']{height:56px !important;width:auto !important;max-width:none !important;min-width:0 !important;object-fit:contain !important;flex:none !important;}</style>";
+function injectLogoGuard(html){
+  const i=html.search(/<\/head\s*>/i);
+  return i!==-1 ? html.slice(0,i)+LOGO_GUARD_STYLE+html.slice(i) : LOGO_GUARD_STYLE+html;
+}
+
 function populateGfx(r) {
   const ta=document.getElementById('f-graphic_html-'+r);
   const frame=document.getElementById('gfx-frame-'+r);
   const empty=document.getElementById('gfx-empty-'+r);
   if(!ta||!frame)return;
-  const html=ta.value.trim();
+  const html=ta.value.trim()?injectLogoGuard(ta.value.trim()):'';
   if(html){ if(frame.srcdoc!==html)frame.srcdoc=html; frame.style.display=''; if(empty)empty.style.display='none'; }
   else { frame.style.display='none'; if(empty)empty.style.display=''; }
   sizeGfx(r);
