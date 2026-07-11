@@ -4,9 +4,9 @@ Social Media Brand Brief
 
 *The single source of truth for every post the AI generates.*
 
-**Version 1.4**
+**Version 1.5**
 
-Last updated: 04 July 2026
+Last updated: 11 July 2026
 
 Owner: TraderS
 
@@ -30,19 +30,33 @@ I have been trading for 13 years and am a successful XAUUSD trader with over 35 
 
 I'm known in the trading community as TraderS. I don't use my real name publicly for confidentiality reasons, as trading isn't my full-time profession.
 
-I began my trading journey 13 years ago, initially drawn in by lifestyle videos on YouTube from signal providers who portrayed trading as a path to financial freedom. Back then, I had no idea what I was really getting into.
+I was first hooked on trading by YouTube 'day in the life of a trader' videos. At the time I was working a demanding finance job in the City, with a long, draining commute that made it hard to see my family. Those videos — infinite time, plenty of money, days spent by the pool — looked like a way out: a chance to take control of my own destiny instead of being loaded up with jobs and to-do lists for other people. Back then, I had no idea what I was really getting into.
 
-Over the years, I've learned from a wide range of mentors and communities, adopting and refining countless strategies along the way. In the early days, I'd analyse as many as 23 currency pairs every Sunday and try to trade them all during the week. Unsurprisingly, that approach wasn't sustainable. It took me eight years to become consistently profitable — but in that pivotal eighth year, I managed to recover the many thousands I had lost previously.
+I started the way most do: read the recommended books (Trading in the Zone by Mark Douglas, Market Wizards by Jack Schwager), signed up to TradingView, and began analysing charts. In 2014 I thought I'd struck gold: on certain pairs, when the daily RSI went overbought or oversold, price reversed. I printed the charts out and highlighted every overbought/oversold area across different assets — it looked like a solid edge, and I thought this was going to be easy. It didn't work.
 
-Since 2023, I've focused exclusively on XAUUSD (gold). Its volatility suits my trading style, and narrowing my attention to one pair has drastically improved my performance. As part of my analysis, I also monitor DXY, US30, and NAS100 for confluence. Gold has humbled me more than once, but in the past two years, I've achieved 30 prop firm payouts. At one point, I was funded up to $1.1 million, though I've since lost most of it due to firms shutting down or failing to pay out.
+My first live trade summed up the whole learning curve. I deposited £500 with a CFD broker and took a 1-lot buy on USOIL. It went to £900 in two minutes — the easiest money I'd ever seen — then tanked to zero inside five. Next came the Instagram signal providers: I tried several, all total scammers promising the world. The advertised results never matched reality — their entries and exits always seemed to differ from what they published — and a few more accounts went to zero.
 
-I first ventured into algorithmic trading two years ago. Separate from my manual trading, I began experimenting with Expert Advisors (EAs) on MT4 and MT5. I purchased around 15 different EAs and tested them across both live and demo accounts. Unfortunately, I didn't find success with any of them. About 90% were grid or martingale-based strategies — they'd generate small profits at first, but often sat in extended drawdown before eventually blowing the account.
+In 2015/16 I paid for proper education and made my first real progress with a community that taught two specific entry methods and, more importantly, full multi-timeframe analysis — top-down from the monthly. But they covered 23 assets, which meant every Sunday spent doing TradingView markups and setting alerts, then a week of flicking between charts around a full-time job. It wasn't sustainable. I did pass a 200k FTMO account there — an amazing feeling — and took a deliberately cautious first payout of £190 to bank my refund fee. On the second cycle I took 10 losses in a row and lost the account. I learned a lot in that period about chart patterns, reversals, continuations, and the importance of key zones — and about how quickly it can all go.
 
-After losing my last bit of funding in August 2024, I decided it was time to take a new approach. That's when I began building automated strategies myself. I initially used ChatGPT to help code algos for cTrader. I built several bots with mixed results, but the process was often frustrating. The AI would frequently try to "improve" sections of code that were already working, which led to endless debugging and hours spent fixing build errors. The absence of a visual interface made the process even more challenging and time-consuming.
+From there I studied SMC and supply and demand principles on GBPUSD and EURUSD, then followed a trader running 1:1 setups off key levels and fib zones. He's a genuinely successful trader and taught me a lot about patience — waiting for price to come to you — but the counter-trend logic never sat right with me; it always felt like I was fading a strong move. I also briefly followed a US30 trader whose community cost £400 a month, watching for moves inside H4 zones on a 15-second timeframe, which felt ridiculous. He turned out to be a scammer and soon vanished.
 
-Following this I got into visual algo development algo building systems such which helped me visualise algo creation. However, the process is very time-consuming, so I took to developing my own app (StrategyDynamics) which can convert an idea to code in minutes, this now forms the core infrastructure of my group and brand. This took me months to build as I had to integrate substantial rules into its backend to ensure almost perfect conversion accuracy — and it's the first app I'm aware of where you can backtest and optimise directly from your phone.
+By 2021 I had a solid all-round base and was passing prop challenges here and there, but the money still wasn't flowing. In total, my roughly eight-year learning period cost me around $25,000 — and it took until that pivotal eighth year to become consistently profitable and start recovering what I'd lost.
 
-I then proceeded to build the web version of StrategyDynamics – this uses the same log in details as the app for shared and synced data but allows users to sign up with Stripe instead of through apple, also perfect for non iPhone users.
+The turning point was studying breakout trading — I went through all of Raja Banks' education, and combining his methods with my years of price action experience finally sharpened my strategy. I simplified everything down to one asset: XAUUSD. Its volatility suits my trading style. From 2023 I traded it every day, marking up my zones and levels, learning how it moves over long periods by watching it day in, day out. The biggest takeaways were candlestick logic — reading forming candles and waiting for the closed candle — cutting losers short, and evolving into a hybrid of intraday and swing trading, holding XAUUSD trades to daily and weekly key levels. As part of my analysis, I also monitor DXY, US30, and NAS100 for confluence. Gold has humbled me more than once, but the past two years have produced the bulk of my 35+ prop firm payouts.
+
+The funding side taught its own hard lesson. At one point I was funded up to $1.1 million. Several firms paid me tens of thousands of dollars before eventually refusing to pay and vanishing; others closed their operations or ended up under investigation, taking the funding with them. The one legitimate firm all the way through has been FTMO — 18 verified payouts and counting.
+
+### The road to automation — why StrategyDynamics exists
+
+During 2021–22 I became really interested in automation, starting with EAs on MT4/MT5. I tried over 30 of them across private and funded accounts, and bought another 10 algos to test in different combinations. Around 90% were grid or martingale systems — they look great for a few weeks, making say 1% a week, then you get stuck in a trending move and take a 5% loss, then get unlucky and take another. No grid spacing, lot multiple, or starting lot fixes that logic. It's hopeless, and I proved it to myself 40 times over.
+
+Podcasts like Trading Nut (Cam Hawkins) were the inspiration to build rule-based systems myself — he was always transparent about the results of his systems, and it made me ask how I could actually 'build' these things rather than buy them. After losing my last bit of funding in August 2024, I committed to it. I spent a year building algos with ChatGPT for cTrader — enough success to see what was possible, but the process was painful: constant build errors, copy-pasting every error back for a fix, and the AI 'optimising' working code off its own back so the logic drifted from the rules. I'd then spend hours correcting it. Visual algo builders were the opposite problem — made unnecessarily complex and very time-consuming.
+
+So I built StrategyDynamics, and it now forms the core infrastructure of my group and brand. The edge is hidden in the backend: over 45 specific conversion rules that took six months of personal testing, governing the conversion from strategy rules to Python code, cTrader C#, and agent code — ensuring seamless logic across every code path. It turns strategy building from months into minutes, and it's the first app I'm aware of where you can backtest and optimise directly from your phone. Before launch I proved the concept by rebuilding my NAS open range strategy — three months of manual work originally, replicated exactly in 30 minutes.
+
+I then built the web version of StrategyDynamics — same login and synced data as the iOS app, but users can sign up with Stripe instead of through Apple, which is also perfect for non-iPhone users.
+
+It's built by an actual trader, not an app developer — so it contains exactly the tools a trader needs to build a system, test it, and validate it on past data, with nothing designed to blind you with complexity. And the honest positioning matters: automation is not a golden ticket. Market conditions change — a system built for trending markets can get chopped up in consolidation. That's why you build multiple systems into a portfolio to smooth out the peaks and troughs. I personally run different methods on different accounts, focus on prop challenges and funded accounts, and don't expect success all the time.
 
 I have also created a system called ‘Sentinel’ This is a fully Claude based Agentic trading system with over 122 files and 22,500 lines of code, all built from a single 2 page constitution as to how it needs to approach risk management and capital preservation.  Since its been running live I modify and evolve it to improve its performance, it also has machine leaning capabilities as it can simultaneously analyses 25 assets across multiple timeframes and evaluate actual performance of its reasoning, it has 6 agents in its team and an ‘Architect’ who autonomously reviews the code base and performance and automatically evolves itself daily.  It is still evolving and I cannot guarantee its profitability, but I’m leading the way to full agentic trading – my discord group contains its thought processes, its trades and its daily and weekly reviews.
 
@@ -83,6 +97,12 @@ Three words that define the StrategyDynamics voice:
 - Use understated power phrases. Confidence shows in restraint.
 
 - When sharing a trade or analysis, share the reasoning — not just the outcome.
+
+- Debunk by explaining the mechanics of why something fails, never by dunking on people.
+
+- Use confident negatives freely: 'I don't trade inside ranges,' 'I don't do signals,' 'don't overthink this.'
+
+- Quote session times in UK clock (the founder is UK-based).
 
 ## 1.4 Voice rules — DON'T
 
@@ -356,6 +376,10 @@ No VPS is needed for the app, my fastAPI backtest engine runs on our servers— 
 
 StrategyDynamics is a professional algorithmic trading research platform for serious traders who want to build, test, and refine systematic strategies using AI.
 
+The value case: buying a single algo typically costs £500–£1,500 — with StrategyDynamics you can build unlimited systems of your own for a fraction of that. Automating your own rules gives you your time back in the day, so you don't need to always watch the charts. And if you're in a community or follow a mentor with a rule-based system, you can replicate it with ease in no time at all.
+
+Honest framing (use it — it builds trust): no system is a golden ticket. Market conditions change, and a strategy built for trending markets may get chopped up in consolidation. The answer is building multiple systems into a portfolio to smooth out the peaks and troughs — exactly how the founder runs his own accounts.
+
 ### Core features
 
 - Edge Finder (headline feature— chat with your StrategyDynamics agent and it finds a real, profitable edge in your data. It reads the market, proposes a specific strategy, codes it, and backtests it, all in a conversation. Tests in-sample and out-of-sample so you see whether an edge actually holds up rather than curve-fits. Honest grading — it only flags a "Confirmed Edge" when the edge is strong across both periods. Confirmed edges save straight into the strategy library, ready to backtest, optimise, or export.
@@ -408,6 +432,26 @@ This is the most important section for converting cold audiences. Every 4th post
 
 - 35+ total prop firm payouts across multiple firms
 
+- Funded up to $1.1 million at peak across multiple prop firms
+
+## 3.1b Honest numbers (the failure arc — use these, they convert)
+
+Insights data shows honest, personal founder content massively outperforms announcement-style posts. These are real, publishable figures from the journey — rotate them into Performance Proof and Founder posts instead of repeating the headline payout total every time:
+
+- The eight-year learning period cost around $25,000 before consistent profitability.
+
+- First live trade: £500 CFD account, 1-lot USOIL buy — £900 in two minutes, zero in five.
+
+- First FTMO payout was just £190 on a 200k account (deliberately cautious, banking the refund fee) — then 10 straight losses on the next cycle lost the account.
+
+- Tried 30+ EAs and bought 10 more algos — roughly 90% were grid/martingale systems that eventually blew accounts. None worked.
+
+- Several prop firms paid out tens of thousands of dollars, then refused to pay and vanished, or shut down under investigation. FTMO was the one legitimate constant throughout.
+
+- Multiple accounts zeroed by Instagram signal-provider scammers early on; a £400/month US30 'mentor' who vanished.
+
+- Rebuilt a strategy that originally took 3 months of manual coding in 30 minutes with StrategyDynamics — the proof-of-concept before launch.
+
 ## 3.2 Recent performance (Aug 2025 — Mar 2026)
 
 Note: focus shifted to app building since Mar 2026, so active trading frequency reduced.
@@ -459,6 +503,8 @@ Instagram watching lifestyle videos, researching ways of making money online or 
 ## Pillar 1: Performance Proof (15% of posts)
 
 Real numbers, real trades, real payouts. The single highest-conversion content type. Examples: 'Q4 wrap: 9 FTMO challenges passed, 9 payouts.' 'Last week's NAS100 algo trades, screenshots attached.' 'Year-to-date payout total: £83,235 net.'
+
+VARY THE PROOF: do not default to the headline payout total ('35 payouts / $83,235') every time. Rotate through the full proof library — the honest numbers in section 3.1b (the £190 first payout, the $25,000 learning cost, the 10-loss account blow-up, the EA graveyard, the firms that vanished), specific trade screenshots, and specific challenge passes. If a recent post already led with the payout total, lead with a different proof point.
 
 ## Pillar 2: Strategy / Algo Deep Dives (15% of posts)
 
@@ -551,6 +597,74 @@ Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted in
 - 'How fast do you think I can build a bot using StrategyDynamics?'
 
 - 'Who will win this week — me vs the algos?'
+
+# 9. Trading methodology — depth for content
+
+Each of these is a proven TraderS method or view, distilled from his own teaching (the Discord XAUUSD Masterclass). They are specific, contrarian-friendly, and verifiably his — use them for Educational Principles, Strategy Deep Dives, and Market Commentary posts instead of generic trading platitudes. Never invent additional 'rules' in this style; if it's not listed here or visible in an attached image, don't claim it.
+
+## 9.1 Market context & correlations
+
+- Gold never moves alone: check US30/US100 (risk-on/off), DXY (inverse), US10Y (opportunity cost), VIX (fear gauge) — as confirmation tools, never entry signals. 'I'm not waiting for all six to line up — I just like to be aware of the wider market.'
+
+- Niche tell: PAXGUSD (a gold-backed crypto token) trades 24/7 — a big weekend move on war/geopolitical news means anticipating a Monday gap up on gold. Small weekend moves are noise.
+
+- Gold responds hard to geopolitics (missiles, war threats, tariffs) — scan the news over the weekend before planning the week.
+
+## 9.2 Structure & levels
+
+- Mechanical S/R definition: resistance = bullish candle followed by bearish candle; support = bearish then bullish — open/close only, wicks ignored.
+
+- Never trade inside a range — mid-range entries are a coin flip ('you are essentially gambling'). Only breakouts of the range high/low, or fakeouts from them.
+
+- 'Clean range' concept: few wicks and FVGs to the left = less friction = fast moves to the next level once a breakout occurs.
+
+- The range must be worth trading: a $3 range on gold isn't; roughly $8+ with clean air above is.
+
+- If two resistances sit too close together, invalidate the nearer one.
+
+- Late entries kill edge: if price broke out and already ran $15, you missed the explosive move and retracement risk makes it 50/50 again. Proximity to the zone is the edge.
+
+## 9.3 Sessions, volume, zones
+
+- Sessions read through 4H candles (UK time): Asia 22:00–06:00 quiet drift; 06:00–10:00 pre-London/London volume enters; 10:00–14:00 pre-NY ramping into NY open at 13:00 (fakeouts, sweeps, aggression); 14:00–22:00 NY plus NYSE open at 14:30 = huge volume, tapering to close.
+
+- A level formed at 3am means far less than one formed at 11am peak London or the first hour of NY. Zones need volume context to matter.
+
+- Don't take breakout trades in Asia or at the tail end of a session.
+
+## 9.4 Candlesticks
+
+- Wicks = liquidity ('where price hunted'); the body = the real battle.
+
+- A bullish candle with no upper wick has no range left to fill — continuation is ~50/50, avoid. No opposite wick = a volume candle (dominance) — expect a pullback as the market rebalances.
+
+- Wick fills: a higher-timeframe wick is lower-timeframe structure; wait for support to form, then a momentum shift back in the wick's direction before targeting the wick's extreme.
+
+- 'Run a mile' setup: a push above a range high straight into a big engulfing rejection = classic trap.
+
+## 9.5 Execution discipline
+
+- M30 only for execution. Never M5/M1 — 'I'm not interested in whipsawing price action inside a M30 candle.' One timeframe, few zones, no chart-flicking.
+
+- Correlated assets get checked once or twice a week — not glued to six screens.
+
+- Wait for the closed candle. Reading forming candles and waiting for the close was one of the biggest lessons of the journey.
+
+## 9.6 Ready-made content angles from this section
+
+1. 'Gold doesn't move alone' — the confluence stack (thread).
+2. The PAXGUSD weekend-gap tell nobody talks about (single post — high shareability).
+3. 'Why I never trade inside a range' — the coin-flip argument.
+4. Mechanical S/R: two candles, open/close only, ignore wicks (graphic).
+5. Session map: which 4H candle you should actually be trading (graphic).
+6. 'A level formed at 3am is not a level' — zones need volume context.
+7. Candle wick = liquidity story; the no-wick 50/50 rule.
+8. Why M30 and never M1/M5 — the anti-whipsaw case.
+9. The $15-too-late rule: proximity to the zone IS the edge.
+10. 35+ payouts trading ONE pair — specialisation beats variety (founder post).
+11. The £190 first payout — why going cautious on payout one is the smart play (founder post).
+12. '30 EAs, 10 bought algos, zero winners' — why grid/martingale always blows up eventually (deep dive).
+13. Three months of manual coding vs 30 minutes in StrategyDynamics — the NAS open range rebuild (product proof).
 
 # 10. Guardrails for the AI
 

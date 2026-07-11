@@ -1,11 +1,12 @@
 # Brief Additions — Sean / TraderS depth pack (DRAFT)
 
-> **Status: DRAFT — not yet merged into `Brief!A1`.** This is a working doc: the
-> AI-distilled material below comes from the Discord `#xauusd-masterclass` channel
-> (harvested 9 Jul 2026, 57 messages — full dump in `discord_bot/masterclass_dump.md`),
-> plus TODO sections for Sean to fill in manually. Once Sean is happy with it, the
-> relevant parts get appended to the live brief in `Brief!A1` (and mirrored in
-> `BRIEF.md`) so every generated post can draw on this depth.
+> **Status: MERGED into BRIEF.md v1.5 (11 Jul 2026)** — sections 2–4 below became
+> brief §9 (methodology depth + content angles) and new §1.3 voice bullets; Sean's
+> `StrategyDynamics- Marketing_Brief_extras.docx` (origin story + automation journey)
+> became the rewritten §1.1 origin story, §2.4 positioning additions, and §3.1b
+> honest numbers. Remaining unfilled TODOs from section 1: typical day/routine and
+> an explicit brand-values / "what I refuse to do" list — add in a future pass.
+> Source dump: `discord_bot/masterclass_dump.md` (harvested 9 Jul 2026, 57 messages).
 
 ---
 
