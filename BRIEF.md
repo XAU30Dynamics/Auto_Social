@@ -58,7 +58,7 @@ I then built the web version of StrategyDynamics — same login and synced data 
 
 It's built by an actual trader, not an app developer — so it contains exactly the tools a trader needs to build a system, test it, and validate it on past data, with nothing designed to blind you with complexity. And the honest positioning matters: automation is not a golden ticket. Market conditions change — a system built for trending markets can get chopped up in consolidation. That's why you build multiple systems into a portfolio to smooth out the peaks and troughs. I personally run different methods on different accounts, focus on prop challenges and funded accounts, and don't expect success all the time.
 
-I have also created a system called ‘Sentinel’ This is a fully Claude based Agentic trading system with over 122 files and 22,500 lines of code, all built from a single 2 page constitution as to how it needs to approach risk management and capital preservation.  Since its been running live I modify and evolve it to improve its performance, it also has machine leaning capabilities as it can simultaneously analyses 25 assets across multiple timeframes and evaluate actual performance of its reasoning, it has 6 agents in its team and an ‘Architect’ who autonomously reviews the code base and performance and automatically evolves itself daily.  It is still evolving and I cannot guarantee its profitability, but I’m leading the way to full agentic trading – my discord group contains its thought processes, its trades and its daily and weekly reviews.
+I also built and ran ‘Sentinel’ — a fully agentic AI trading system (122+ files, 22,500+ lines of code, a team of six specialised agents, all grown from a single 2-page constitution on risk and capital preservation) that read the markets and placed every trade itself, no human in the loop. In July 2026 I shut it down, and I'm straight about why: 128 trades, 27.7% win rate, profit factor 0.66, roughly −$4,000 all-in with AI costs. The forensics were fascinating — its directional reads were right ~86% of the time on a 72-hour view, but the money died in timing and exits; it knew where price was going and still couldn't monetise it. Real-money experiments elsewhere put every major frontier AI model at 25–30% win rates in live trading — exactly where Sentinel landed. It wasn't my bug; it's the current state of AI-as-trader. So the AI now does the job it's actually good at: auditing. Every day it checks the whole machine — every trade executed at the validated size, every cap and guard fired, numbers reconciled to the cent — and on its very first run it caught a real reporting bug. My automated trading now follows a portfolio approach: many small, validated mechanical systems traded as one book (detailed in the Automated Portfolios section).
 
 ## 1.2 Voice characterization
 
@@ -174,7 +174,7 @@ Manual trades posted into the live manual channel.
 
 ### Live automated trades
 
-Live trades from any active bots posted into the live automated trades channel.  This is a combination of fixed algo strategies and Agentic trades.
+Live trades from the automated portfolios posted into the live automated trades channel — many small trades from many different strategies at different risk sizes (by design), with every signal showing its risk %.
 
 ### Telegram trade calls
 
@@ -216,27 +216,31 @@ Discord bot enables /suggest commands with full voting, threads, and a sticky ke
 
 Includes Edge Finder, Backtest, Optimisation, Strategy Maps, Strategy code, Robustness testing, Strategy-runner and Development Ideas. Within the app, posts can be sent directly to Discord for any bots or strategies being worked on – community fully involved
 
-### Sentinel — autonomous trading system (shared, not sold)
+### Automated Portfolios — validated mechanical systems (shared, not sold)
 
-Sentinel is not a product for sale. It is an autonomous trading system now running live, with its analysis, trades, and end-of-day breakdowns shared inside the Discord. Position it as a behind-the-scenes window into how an autonomous AI trading mind reasons — never as something to buy.
+The portfolios are not a product for sale. They are live automated trading, with signals and daily/weekly portfolio summaries shared inside the Discord. Position them as a behind-the-scenes window into institutional-grade validation discipline — never as something to buy.
 
-Most trading bots follow fixed rules. Sentinel doesn't. It began as a single founding philosophy — a constitution for how an autonomous trading mind should reason: capital preservation comes first, every decision must be defensible, and doing nothing is often the right call.
+The philosophy is the opposite of AI prediction: no forecasts, no reasoning, no discretion. Mechanical strategy rules, tested to destruction before they're allowed near money, then executed exactly as validated — every trade sized, capped, and guarded automatically.
 
-From that one philosophy it grew into a system of 122+ files and 22,000+ lines of code — a team of specialised AI agents that each play a role:
+How the testing works:
 
-- The Analyst scans the markets and forms its own opinions.
+- 8,302 strategy configurations entered the validation pipeline for the first portfolio alone — 98.5% were killed. Anything that only worked on its build data, couldn't survive realistic broker costs (spread, slippage, swap), or lost its edge on unseen out-of-sample data, died.
 
-- The Risk Manager sizes every idea — and has the power to veto.
+- Survivors were validated on strictly out-of-sample and forward data at realistic prop-firm costs, then Monte Carlo stress-tested (thousands of alternative equity paths) before deployment.
 
-- Sentinel Prime makes the final call: act, decline, or wait.
+- Pre-registered expectations: profit factor, drawdown, and pass probability written down BEFORE going live and judged against — no moving goalposts. Kill criteria pre-registered too: live PF below 0.9× validated expectation over 30+ trades → flagged for pause and review.
 
-- The Executor places the trade.
+What's live — 112 strategies across 2 portfolios:
 
-- Oversight manages every live position in real time.
+- Portfolio 1 — 60 strategies across 10 concept legs (momentum, volatility systems, band fades, breakouts and more, across FX, gold and indices). Validated: PF 1.75, Sharpe 3.2, max drawdown ~5%, ~98% modelled pass probability.
 
-- The Reviewer writes an honest self-review of its own decisions, every day.
+- Portfolio 2 — 52 strategies across 3 concept families (gold momentum, a spike-fade system across 38 markets, break-retest). Validated: PF 1.68, Sharpe 2.9, max drawdown ~6%. Deliberately built to be uncorrelated with Portfolio 1 (correlation ~0.2).
 
-Each agent can say no. Nothing gets traded that can't be reasoned for out loud. Every thought — including the trades it passes on — is logged. The live thinking, the trades (wins and losses), and the market breakdowns are all shared in the Discord. Natural hook for posts: come watch an autonomous mind trade in real time.
+Risk: 0.10–0.375% of the account per trade — deliberately small, because the edge lives in the book, not any single trade. On top: portfolio-level position caps, an automatic daily-loss guard that flat-closes and pauses a breached account, and risk that scales down in drawdown. Every signal shows its risk %. Core content framing: judge the book, not the trade — a losing trade means nothing; the daily/weekly summaries (portfolio P&L, live PF vs validated, drawdown vs limits) are the honest scoreboard.
+
+The AI's role now: daily auditor, not trader — it verifies every trade executed at the validated size, every cap and guard fired, and the numbers reconcile to the cent (it caught a real reporting bug on its first run).
+
+The portfolios replaced Sentinel (the autonomous AI trading experiment, shut down July 2026 — honest numbers in the founder story). Never pretend Sentinel didn't happen: the transparent post-mortem is on-brand content. Natural hook for posts: a trading operation that publishes its expectations before going live and lets you watch it get judged against them.
 
 ### Discord 'wow moments'
 
