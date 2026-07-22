@@ -12,8 +12,55 @@ const app = express();
 // like they lost their image.
 app.set('trust proxy', 1);
 app.use(cors());
+
+// ─── Durable image cache ──────────────────────────────────────────────────────
+// Graphic HTML historically embedded Telegram Bot API file URLs, which expire
+// (~1h) — graphics then render with a broken-image hole, and because Buffer
+// re-fetches /api/graphic/:row.png at every publish slot, a whole week of
+// queued posts publishes with the hole (bit us 20-22 Jul 2026). Remote <img>
+// srcs are now mirrored into /data/img-cache (Railway volume) when a graphic
+// is saved or sent, and the HTML is rewritten to the permanent URL.
+const fs = require('fs');
+// (crypto is required further down, next to the auth hash that uses it)
+const IMG_CACHE_DIR = process.env.IMG_CACHE_DIR || '/data/img-cache';
+try { fs.mkdirSync(IMG_CACHE_DIR, { recursive: true }); } catch (e) { console.error('img-cache dir:', e.message); }
+
+const EXT_BY_TYPE = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+
+function publicBase() {
+  return (process.env.PUBLIC_BASE_URL || 'https://autosocial-production.up.railway.app').replace(/\/$/, '');
+}
+
+// Mirrors every remote <img src> (not already ours) into the cache dir.
+// Returns { html, mirrored: [url...], failed: [url...] }.
+async function mirrorRemoteImages(html) {
+  const base = publicBase();
+  const srcs = [...new Set(
+    [...String(html).matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1])
+  )].filter((u) => /^https?:\/\//i.test(u) && !u.startsWith(base) && !u.includes('/images/'));
+  const mirrored = [], failed = [];
+  let out = String(html);
+  for (const url of srcs) {
+    try {
+      const resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const type = (resp.headers.get('content-type') || '').split(';')[0].trim();
+      const ext = EXT_BY_TYPE[type];
+      if (!ext) throw new Error(`not an image (${type || 'unknown type'})`);
+      const buf = Buffer.from(await resp.arrayBuffer());
+      const name = `${crypto.createHash('sha1').update(buf).digest('hex')}.${ext}`;
+      fs.writeFileSync(path.join(IMG_CACHE_DIR, name), buf);
+      out = out.split(url).join(`${base}/images/cache/${name}`);
+      mirrored.push(url);
+    } catch (err) {
+      failed.push(`${url.slice(0, 80)} (${err.message})`);
+    }
+  }
+  return { html: out, mirrored, failed };
+}
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images/cache', express.static(IMG_CACHE_DIR, { maxAge: '365d', immutable: true }));
 
 // ─── Dashboard auth ───────────────────────────────────────────────────────────
 // Single shared password (DASHBOARD_PASSWORD env). On successful login the
@@ -153,6 +200,19 @@ app.patch('/api/posts/:row', async (req, res) => {
   const updates = req.body;
 
   try {
+    // Mirror any remote images into the durable cache the moment a graphic is
+    // saved — Telegram file URLs are already dying by the hour at this point.
+    let imageWarnings;
+    if (typeof updates.graphic_html === 'string' && updates.graphic_html.includes('<img')) {
+      const m = await mirrorRemoteImages(updates.graphic_html);
+      updates.graphic_html = m.html;
+      if (m.failed.length) {
+        imageWarnings = m.failed;
+        console.warn(`PATCH row ${rowIndex}: could not mirror ${m.failed.length} image(s): ${m.failed.join('; ')}`);
+      }
+      if (m.mirrored.length) console.log(`PATCH row ${rowIndex}: mirrored ${m.mirrored.length} remote image(s) to cache`);
+    }
+
     const sheets = getSheetsClient();
     const data = [];
 
@@ -175,7 +235,7 @@ app.patch('/api/posts/:row', async (req, res) => {
       },
     });
 
-    res.json({ ok: true });
+    res.json(imageWarnings ? { ok: true, imageWarnings } : { ok: true });
   } catch (err) {
     console.error('PATCH /api/posts error:', err.message);
     res.status(500).json({ error: err.message });
@@ -464,8 +524,32 @@ app.post('/api/buffer/send/:row', async (req, res) => {
       range: `${SHEET_NAME}!A${row}:V${row}`,
     });
     const r = (resp.data.values || [])[0] || [];
-    const graphicHtml = String(r[COL.graphic_html] || '').trim();
+    let graphicHtml = String(r[COL.graphic_html] || '').trim();
     if (!graphicHtml) return res.status(400).json({ error: 'This post has no graphic to send' });
+
+    // Last line of defence: mirror remote images now and persist the rewritten
+    // HTML, so every later Buffer publish-time render uses the durable copies.
+    // A dead embedded image means the card would publish with a broken-image
+    // hole all week — refuse to send unless explicitly forced.
+    if (graphicHtml.includes('<img')) {
+      const m = await mirrorRemoteImages(graphicHtml);
+      if (m.failed.length && !req.body?.force) {
+        return res.status(400).json({
+          error: `Embedded image(s) unreachable — the graphic would publish with a broken-image hole. Re-attach the screenshot and regenerate, or pass force:true to send anyway. Failed: ${m.failed.join('; ')}`,
+        });
+      }
+      if (m.html !== graphicHtml) {
+        graphicHtml = m.html;
+        const colU = String.fromCharCode(65 + COL.graphic_html);
+        await sheets.spreadsheets.values.update({
+          spreadsheetId: SPREADSHEET_ID,
+          range: `${SHEET_NAME}!${colU}${row}`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: { values: [[graphicHtml]] },
+        });
+        console.log(`buffer/send row ${row}: mirrored ${m.mirrored.length} image(s), sheet updated`);
+      }
+    }
 
     const isMD = String(r[COL.brand] || '').toLowerCase().includes('market');
     const caption = r[COL.caption] || '';
