@@ -5,6 +5,12 @@ const { google } = require('googleapis');
 const path = require('path');
 
 const app = express();
+// Behind Railway's proxy: without this, req.protocol reports "http", and the
+// graphic URLs sent to Buffer are http:// — Buffer's publisher follows the
+// https redirect so posts publish fine, but the Buffer app/dashboard preview
+// can't render an http thumbnail (iOS blocks plain-http), so queued posts LOOK
+// like they lost their image.
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
