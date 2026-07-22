@@ -27,6 +27,16 @@ try { fs.mkdirSync(IMG_CACHE_DIR, { recursive: true }); } catch (e) { console.er
 
 const EXT_BY_TYPE = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
 
+// Telegram's file endpoint serves images as application/octet-stream, so the
+// content-type header can't be trusted — sniff the magic bytes like a browser.
+function sniffImageExt(buf) {
+  if (buf.length > 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) return 'jpg';
+  if (buf.length > 8 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4e && buf[3] === 0x47) return 'png';
+  if (buf.length > 6 && buf.subarray(0, 3).toString('ascii') === 'GIF') return 'gif';
+  if (buf.length > 12 && buf.subarray(0, 4).toString('ascii') === 'RIFF' && buf.subarray(8, 12).toString('ascii') === 'WEBP') return 'webp';
+  return null;
+}
+
 function publicBase() {
   return (process.env.PUBLIC_BASE_URL || 'https://autosocial-production.up.railway.app').replace(/\/$/, '');
 }
@@ -45,9 +55,9 @@ async function mirrorRemoteImages(html) {
       const resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const type = (resp.headers.get('content-type') || '').split(';')[0].trim();
-      const ext = EXT_BY_TYPE[type];
-      if (!ext) throw new Error(`not an image (${type || 'unknown type'})`);
       const buf = Buffer.from(await resp.arrayBuffer());
+      const ext = sniffImageExt(buf) || EXT_BY_TYPE[type];
+      if (!ext) throw new Error(`not an image (${type || 'unknown type'})`);
       const name = `${crypto.createHash('sha1').update(buf).digest('hex')}.${ext}`;
       fs.writeFileSync(path.join(IMG_CACHE_DIR, name), buf);
       out = out.split(url).join(`${base}/images/cache/${name}`);
