@@ -52,7 +52,7 @@ During 2021–22 I became really interested in automation, starting with EAs on 
 
 Podcasts like Trading Nut (Cam Hawkins) were the inspiration to build rule-based systems myself — he was always transparent about the results of his systems, and it made me ask how I could actually 'build' these things rather than buy them. After losing my last bit of funding in August 2024, I committed to it. I spent a year building algos with ChatGPT for cTrader — enough success to see what was possible, but the process was painful: constant build errors, copy-pasting every error back for a fix, and the AI 'optimising' working code off its own back so the logic drifted from the rules. I'd then spend hours correcting it. Visual algo builders were the opposite problem — made unnecessarily complex and very time-consuming.
 
-So I built StrategyDynamics, and it now forms the core infrastructure of my group and brand. The edge is hidden in the backend: over 45 specific conversion rules that took six months of personal testing, governing the conversion from strategy rules to Python code, cTrader C#, and agent code — ensuring seamless logic across every code path. It turns strategy building from months into minutes, and it's the first app I'm aware of where you can backtest and optimise directly from your phone. Before launch I proved the concept by rebuilding my NAS open range strategy — three months of manual work originally, replicated exactly in 30 minutes.
+So I built StrategyDynamics, and it now forms the core infrastructure of my group and brand. The edge is hidden in the backend: over 45 specific conversion rules that took six months of personal testing, governing the conversion from strategy rules to MT4 (MQL4), MT5 (MQL5), cTrader C#, Python, and agent code — ensuring seamless logic across every code path. It turns strategy building from months into minutes, and it's the first app I'm aware of where you can backtest and optimise directly from your phone. Before launch I proved the concept by rebuilding my NAS open range strategy — three months of manual work originally, replicated exactly in 30 minutes.
 
 I then built the web version of StrategyDynamics — same login and synced data as the iOS app, but users can sign up with Stripe instead of through Apple, which is also perfect for non-iPhone users.
 
@@ -230,11 +230,13 @@ How the testing works:
 
 - Pre-registered expectations: profit factor, drawdown, and pass probability written down BEFORE going live and judged against — no moving goalposts. Kill criteria pre-registered too: live PF below 0.9× validated expectation over 30+ trades → flagged for pause and review.
 
-What's live — 112 strategies across 2 portfolios:
+What's live — 133 strategies across 2 portfolios, as at 25 July 2026 (roughly 10 of those are built and held ready rather than actively trading). All are validated across 2021–26: in-sample, walk-forward and hold-out tested. Most are deliberately simple variations of a proven concept applied across different assets, so they hold together as a portfolio rather than as isolated bets.
 
-- Portfolio 1 — 60 strategies across 10 concept legs (momentum, volatility systems, band fades, breakouts and more, across FX, gold and indices). Validated: PF 1.75, Sharpe 3.2, max drawdown ~5%, ~98% modelled pass probability.
+**THIS COUNT MOVES CONSTANTLY.** New ideas are developed and weaker ones retired on an ongoing basis — that is why the figure carries an 'as at' date. Never state a strategy count in a post without that date attached, never round it up, and never extrapolate a newer figure from it. Posts have previously gone out claiming 79 and 126 in the same week, which reads as careless to anyone tracking. When in doubt, lead with the stable proof numbers instead — 8,302 configurations validated, 98.5% killed, 35+ payouts, $83,235 — because those do not move.
 
-- Portfolio 2 — 52 strategies across 3 concept families (gold momentum, a spike-fade system across 38 markets, break-retest). Validated: PF 1.68, Sharpe 2.9, max drawdown ~6%. Deliberately built to be uncorrelated with Portfolio 1 (correlation ~0.2).
+- Portfolio 1 — momentum, volatility systems, band fades, breakouts and more, across FX, gold and indices. Validated: PF 1.75, Sharpe 3.2, max drawdown ~5%, ~98% modelled pass probability.
+
+- Portfolio 2 — gold momentum, a spike-fade system across 38 markets, break-retest. Validated: PF 1.68, Sharpe 2.9, max drawdown ~6%. Deliberately built to be uncorrelated with Portfolio 1 (correlation ~0.2).
 
 Risk: 0.10–0.375% of the account per trade — deliberately small, because the edge lives in the book, not any single trade. On top: portfolio-level position caps, an automatic daily-loss guard that flat-closes and pauses a breached account, and risk that scales down in drawdown. Every signal shows its risk %. Core content framing: judge the book, not the trade — a losing trade means nothing; the daily/weekly summaries (portfolio P&L, live PF vs validated, drawdown vs limits) are the honest scoreboard.
 
@@ -372,7 +374,7 @@ Live in the App Store. Free tier, £59/month Pro, £149/month Institutional. Lat
 
 ### Backstory
 
-Built because manually building bots in visual builders is slow and time-consuming. StrategyDynamics lets users create strategies through simple input methods, test them within the app, and generate cTrader code at the click of a button — delivering near 100% accuracy in one pass between strategy rules and usable code output.  This was done my many months of testing and building a 45 rule set.  It can also deploy ‘agent code’ which can be used by Strategy Runner to execute without a VPS or by any customers building agents.
+Built because manually building bots in visual builders is slow and time-consuming. StrategyDynamics lets users create strategies through simple input methods, test them within the app, and generate MT4, MT5, cTrader, Python or agent code at the click of a button — delivering near 100% accuracy in one pass between strategy rules and usable code output.  This was done my many months of testing and building a 45 rule set.  It can also deploy ‘agent code’ which can be used by Strategy Runner to execute without a VPS or by any customers building agents.
 
 No VPS is needed for the app, my fastAPI backtest engine runs on our servers— allowing the app to run backtesting and optimisation at high speed, around 20x faster than cTrader with no set up needed for any paid customers.  Instant results. Now also has a built-in broker-accurate data library now removes the need to upload CSV files so over 45million candles are available, on 25 assets and 10 timeframes. Edge Finder is the headline feature — designed to find market edges using data and automation.
 
@@ -392,7 +394,7 @@ Honest framing (use it — it builds trust): no system is a golden ticket. Marke
 
 - Market Intelligence (upgraded in v1.2.0) — tap any instrument for an instant breakdown: trend character, volatility, session behaviour, top patterns, and AI-generated strategy ideas for that market. Also supports uploading OHLC data to generate AI-powered market intelligence reports.
 
-- Strategy Lab — create strategies manually or from almost any source. Upload images of rules, paste code, describe ideas in plain English, or let AI extract a fully structured strategy from a document. For Institutional members, strategy ideas convert into both Python and cTrader code at the click of a button.
+- Strategy Lab — create strategies manually or from almost any source. Upload images of rules, paste code, describe ideas in plain English, or let AI extract a fully structured strategy from a document. For Institutional members, strategy ideas convert into MT4 (MQL4), MT5 (MQL5), cTrader, Python, and agent code at the click of a button.
 
 - Backtester — connect VPS or remote server running the StrategyDynamics backtest engine. Full equity curves, drawdown analysis, trade-by-trade breakdowns, and performance metrics — all from a phone. Cleaner backtest results with clear in-sample/out-of-sample equity curves.
 
@@ -400,7 +402,7 @@ Honest framing (use it — it builds trust): no system is a golden ticket. Marke
 
 - Robustness – full suite of 8 different tests to really stress test your strategy, including monte carlo simulations and prop firm passing models.
 
-- Code Export — export your strategies as Python, cTrader cBot code, or autonomous trading-agent code ready to run a strategy live.
+- Code Export — export your strategies as **MT4 (MQL4), MT5 (MQL5), cTrader cBot, Python, or autonomous trading-agent code**, ready to run a strategy live. Five targets from one strategy definition. MT4/MT5 was added in July 2026 and is the single biggest reach expansion the app has had: MetaTrader is where the overwhelming majority of retail algo traders already are, while cTrader is comparatively niche. Content angle: most traders on MT4/MT5 have bought EAs they cannot read, modify, or trust — this lets them build and own the logic instead.
 
 - Lot Size Calculator — a built-in position-size calculator so you can size every trade correctly to your risk. Available on the free plan.
 
@@ -414,7 +416,7 @@ Honest framing (use it — it builds trust): no system is a golden ticket. Marke
 
 - Pro — £59.99/month — backtest engine connection, 25 backtests, 10 optimisations, market data uploads, market intelligence, strategy visualisation, 20 AI extracts/month.
 
-- Institutional — £149/month — unlimited backtests and optimisations, Robustness testing, strategy visualisation, Edge Finder, Python strategy code, cTrader bot export, unlimited AI extracts.
+- Institutional — £149/month — unlimited backtests and optimisations, Robustness testing, strategy visualisation, Edge Finder, code export to MT4 (MQL4), MT5 (MQL5), cTrader, Python and agent code, unlimited AI extracts.
 
 ## 2.5 PropDynamics
 
@@ -516,7 +518,7 @@ Technical breakdowns of how a specific algo or methodology works. Shows depth, b
 
 ## Pillar 3: Product Showcase (20% of posts)
 
-Discord, bot builds, MarketDynamics, StrategyDynamics. Soft sell — feature-led, not pressure-led. Examples: 'StrategyDynamics walkthrough: extract a strategy from a YouTube video, backtest it, ship to cTrader. From your phone.' 'What's actually inside the Discord this week.'
+Discord, bot builds, MarketDynamics, StrategyDynamics. Soft sell — feature-led, not pressure-led. Examples: 'StrategyDynamics walkthrough: extract a strategy from a YouTube video, backtest it, export it as an MT4 EA. From your phone.' 'What's actually inside the Discord this week.'
 
 ## Pillar 4: Educational Principles (20% of posts)
 
@@ -534,7 +536,7 @@ Building the algos, your trading routine, your journey. Builds parasocial trust 
 
 ## 7.1 Primary keywords
 
-XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing, FTMO challenge strategy, cTrader algo, Automated trading bot, NAS100 strategy, Trader / Daytrader, Trader Lifestyle, Trading App, Apple.
+XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing, FTMO challenge strategy, cTrader algo, MT4 EA, MT5 EA, MQL4, MQL5, MetaTrader, Expert Advisor, EA builder, Automated trading bot, NAS100 strategy, Trader / Daytrader, Trader Lifestyle, Trading App, Apple.
 
 ## 7.2 Hashtag strategy by platform
 
@@ -542,7 +544,7 @@ XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing
 
 Mix of 3 sizes: 3–4 large (>500k posts), 5–7 mid (50k–500k posts), 3–4 niche (<50k posts). Avoid banned/saturated tags like #forex, #trading.
 
-Approved tag pool: #XAUUSD #automatedtrading #PropFirm #FTMO #cTrader #AlgoTrading #Bots #Algo #US30 #NAS100 #DayTrading #automated #agent #Apple #iPhone #Challenge #Tradingapp #Automate #Automation #TradingStrategy #Strategy #Agentic #AI #Algorithm #AlgorithmicTrading #Bot #TradingBot #Backtest #Backtesting #Optimise #Optimisation #GoldTrading #PropTrading #Fintech #MachineLearning
+Approved tag pool: #XAUUSD #automatedtrading #PropFirm #FTMO #cTrader #MT4 #MT5 #MetaTrader #ExpertAdvisor #MQL5 #AlgoTrading #Bots #Algo #US30 #NAS100 #DayTrading #automated #agent #Apple #iPhone #Challenge #Tradingapp #Automate #Automation #TradingStrategy #Strategy #Agentic #AI #Algorithm #AlgorithmicTrading #Bot #TradingBot #Backtest #Backtesting #Optimise #Optimisation #GoldTrading #PropTrading #Fintech #MachineLearning
 
 Branded: #MarketDynamics #StrategyDynamics
 
@@ -682,7 +684,13 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 
 - Never invent stats, trades, or testimonials. If a number is needed and unavailable, omit it.
 
-- Captions: Instagram 100–220 words sweet spot, X 240 chars or 4-tweet thread, Threads 250–500 chars.
+- **Live counts carry an 'as at' date or they don't get used.** The live strategy/portfolio count moves constantly (see section 2). Never state it without the date it was stamped with, never round it up, never extrapolate a newer figure. Prefer the stable proof numbers, which never move: 8,302 configurations validated, 98.5% killed, 35+ payouts, $83,235, the £190 first payout, the $25,000 learning cost, 8 years to consistency, 13 years on one pair.
+
+- **Vary the opener. Never open two consecutive posts the same way.** 'Most traders…' is retired — it opened roughly half of all posts through July 2026 and now reads as machine-written. Rotate deliberately across hook archetypes: a hard number ('8,302 configurations. 98.5% died.'), a first-person admission ('I lost $25,000 learning this.'), a direct question, a flat contrarian statement, a short scene, a named mistake, a before-and-after.
+
+- **Never let the content plan appear in the content.** Pillar names ('Market Commentary', 'Performance Proof', 'Product Showcase', …) are internal planning labels — the reader has never heard of them. Never write 'this pillar', 'under-represented', 'the rarest content', 'let me fix that', or any other commentary about why a post was chosen. Never emit placeholder strings ('dummy', 'placeholder', 'TBD', 'test'). If unsure what to write, write a real post.
+
+- Captions: Instagram 100–220 words sweet spot, X 240 chars or 4-tweet thread, Threads 250–500 chars (aim 280–400 — character estimates run short, and anything over 500 fails to publish entirely).
 
 - Always end with one CTA — never zero, never two.
 
