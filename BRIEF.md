@@ -692,7 +692,9 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 
 - Captions: Instagram 100–220 words sweet spot, X 240 chars or 4-tweet thread, Threads 250–500 chars (aim 280–400 — character estimates run short, and anything over 500 fails to publish entirely).
 
-- Always end with one CTA — never zero, never two.
+- End with one CTA — never two. **One exception:** the daily conversation-starter post (the single-post Threads slot) ends with a genuine open question and NO CTA at all. Threads weights replies far above likes, and this account's CTA-ended posts have drawn near-zero engagement while its question-shaped posts have carried the whole account. Every other post, on every other channel, still ends with exactly one CTA — so no day passes without one.
+
+- When a post ends on a question, make it genuinely answerable from the reader's own experience in one line. Not rhetorical, not 'thoughts?', not 'who else agrees?', and never a pitch in disguise.
 
 ## 10.2 Compliance / risk language
 
