@@ -352,6 +352,8 @@ MarketDynamics measures these factors live and translates the dispersion into a 
 
 - Technical Analysis Layer — multi-timeframe trend calculations, EMA alignment, momentum analysis, daily range calculations, breakout probabilities, AI-supported research, and key levels (daily/weekly/session highs and lows).
 
+- Economic Calendar — the week's red-flag (high-impact) news events in one in-app view, with actual results delivered as they land — see the number that moves gold without leaving the app.
+
 ### Recent updates
 
 - Now has a detailed weekly written report summarising the full gold intelligence dataset and also daily detailed analysis on Daily, H4, M30 timeframes machine learned from all TraderS analysis with prediction entry model and self evaluating performance metrics— educational purposes only
@@ -554,7 +556,7 @@ X penalises hashtag-heavy posts. Use 1–2, only when essential. Better to use $
 
 ### Threads (1 hashtag max)
 
-Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted into the post's official 'topic tag' (shown beside the account name). Any additional hashtags are dead plain text — they do not link and look broken. RULE: a Threads post (or the final post of a chain) may end with AT MOST one hashtag, and no other hashtags anywhere in the chain. TOPIC TAG SELECTION (for the topic_tag field and any single hashtag): pick a BROAD, high-traffic community topic that real users actually follow and search on Threads — the topic is a discovery channel. Good examples: AlgoTrading, DayTrading, Trading, XAUUSD, Gold, PropFirm, FTMO, AI, Automation, TradingBots, Backtesting, iOSApps, AppDevelopment, Fintech, MachineLearning. ROTATE topics across posts to reach different communities — never default to the same one every time, and match the topic to the post's subject. NEVER use own brand names (MarketDynamics, StrategyDynamics) as the topic — they are not communities anyone browses; put the brand in the post text and use the topic slot for audience reach.
+Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted into the post's official 'topic tag' (shown beside the account name). Any additional hashtags are dead plain text — they do not link and look broken. RULE: a Threads post (or the final post of a chain) may end with AT MOST one hashtag, and no other hashtags anywhere in the chain. TOPIC TAG SELECTION (for the topic_tag field and any single hashtag): the topic is a discovery channel — choose from this APPROVED POOL only. PRIORITY COMMUNITY TOPICS (established Threads communities, the highest-engagement placements — prefer one whenever the post genuinely fits): AI Threads, Business Threads, Crypto, Marketing. STANDARD TOPICS: Trading, daytrading, XAUUSD, PropFirm, algotrading, NASDAQ, BuildingInPublic, appstore, iOSAppDevelopment. RELEVANCE IS NON-NEGOTIABLE: the topic must genuinely match the post's subject — never force a community topic onto an unrelated post; posting under irrelevant topics trains the Threads algorithm on the wrong audience and suppresses reach on the topics that matter. ROTATE topics across posts to reach different communities — never default to the same one every time. NEVER use own brand names (MarketDynamics, StrategyDynamics) as the topic — they are not communities anyone browses; put the brand in the post text and use the topic slot for audience reach.
 
 # 8. Calls to Action
 
@@ -692,7 +694,9 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 
 - Captions: Instagram 100–220 words sweet spot, X 240 chars or 4-tweet thread, Threads 250–500 chars (aim 280–400 — character estimates run short, and anything over 500 fails to publish entirely).
 
-- End with one CTA — never two. **One exception:** the daily conversation-starter post (the single-post Threads slot) ends with a genuine open question and NO CTA at all. Threads weights replies far above likes, and this account's CTA-ended posts have drawn near-zero engagement while its question-shaped posts have carried the whole account. Every other post, on every other channel, still ends with exactly one CTA — so no day passes without one.
+- End with one CTA — never two. **One exception:** conversation-starter posts (the single-post Threads slots — roughly 40% of Threads slots) end with a genuine open question and NO CTA at all. Threads weights replies far above likes, and this account's CTA-ended posts have drawn near-zero engagement while its question-shaped posts have carried the whole account. Every other post, on every other channel, still ends with exactly one CTA — and at least one Threads chain runs every day, so no day passes without one.
+
+- **Conversation-starters are SHORT: 1–2 lines total (roughly 80–220 characters including the question), casual and human in tone.** Measured on this account, posts under ~150 characters average roughly ten times the views of long-form posts, and every reader comment the account has ever received came from a short conversational post. One narrow relatable idea, then the question — no setup paragraphs.
 
 - When a post ends on a question, make it genuinely answerable from the reader's own experience in one line. Not rhetorical, not 'thoughts?', not 'who else agrees?', and never a pitch in disguise.
 
