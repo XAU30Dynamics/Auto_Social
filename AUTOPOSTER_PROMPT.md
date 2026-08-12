@@ -84,6 +84,7 @@ RULES:
 
 === OUTPUT FIELDS (the response is schema-enforced JSON) ===
 
+- internal_checks: YOUR SCRATCHPAD. Write the MANDATORY FINAL CHECK working-out here — pillar counts, character counts, the repetition check, anything you need to reason through. This field is discarded by the pipeline and is NEVER published, so it is the ONLY safe place for planning, reasoning or commentary. Whatever order the fields come out in, every word of working-out belongs in this one. Keep it under 150 words and use terse notes, not prose. If you find yourself wanting to explain your thinking anywhere else, it belongs here instead.
 - pillar: the chosen pillar name. This is the ONLY field a pillar name may appear in.
 - topic: 5-10 word topic label for the log. Must describe the SUBJECT, never the plan — no pillar names, no 'under-represented'.
 - topic_tag: single Threads topic tag WITHOUT the # symbol — follow the brief's topic-tag selection rules (choose from the brief's approved pool, prefer the priority community topics when the post genuinely fits one, rotate across posts, never a brand name).
@@ -92,7 +93,9 @@ RULES:
 - thread_text: the FULL thread for the dashboard log — the root post, then each further post, separated by blank lines. Readable plain text.
 - buffer_input: the Buffer createPost input object. FIXED values: channelId is ALWAYS "6a4b8557404834462875a0b7", schedulingType is ALWAYS "automatic", mode is ALWAYS "shareNow", and every assets array is ALWAYS empty ([]). metadata.threads.topic = the topic_tag value (no # symbol). metadata.threads.thread is the SOURCE OF TRUTH for what gets published and must contain EVERY post INCLUDING the root: its FIRST element must repeat the root post text EXACTLY as in buffer_input.text. For TARGET 1 it has EXACTLY 1 element (the single post); for TARGET 3 EXACTLY 3 elements (root, then body post, then the short CTA post last). Each post 480 characters or fewer, each a single line.
 
-=== MANDATORY FINAL CHECK (do this BEFORE emitting your answer) ===
+=== MANDATORY FINAL CHECK (work through this IN THE internal_checks FIELD) ===
+
+You have no hidden scratchpad — every token you produce lands in one of the output fields. So do this working-out inside `internal_checks`, the one field that is never published. Do NOT put any of this reasoning in hook, topic, thread_text or any thread element: reasoning text has been published verbatim to the live account before, and placeholder values ('dummy', 'placeholder', '...', or a field's own name such as 'text' or 'topic_tag') have gone out as real posts. There is no fallback and no placeholder — if you are stuck, write a real post anyway.
 
 1. Count the elements of metadata.threads.thread. That count MUST equal the TARGET LENGTH printed in the CONTEXT section, and total_posts must equal it too. If they differ, rebuild the output at the correct length — do NOT ship the wrong count.
 2. For EVERY string in metadata.threads.thread (and buffer_input.text), count the characters explicitly, then ADD 15% to your count to correct for your known underestimation bias. If that corrected figure exceeds 480, rewrite the post shorter — delete whole sentences, tighten phrasing — and re-check. Repeat until every post passes. A brilliantly written post that is too long publishes NOTHING; length compliance outranks style.
@@ -101,4 +104,6 @@ RULES:
 5. If TARGET LENGTH is 1: confirm the post ends with a real, answerable question, contains NO link, NO product name and NO call to action, and is 220 characters or fewer. If TARGET LENGTH is 3: confirm the last post IS the CTA post.
 6. Confirm the pillar you chose is NOT one of the two most frequent pillars in the recent list.
 
-Only emit your answer once all six checks pass.
+7. Confirm that every published field (hook, topic, topic_tag, thread_text, buffer_input.text and every element of metadata.threads.thread) contains REAL post content — not a placeholder, not a field name, not your reasoning. Each must read as something a human wrote for a public audience.
+
+Only emit your answer once all seven checks pass, and keep the working-out for them confined to internal_checks.
