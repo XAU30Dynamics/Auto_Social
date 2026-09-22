@@ -146,7 +146,7 @@ These phrases will get accounts shadowbanned, removed by Meta/X, or damage the b
 
 ### Pricing & access
 
-£79/month a useful soft CTA hook, also for anyone who has StrategyDynamics (Institutional Member) they get free membership
+£79/month a useful soft CTA hook — and StrategyDynamics Institutional is the same £79/month with Discord membership included, so "the Discord alone, or the Discord plus the whole platform for the same money" is the natural framing.
 
 ### XAUUSD multi-timeframe analysis
 
@@ -372,7 +372,7 @@ MarketDynamics measures these factors live and translates the dispersion into a 
 
 ## 2.4 StrategyDynamics App
 
-Live in the App Store. Free tier, £59/month Pro, £149/month Institutional. Latest version: v1.3.0 — the largest update to date.
+Live in the App Store and on the web. Starter £2.99/month (7-day free trial), Pro £24.99/month, Institutional £79/month; annual plans £24.99 / £199 / £649. There is NO free plan — never say "free plan", "free tier" or "free account". "Free trial" (7 days, Starter) is correct. Latest version: v1.4.0 — the pricing reset release.
 
 ### Backstory
 
@@ -406,7 +406,7 @@ Honest framing (use it — it builds trust): no system is a golden ticket. Marke
 
 - Code Export — export your strategies as **MT4 (MQL4), MT5 (MQL5), cTrader cBot, Python, or autonomous trading-agent code**, ready to run a strategy live. Five targets from one strategy definition. MT4/MT5 was added in July 2026 and is the single biggest reach expansion the app has had: MetaTrader is where the overwhelming majority of retail algo traders already are, while cTrader is comparatively niche. Content angle: most traders on MT4/MT5 have bought EAs they cannot read, modify, or trust — this lets them build and own the logic instead.
 
-- Lot Size Calculator — a built-in position-size calculator so you can size every trade correctly to your risk. Available on the free plan.
+- Lot Size Calculator — a built-in position-size calculator so you can size every trade correctly to your risk. Included on every plan.
 
 - Trade Journal — unlimited live trade journal for logging, tracking, and organising performance.  Now also available in calendar view
 
@@ -414,11 +414,13 @@ Honest framing (use it — it builds trust): no system is a golden ticket. Marke
 
 ### Subscription tiers
 
-- Free — strategy creation, trade journal, community templates, 3 AI extracts per month.
+- Starter — £2.99/month or £24.99/year, first 7 days free — unlimited strategy creation, trade journal, community templates, lot calculator, 3 AI extracts, 3 hosted backtests and 1 optimisation per month. The point of Starter is that you can test the strategy you wrote for less than a coffee.
 
-- Pro — £59.99/month — backtest engine connection, 25 backtests, 10 optimisations, market data uploads, market intelligence, strategy visualisation, 20 AI extracts/month.
+- Pro — £24.99/month or £199/year — 50 backtests, 20 optimisations, 20 AI extracts per month, broker-accurate data library, market intelligence, strategy map visualisation, the full 8-test robustness suite and Monte Carlo.
 
-- Institutional — £149/month — unlimited backtests and optimisations, Robustness testing, strategy visualisation, Edge Finder, code export to MT4 (MQL4), MT5 (MQL5), cTrader, Python and agent code, unlimited AI extracts.
+- Institutional — £79/month or £649/year — unlimited backtests and optimisations, Edge Finder (10 autonomous searches/month), code export to MT4 (MQL4), MT5 (MQL5), cTrader, Python and agent code, Strategy-Runner, unlimited AI extracts, and the private Discord included.
+
+Hooks that replace "start free": "7-day free trial", "test your strategy for £2.99", "see a real backtest result in your first ten minutes", "the Discord is £79 — Institutional is £79 with the whole platform on top".
 
 ## 2.5 PropDynamics
 
