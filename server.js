@@ -68,7 +68,8 @@ async function mirrorRemoteImages(html) {
   }
   return { html: out, mirrored, failed };
 }
-app.use(express.json());
+// 40mb: Sealed screenshot uploads arrive as base64 JSON (a few iPhone PNGs).
+app.use(express.json({ limit: '40mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images/cache', express.static(IMG_CACHE_DIR, { maxAge: '365d', immutable: true }));
 
@@ -105,7 +106,7 @@ app.post('/api/login', (req, res) => {
 app.use('/api', (req, res, next) => {
   if (!DASHBOARD_PASSWORD) return next();
   // GET for the image itself, HEAD for Buffer's URL validation probe.
-  if ((req.method === 'GET' || req.method === 'HEAD') && /^\/graphic\/\d+\.png$/.test(req.path)) return next();
+  if ((req.method === 'GET' || req.method === 'HEAD') && /^\/graphic\/\d+\.(png|jpg)$/.test(req.path)) return next();
   if (getCookie(req, AUTH_COOKIE) === authToken) return next();
   res.status(401).json({ error: 'auth required' });
 });
@@ -392,7 +393,7 @@ async function getBrowser() {
 // Render a full 1080×1350 HTML document to a PNG Buffer. Puppeteer v24 returns a
 // Uint8Array, so callers get a Node Buffer (res.send would JSON-serialize a raw
 // Uint8Array into {"0":137,...}).
-async function renderHtmlToPng(html) {
+async function renderHtmlToPng(html, type = 'png') {
   let page;
   try {
     const browser = await getBrowser();
@@ -418,10 +419,34 @@ async function renderHtmlToPng(html) {
     } catch {}
     await new Promise((r) => setTimeout(r, 150));
     const png = await page.screenshot({
-      type: 'png',
+      type: type === 'jpeg' ? 'jpeg' : 'png',
+      ...(type === 'jpeg' ? { quality: 92 } : {}),
       clip: { x: 0, y: 0, width: GRAPHIC_W, height: GRAPHIC_H },
     });
     return Buffer.from(png);
+  } finally {
+    if (page) { try { await page.close(); } catch {} }
+  }
+}
+
+// Re-encode an uploaded image as JPEG through Chromium (no native image deps):
+// TikTok photo posts reject PNG, and iPhone screenshots are PNG. The image is
+// drawn at its natural size on a page of the same size and screenshotted.
+async function imageToJpeg(buf, mime) {
+  let page;
+  try {
+    const browser = await getBrowser();
+    page = await browser.newPage();
+    const dataUrl = `data:${mime};base64,${buf.toString('base64')}`;
+    await page.setContent(`<!doctype html><html><body style="margin:0;background:#000"><img id="i" src="${dataUrl}" style="display:block"></body></html>`, { waitUntil: 'load', timeout: 20000 });
+    const dims = await page.evaluate(() => {
+      const i = document.getElementById('i');
+      return { w: i.naturalWidth, h: i.naturalHeight };
+    });
+    if (!dims.w || !dims.h) throw new Error('image failed to decode');
+    await page.setViewport({ width: dims.w, height: dims.h, deviceScaleFactor: 1 });
+    const jpg = await page.screenshot({ type: 'jpeg', quality: 92, clip: { x: 0, y: 0, width: dims.w, height: dims.h } });
+    return { jpg: Buffer.from(jpg), width: dims.w, height: dims.h };
   } finally {
     if (page) { try { await page.close(); } catch {} }
   }
@@ -452,47 +477,107 @@ app.post('/api/graphic/render', async (req, res) => {
 // Renders the saved graphic_html for a post row to a PNG at a STABLE URL, so
 // Buffer (and anything else) can fetch the image by link. Reads from the sheet,
 // so save edits before relying on it.
-app.get('/api/graphic/:row.png', async (req, res) => {
+// .jpg variant exists for TikTok, whose photo posts reject PNG.
+app.get(['/api/graphic/:row.png', '/api/graphic/:row.jpg'], async (req, res) => {
   const row = parseInt(req.params.row, 10);
+  const jpeg = req.path.endsWith('.jpg');
   if (!row || row < 2) return res.status(400).send('bad row');
   try {
     const colU = String.fromCharCode(65 + COL.graphic_html); // 'U'
     const html = String(await readCell(`${colU}${row}`)).trim();
     if (!html) return res.status(404).send('no graphic on this post');
-    const png = await renderHtmlToPng(html);
-    res.set('Content-Type', 'image/png');
+    const img = await renderHtmlToPng(html, jpeg ? 'jpeg' : 'png');
+    res.set('Content-Type', jpeg ? 'image/jpeg' : 'image/png');
     res.set('Cache-Control', 'public, max-age=600'); // let Buffer fetch it
-    res.send(png);
+    res.send(img);
   } catch (err) {
-    console.error('GET /api/graphic/:row.png error:', err.message);
+    console.error('GET /api/graphic/:row error:', err.message);
     res.status(502).send('render failed');
   }
 });
 
-// ─── POST /api/buffer/send/:row ───────────────────────────────────────────────
-// Sends a reviewed post to Buffer. Body: { channels?: ['instagram','x','threads'],
-// mode?: 'now'|'queue' }. Routes Instagram by brand (SD vs MD profile); X and
-// Threads each have one channel that takes any brand. The graphic is attached as
-// an image URL Buffer fetches (GET /api/graphic/:row.png).
+// ─── Buffer channels ──────────────────────────────────────────────────────────
+// ONE map of every Buffer channel, keyed by brand then platform. Adding a channel
+// = adding one line here (ids from Buffer's list_channels). An empty string means
+// "not connected yet" — the dashboard greys that button out and sends skip it.
+// X was dropped 2 Oct 2026 (zero engagement); MarketDynamics' Instagram was
+// removed from Buffer the same day but the brand stays in the data model so a
+// new channel can be slotted straight back in.
 const BUFFER_TOKEN = process.env.BUFFER_TOKEN;
-const BUFFER_CHANNELS = {
-  threads: '6a4b8557404834462875a0b7', // strategy_dynamics (Threads)
-  x: '6a4bb6e7404834462876920b',       // stratdynamics (X)
-  ig_sd: '6a4bbf26404834462876b88b',   // strategy_dynamics (Instagram)
-  ig_md: '6a4bc28f404834462876c3a5',   // marketdynamics_app (Instagram)
+const BRANDS = {
+  StrategyDynamics: {
+    label: 'StrategyDynamics',
+    link: 'https://strategydynamics.co.uk',   // Shop Grid URL on Instagram posts
+    channels: {
+      instagram: '6a4bbf26404834462876b88b', // strategy_dynamics
+      threads:   '6a4b8557404834462875a0b7', // strategy_dynamics
+      tiktok:    '6abf4f2fea19ca0bde50319b', // strategydynamics
+    },
+  },
+  MarketDynamics: {
+    label: 'MarketDynamics',
+    link: 'https://strategydynamics.co.uk',
+    channels: {
+      instagram: '', // marketdynamics_app — removed from Buffer 1 Oct 2026
+      threads:   '',
+      tiktok:    '',
+    },
+  },
+  Sealed: {
+    label: 'Sealed',
+    link: 'https://apps.apple.com/gb/app/sealed-workout-habit-tracker/id6807351225',
+    channels: {
+      instagram: '6abf503eea19ca0bde5037d7', // earntheclose
+      tiktok:    '6abf508cea19ca0bde503994', // earntheclose
+      threads:   '', // earntheclose — not connected yet (Buffer/Meta auth pending)
+    },
+  },
 };
+const PLATFORMS = ['instagram', 'threads', 'tiktok'];
 
-async function bufferCreatePost({ channelId, text, imageUrl, mode, platform, thread, threadsTopic }) {
+function brandKey(name) {
+  const s = String(name || '').toLowerCase();
+  if (s.includes('seal')) return 'Sealed';
+  if (s.includes('market')) return 'MarketDynamics';
+  return 'StrategyDynamics';
+}
+
+// GET /api/channels — what the dashboard renders its send buttons from.
+app.get('/api/channels', (req, res) => {
+  const out = {};
+  for (const [k, b] of Object.entries(BRANDS)) {
+    out[k] = { label: b.label, link: b.link, channels: {} };
+    for (const p of PLATFORMS) out[k].channels[p] = !!b.channels[p];
+  }
+  res.json({ brands: out, platforms: PLATFORMS });
+});
+
+// ─── POST /api/buffer/send/:row ───────────────────────────────────────────────
+// Sends a reviewed StrategyDynamics/MarketDynamics post to Buffer. Body:
+// { channels?: ['instagram','threads','tiktok'], mode?: 'now'|'queue' }. Routes
+// every platform by the row's brand via BRANDS. The graphic is attached as an
+// image URL Buffer fetches (GET /api/graphic/:row.png — .jpg for TikTok, whose
+// photo posts reject PNG).
+
+// imageUrls: array of public image URLs (1..n → carousel on IG, photo set on
+// TikTok, single image on Threads). link: Instagram Shop Grid URL for the post.
+// tiktokTitle: the bold title TikTok shows above the caption (≤ 90 chars).
+async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, platform, thread, threadsTopic, link, tiktokTitle }) {
+  const urls = (imageUrls && imageUrls.length) ? imageUrls : (imageUrl ? [imageUrl] : []);
   const input = {
     channelId,
     schedulingType: 'automatic',
     mode: mode === 'now' ? 'shareNow' : 'addToQueue',
     text: text || '',
-    assets: imageUrl ? [{ image: { url: imageUrl } }] : [],
+    assets: urls.map((u) => ({ image: { url: u } })),
   };
-  // Instagram requires post metadata (type + shouldShareToFeed); X/Threads don't.
+  // Instagram requires post metadata (type + shouldShareToFeed); Threads doesn't.
+  // `link` is the Shop Grid URL — tapping the post on the link-in-bio grid opens it.
   if (platform === 'instagram') {
-    input.metadata = { instagram: { type: 'post', shouldShareToFeed: true } };
+    input.metadata = { instagram: { type: urls.length > 1 ? 'carousel' : 'post', shouldShareToFeed: true, ...(link ? { link } : {}) } };
+  }
+  if (platform === 'tiktok') {
+    input.metadata = { tiktok: { title: String(tiktokTitle || text || '').split('\n')[0].slice(0, 90) } };
   }
   // Threads chain: metadata.threads.thread is the SOURCE OF TRUTH for what gets
   // published and must contain EVERY post INCLUDING the root as its first element
@@ -524,7 +609,7 @@ app.post('/api/buffer/send/:row', async (req, res) => {
   const row = parseInt(req.params.row, 10);
   if (!row || row < 2) return res.status(400).json({ error: 'bad row' });
   const wanted = Array.isArray(req.body?.channels) && req.body.channels.length
-    ? req.body.channels : ['instagram', 'x', 'threads'];
+    ? req.body.channels : PLATFORMS;
   const mode = req.body?.mode === 'now' ? 'now' : 'queue';
 
   try {
@@ -561,13 +646,13 @@ app.post('/api/buffer/send/:row', async (req, res) => {
       }
     }
 
-    const isMD = String(r[COL.brand] || '').toLowerCase().includes('market');
+    const brand = brandKey(r[COL.brand]);
+    const B = BRANDS[brand];
     const caption = r[COL.caption] || '';
     const hashtags = r[COL.hashtags] || '';
     // Idempotent: the caption column may already contain the hashtags (saved from
     // the merged dashboard field), so only append them if they're not already there.
     const igText = (hashtags && !caption.includes(hashtags)) ? `${caption}\n\n${hashtags}` : caption;
-    const xText = r[COL.x_post] || '';
     // Threads: a single trailing hashtag becomes the linked topic tag (sent via
     // metadata.threads.topic) and is stripped from the text — inline hashtags
     // don't link on Threads.
@@ -578,24 +663,31 @@ app.post('/api/buffer/send/:row', async (req, res) => {
       threadsTopic = tagMatch[1];
       threadsText = threadsText.slice(0, tagMatch.index).trimEnd();
     }
+    // TikTok: headline as the bold title, caption (with tags) underneath.
+    const tiktokTitle = r[COL.headline] || '';
 
     const base = process.env.PUBLIC_BASE_URL || `${req.protocol}://${req.get('host')}`;
-    const imageUrl = `${base}/api/graphic/${row}.png`;
+    const pngUrl = `${base}/api/graphic/${row}.png`;
+    const jpgUrl = `${base}/api/graphic/${row}.jpg`;
 
     const plan = [];
-    if (wanted.includes('instagram')) plan.push(['instagram', isMD ? BUFFER_CHANNELS.ig_md : BUFFER_CHANNELS.ig_sd, igText]);
-    if (wanted.includes('x')) plan.push(['x', BUFFER_CHANNELS.x, xText]);
-    if (wanted.includes('threads')) plan.push(['threads', BUFFER_CHANNELS.threads, threadsText]);
+    if (wanted.includes('instagram')) plan.push(['instagram', igText, pngUrl]);
+    if (wanted.includes('threads')) plan.push(['threads', threadsText, pngUrl]);
+    if (wanted.includes('tiktok')) plan.push(['tiktok', igText, jpgUrl]);
 
     const results = {};
     // Sequential so Buffer fetches the image URL one at a time (kinder on render).
-    for (const [name, channelId, text] of plan) {
+    for (const [name, text, imageUrl] of plan) {
+      const channelId = B.channels[name];
+      if (!channelId) { results[name] = { ok: false, error: `${brand} has no ${name} channel in Buffer` }; continue; }
       results[name] = await bufferCreatePost({
         channelId, text, imageUrl, mode, platform: name,
         threadsTopic: name === 'threads' ? threadsTopic : undefined,
+        link: name === 'instagram' ? B.link : undefined,
+        tiktokTitle,
       });
     }
-    res.json({ ok: true, brand: isMD ? 'MarketDynamics' : 'StrategyDynamics', mode, results });
+    res.json({ ok: true, brand, mode, results });
   } catch (err) {
     console.error('POST /api/buffer/send error:', err.message);
     res.status(500).json({ error: err.message });
@@ -626,7 +718,7 @@ app.post('/api/threads/send', async (req, res) => {
     // Full chain, root first — Buffer publishes metadata.threads.thread verbatim.
     const chain = [hook, ...posts, ...(cta ? [cta] : [])].map(clamp);
     const result = await bufferCreatePost({
-      channelId: BUFFER_CHANNELS.threads,
+      channelId: BRANDS.StrategyDynamics.channels.threads,
       text: chain[0],
       mode,
       platform: 'threads',
@@ -637,6 +729,292 @@ app.post('/api/threads/send', async (req, res) => {
     res.json({ ok: true, id: result.id, mode, total: chain.length });
   } catch (err) {
     console.error('POST /api/threads/send error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Sealed ───────────────────────────────────────────────────────────────────
+// Screenshot-first workflow for the Sealed app (no graphic engine): upload
+// screenshots → one-line note → Claude writes per-platform captions from the
+// SEALED_BRIEF.md brand brief AND the images themselves → edit → send to Buffer.
+// Posts live in the `Sealed` tab of the same spreadsheet (auto-created).
+const SEALED_SHEET = 'Sealed';
+const SEALED_HEADER = ['created_at', 'note', 'angle', 'images', 'hook', 'ig_caption', 'tiktok_title',
+  'tiktok_caption', 'threads_text', 'threads_topic', 'status', 'sent_instagram', 'sent_tiktok',
+  'sent_threads', 'buffer_ids', 'link'];
+const SEALED_COL = Object.fromEntries(SEALED_HEADER.map((k, i) => [k, i]));
+const SEALED_EDITABLE = new Set(['note', 'angle', 'hook', 'ig_caption', 'tiktok_title', 'tiktok_caption',
+  'threads_text', 'threads_topic', 'status', 'link', 'images']);
+
+async function ensureSealedTab(sheets) {
+  try {
+    await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${SEALED_SHEET}!A1` });
+  } catch {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: SEALED_SHEET } } }] },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID, range: `${SEALED_SHEET}!A1`,
+      valueInputOption: 'RAW', requestBody: { values: [SEALED_HEADER] },
+    });
+  }
+}
+
+function sealedRowToPost(row, index) {
+  const o = { rowIndex: index + 2 };
+  for (const k of SEALED_HEADER) o[k] = row[SEALED_COL[k]] || '';
+  try { o.images = JSON.parse(o.images || '[]'); } catch { o.images = []; }
+  try { o.buffer_ids = JSON.parse(o.buffer_ids || '{}'); } catch { o.buffer_ids = {}; }
+  return o;
+}
+
+// POST /api/sealed/upload — body { images: [{ data: <base64>, name? }] }.
+// Stores each screenshot in the durable image cache (Railway volume) as JPEG
+// (TikTok rejects PNG; IG/Threads are happy with JPEG) and returns public URLs.
+app.post('/api/sealed/upload', async (req, res) => {
+  const items = Array.isArray(req.body?.images) ? req.body.images : [];
+  if (!items.length) return res.status(400).json({ error: 'no images' });
+  if (items.length > 10) return res.status(400).json({ error: 'max 10 images per post' });
+  const base = publicBase();
+  const out = [];
+  try {
+    for (const it of items) {
+      const raw = String(it.data || '').replace(/^data:[^;]+;base64,/, '');
+      const buf = Buffer.from(raw, 'base64');
+      const ext = sniffImageExt(buf);
+      if (!ext) throw new Error('not an image');
+      const mime = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif' }[ext];
+      let jpg = buf, width = 0, height = 0;
+      if (ext !== 'jpg') ({ jpg, width, height } = await imageToJpeg(buf, mime));
+      const name = `${crypto.createHash('sha1').update(jpg).digest('hex')}.jpg`;
+      fs.writeFileSync(path.join(IMG_CACHE_DIR, name), jpg);
+      out.push({ url: `${base}/images/cache/${name}`, width, height, bytes: jpg.length });
+    }
+    res.json({ ok: true, images: out });
+  } catch (err) {
+    console.error('POST /api/sealed/upload error:', err.message);
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// POST /api/sealed/generate — body { note, angle?, images?: [urls] }.
+// Claude (official SDK) reads SEALED_BRIEF.md + the screenshots and returns
+// structured per-platform captions. Nothing is saved here — the dashboard
+// shows the result for editing and saves on "Save" / "Send".
+const SEALED_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  required: ['hook', 'instagram', 'tiktok', 'threads', 'what_i_see'],
+  properties: {
+    what_i_see: { type: 'string', description: 'One line: what the screenshot(s) literally show. Not published.' },
+    hook: { type: 'string', description: 'The single sharpest first line, ≤ 90 chars. Reused as the TikTok title.' },
+    instagram: {
+      type: 'object', additionalProperties: false, required: ['caption', 'hashtags'],
+      properties: {
+        caption: { type: 'string', description: 'Full IG caption WITHOUT hashtags. Hook on line 1, line breaks between ideas, ends with the CTA.' },
+        hashtags: { type: 'array', items: { type: 'string' }, description: '3-5 hashtags, each starting with #.' },
+      },
+    },
+    tiktok: {
+      type: 'object', additionalProperties: false, required: ['title', 'caption', 'hashtags'],
+      properties: {
+        title: { type: 'string', description: '≤ 90 chars, the hook.' },
+        caption: { type: 'string', description: 'Short conversational caption WITHOUT hashtags, 120-300 chars, ends with a soft CTA.' },
+        hashtags: { type: 'array', items: { type: 'string' }, description: '3-5 hashtags, each starting with #.' },
+      },
+    },
+    threads: {
+      type: 'object', additionalProperties: false, required: ['text', 'topic_tag'],
+      properties: {
+        text: { type: 'string', description: '≤ 500 chars, aim 120-280, NO hashtags. Ends with a soft CTA or an open question.' },
+        topic_tag: { type: 'string', description: 'One topic tag without the #, e.g. fitnessapp.' },
+      },
+    },
+  },
+};
+
+let sealedBriefCache = { text: '', mtime: 0 };
+function loadSealedBrief() {
+  const p = path.join(__dirname, 'SEALED_BRIEF.md');
+  try {
+    const st = fs.statSync(p);
+    if (st.mtimeMs !== sealedBriefCache.mtime) sealedBriefCache = { text: fs.readFileSync(p, 'utf8'), mtime: st.mtimeMs };
+  } catch (e) { console.error('SEALED_BRIEF.md:', e.message); }
+  return sealedBriefCache.text;
+}
+
+app.post('/api/sealed/generate', async (req, res) => {
+  if (!process.env.ANTHROPIC_API_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY is not set on the server' });
+  const note = String(req.body?.note || '').trim();
+  const angle = String(req.body?.angle || 'hook').trim();
+  const images = (Array.isArray(req.body?.images) ? req.body.images : []).filter((u) => /^https?:\/\//.test(u)).slice(0, 10);
+  if (!note && !images.length) return res.status(400).json({ error: 'Add a screenshot or a note first' });
+  const brief = loadSealedBrief();
+  if (!brief) return res.status(500).json({ error: 'SEALED_BRIEF.md missing' });
+
+  try {
+    const Anthropic = require('@anthropic-ai/sdk');
+    const client = new Anthropic();
+    // Images go in as base64 (the cache URL is public, but base64 avoids a
+    // round-trip through our own host and works for a local dev server too).
+    const content = [];
+    for (const u of images) {
+      try {
+        const m = /\/images\/cache\/([a-f0-9]+\.(jpg|png|webp|gif))$/.exec(u);
+        let buf, mime;
+        if (m) { buf = fs.readFileSync(path.join(IMG_CACHE_DIR, m[1])); }
+        else { const r = await fetch(u, { signal: AbortSignal.timeout(10000) }); buf = Buffer.from(await r.arrayBuffer()); }
+        const ext = sniffImageExt(buf);
+        mime = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif' }[ext];
+        if (mime) content.push({ type: 'image', source: { type: 'base64', media_type: mime, data: buf.toString('base64') } });
+      } catch (e) { console.warn('sealed/generate: skip image', u, e.message); }
+    }
+    content.push({
+      type: 'text',
+      text: `Write the social captions for ONE Sealed post.\n\nANGLE: ${angle}\n\nWHAT THIS POST IS ABOUT (from Sean): ${note || '(no note — go entirely off the screenshots)'}\n\n` +
+        `There ${content.length === 1 ? 'is 1 screenshot' : `are ${content.length} screenshots`} attached${content.length ? ' — read them closely and make the captions about what is ACTUALLY on screen (numbers, labels, the arc or screen shown). Never describe something that is not visible.' : '.'}\n\n` +
+        'Follow the brief exactly: voice, banned words, price wording, hashtag counts, platform lengths. Hashtags go ONLY in the hashtags arrays, never inside caption text. UK spelling. Return the JSON only.',
+    });
+
+    const response = await client.messages.create({
+      model: 'claude-opus-5-5',
+      max_tokens: 4000,
+      output_config: { effort: 'medium', format: { type: 'json_schema', schema: SEALED_SCHEMA } },
+      system: [{ type: 'text', text: `You write social media captions for the Sealed app. The brand brief below is your only source of truth.\n\n=== SEALED BRIEF ===\n\n${brief}`, cache_control: { type: 'ephemeral' } }],
+      messages: [{ role: 'user', content }],
+    });
+    if (response.stop_reason === 'refusal') return res.status(502).json({ error: 'Model declined this request' });
+    const text = response.content.filter((b) => b.type === 'text').map((b) => b.text).join('');
+    let out;
+    try { out = JSON.parse(text); } catch { return res.status(502).json({ error: 'Bad JSON from model', detail: text.slice(0, 300) }); }
+    const tidyTags = (a) => (Array.isArray(a) ? a : []).map((t) => '#' + String(t).replace(/^#/, '').replace(/\s+/g, '')).filter((t) => t.length > 1).slice(0, 5);
+    res.json({
+      ok: true,
+      what_i_see: out.what_i_see || '',
+      hook: out.hook || '',
+      ig_caption: `${(out.instagram?.caption || '').trim()}\n\n${tidyTags(out.instagram?.hashtags).join(' ')}`.trim(),
+      tiktok_title: (out.tiktok?.title || out.hook || '').slice(0, 90),
+      tiktok_caption: `${(out.tiktok?.caption || '').trim()} ${tidyTags(out.tiktok?.hashtags).join(' ')}`.trim(),
+      threads_text: (out.threads?.text || '').trim(),
+      threads_topic: String(out.threads?.topic_tag || '').replace(/^#/, '').trim(),
+      usage: response.usage,
+    });
+  } catch (err) {
+    console.error('POST /api/sealed/generate error:', err.message);
+    res.status(502).json({ error: err.message });
+  }
+});
+
+// GET /api/sealed/posts — newest first.
+app.get('/api/sealed/posts', async (req, res) => {
+  try {
+    const sheets = getSheetsClient();
+    await ensureSealedTab(sheets);
+    const resp = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${SEALED_SHEET}!A2:P` });
+    const rows = resp.data.values || [];
+    res.json(rows.map(sealedRowToPost).reverse());
+  } catch (err) {
+    console.error('GET /api/sealed/posts error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+function sealedValues(body) {
+  const v = {};
+  for (const k of SEALED_EDITABLE) {
+    if (body[k] === undefined) continue;
+    v[k] = k === 'images' ? JSON.stringify(Array.isArray(body[k]) ? body[k] : []) : String(body[k] ?? '');
+  }
+  return v;
+}
+
+// POST /api/sealed/posts — create a draft row. Returns its rowIndex.
+app.post('/api/sealed/posts', async (req, res) => {
+  try {
+    const sheets = getSheetsClient();
+    await ensureSealedTab(sheets);
+    const v = sealedValues(req.body || {});
+    const row = SEALED_HEADER.map((k) => v[k] ?? '');
+    row[SEALED_COL.created_at] = new Date().toISOString();
+    row[SEALED_COL.status] = v.status || 'Draft';
+    row[SEALED_COL.link] = v.link || BRANDS.Sealed.link;
+    const r = await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID, range: `${SEALED_SHEET}!A1`,
+      valueInputOption: 'RAW', insertDataOption: 'INSERT_ROWS', requestBody: { values: [row] },
+    });
+    const m = /!A(\d+)/.exec(r.data.updates?.updatedRange || '');
+    res.json({ ok: true, rowIndex: m ? parseInt(m[1], 10) : null });
+  } catch (err) {
+    console.error('POST /api/sealed/posts error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/sealed/posts/:row — per-field update, same contract as /api/posts.
+app.patch('/api/sealed/posts/:row', async (req, res) => {
+  const row = parseInt(req.params.row, 10);
+  if (!row || row < 2) return res.status(400).json({ error: 'bad row' });
+  try {
+    const v = sealedValues(req.body || {});
+    const data = Object.entries(v).map(([k, val]) => ({
+      range: `${SEALED_SHEET}!${String.fromCharCode(65 + SEALED_COL[k])}${row}`, values: [[val]],
+    }));
+    if (!data.length) return res.json({ ok: true });
+    await getSheetsClient().spreadsheets.values.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID, requestBody: { valueInputOption: 'RAW', data },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('PATCH /api/sealed/posts error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/sealed/send/:row — body { channels?: [...], mode?: 'now'|'queue' }.
+// Reads the saved row (save first!), posts to each requested Sealed channel with
+// the screenshots attached, records Buffer ids + sent timestamps on the row.
+app.post('/api/sealed/send/:row', async (req, res) => {
+  if (!BUFFER_TOKEN) return res.status(500).json({ error: 'BUFFER_TOKEN is not set on the server' });
+  const row = parseInt(req.params.row, 10);
+  if (!row || row < 2) return res.status(400).json({ error: 'bad row' });
+  const wanted = Array.isArray(req.body?.channels) && req.body.channels.length ? req.body.channels : PLATFORMS;
+  const mode = req.body?.mode === 'now' ? 'now' : 'queue';
+  try {
+    const sheets = getSheetsClient();
+    const resp = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${SEALED_SHEET}!A${row}:P${row}` });
+    const p = sealedRowToPost((resp.data.values || [])[0] || [], row - 2);
+    if (!p.images.length) return res.status(400).json({ error: 'This post has no screenshots' });
+    const B = BRANDS.Sealed;
+    const plan = [];
+    if (wanted.includes('instagram')) plan.push(['instagram', p.ig_caption]);
+    if (wanted.includes('tiktok')) plan.push(['tiktok', p.tiktok_caption]);
+    if (wanted.includes('threads')) plan.push(['threads', p.threads_text]);
+    const results = {};
+    const now = new Date().toISOString();
+    const updates = {};
+    for (const [name, text] of plan) {
+      const channelId = B.channels[name];
+      if (!channelId) { results[name] = { ok: false, error: `Sealed has no ${name} channel in Buffer yet` }; continue; }
+      results[name] = await bufferCreatePost({
+        channelId, text, imageUrls: name === 'threads' ? p.images.slice(0, 1) : p.images, mode, platform: name,
+        threadsTopic: name === 'threads' ? (p.threads_topic || undefined) : undefined,
+        link: name === 'instagram' ? (p.link || B.link) : undefined,
+        tiktokTitle: p.tiktok_title || p.hook,
+      });
+      if (results[name].ok) { updates[`sent_${name}`] = now; p.buffer_ids[name] = results[name].id; }
+    }
+    if (Object.keys(updates).length) {
+      updates.buffer_ids = JSON.stringify(p.buffer_ids);
+      updates.status = 'Sent';
+      const data = Object.entries(updates).map(([k, val]) => ({
+        range: `${SEALED_SHEET}!${String.fromCharCode(65 + SEALED_COL[k])}${row}`, values: [[val]],
+      }));
+      await sheets.spreadsheets.values.batchUpdate({ spreadsheetId: SPREADSHEET_ID, requestBody: { valueInputOption: 'RAW', data } });
+    }
+    res.json({ ok: true, mode, results });
+  } catch (err) {
+    console.error('POST /api/sealed/send error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

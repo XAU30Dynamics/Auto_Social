@@ -1,6 +1,6 @@
 # Auto Social — CLAUDE.md
 
-Mobile-first approval dashboard for the XAU30 Dynamics social media automation pipeline. The dashboard itself is a thin read/write UI over a Google Sheet — the heavy automation (post generation, Telegram notifications, scheduling) lives in **Make.com** scenarios that read/write the same sheet out-of-band.
+Mobile-first social publishing dashboard for two brands: **StrategyDynamics** (+ MarketDynamics) and **Sealed** (the fitness app). A brand switcher at the top of the UI flips the whole workspace (and its colour theme). The StrategyDynamics side is a thin read/write UI over a Google Sheet — the heavy automation (post generation, Telegram notifications, scheduling) lives in **Make.com** scenarios that read/write the same sheet out-of-band. The Sealed side is self-contained: screenshots in → Claude writes per-platform captions from `SEALED_BRIEF.md` → Buffer. **X/Twitter was dropped on 2 Oct 2026** (zero engagement) — no X field, button or channel anywhere; sheet columns I/R still exist positionally but are never shown or sent.
 
 ## Stack
 
@@ -10,7 +10,9 @@ Mobile-first approval dashboard for the XAU30 Dynamics social media automation p
 - **Data store**: Google Sheets (via `googleapis` service-account auth) — the `Posts` tab is the source of truth.
 - **External APIs called from the server**:
   - Google Sheets API (`spreadsheets.values.get` / `batchUpdate`)
-- **External APIs called from the browser only**: Canva (static brand-template URLs, opened in a new tab — no Canva API call from this codebase despite what the README implies).
+  - Buffer GraphQL (`https://api.buffer.com`) for publishing + insights
+  - Anthropic Messages API via `@anthropic-ai/sdk` (Sealed caption generation only — SD generation stays in Make)
+- **External APIs called from the browser only**: none (Canva links were removed 2 Oct 2026).
 - **Deploy target**: Railway (auto-deploys on push to `main`).
 
 ## Repo layout
@@ -20,7 +22,8 @@ Mobile-first approval dashboard for the XAU30 Dynamics social media automation p
 ├── server.js          # Express app + all API routes
 ├── package.json
 ├── public/
-│   └── index.html     # Entire dashboard UI (HTML + CSS + JS in one file)
+│   └── index.html     # Entire dashboard UI (HTML + CSS + JS in one file) — both brands
+├── SEALED_BRIEF.md    # Sealed brand brief — the ONLY input to Sealed caption generation (read per request)
 ├── env.example        # Template for .env (note: no leading dot — see gotchas)
 ├── gitignore          # Note: no leading dot — see gotchas
 └── README.md
@@ -54,8 +57,16 @@ All routes live in `server.js`:
 | GET    | `/api/graphic/:row.png` | Renders the **saved** `graphic_html` for a post row to a 1080×1350 PNG at a stable URL (reads column U from the sheet). Exists so Buffer can fetch the graphic by link. 404 if the row has no graphic. |
 | GET    | `/api/threadlog`    | Recent auto-posted threads (`ThreadLog` tab, last ~2 days newest-first) for the dashboard's Auto Threads panel. Errors degrade to `[]`. |
 | GET    | `/api/insights`     | Live 30-day engagement rollup from Buffer's GraphQL API (per-channel totals, aggregate metrics, top/weakest posts by views) for the dashboard's Insights panel. Needs `BUFFER_TOKEN`; org id is hardcoded (`BUFFER_ORG_ID`). Read-only. |
-| POST   | `/api/buffer/send/:row` | Sends a reviewed post to Buffer. Body `{ channels?: ['instagram','x','threads'], mode?: 'now'|'queue' }`. Routes **Instagram by brand** (`ig_sd` vs `ig_md` channel); X + Threads each have one channel for any brand. Attaches the graphic as an image URL Buffer fetches (`/api/graphic/:row.png`). Needs `BUFFER_TOKEN`. Returns per-channel `{ok,id}`/`{ok:false,error}`. Buffer channel IDs are hardcoded in `server.js` (`BUFFER_CHANNELS`). |
+| GET    | `/api/channels`     | The `BRANDS` map with channel ids reduced to booleans — the UI builds its send buttons from this (unconnected channel ⇒ button disabled). |
+| POST   | `/api/buffer/send/:row` | Sends a reviewed SD/MD post to Buffer. Body `{ channels?: ['instagram','threads','tiktok'], mode?: 'now'|'queue' }`. Every platform is routed by the row's brand via `BRANDS` in `server.js`. Graphic attached by URL (`/api/graphic/:row.png`; **`.jpg` for TikTok** — TikTok photo posts reject PNG). Instagram posts carry `metadata.instagram.link` = the brand's Shop Grid URL. TikTok title = headline. Needs `BUFFER_TOKEN`. Returns per-channel `{ok,id}`/`{ok:false,error}`. |
+| GET    | `/api/graphic/:row.jpg` | Same as the `.png` route, JPEG-encoded (q92). Unauthenticated like `.png`. |
+| POST   | `/api/sealed/upload` | Body `{ images: [{ data: <base64> }] }` (≤10). Each image is stored in the durable image cache as **JPEG** (PNG re-encoded through Chromium — no native image deps) and returned as a public `/images/cache/<sha1>.jpg` URL. The browser already downsizes to ≤2048px / JPEG before upload. |
+| POST   | `/api/sealed/generate` | Body `{ note, angle?, images?: [urls] }`. Claude (`claude-opus-5-5`, official SDK, structured JSON output) reads `SEALED_BRIEF.md` (system, cached) **and the screenshots** and returns `{ hook, ig_caption, tiktok_title, tiktok_caption, threads_text, threads_topic, what_i_see }`. Hashtags are appended server-side (max 5). Needs `ANTHROPIC_API_KEY`. Nothing is saved. |
+| GET/POST/PATCH | `/api/sealed/posts[/:row]` | Sealed drafts in the `Sealed` sheet tab (auto-created, header `SEALED_HEADER`). PATCH only accepts `SEALED_EDITABLE` fields. |
+| POST   | `/api/sealed/send/:row` | Body `{ channels?, mode? }`. Posts the SAVED row to Buffer: IG = carousel of all screenshots + Shop Grid `link`, TikTok = photo post (title + caption), Threads = first image only + topic tag. Records `sent_<platform>` timestamps, `buffer_ids`, `status=Sent` on the row. |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
+
+**Buffer channel map** — `BRANDS` in `server.js` is the ONE place channel ids live: `{ StrategyDynamics, MarketDynamics, Sealed } × { instagram, threads, tiktok }`, plus each brand's Shop Grid `link`. Empty string = not connected (UI greys it, sends return `{ok:false}` for it). As of 2 Oct 2026: SD has all three; MD has none (its IG was removed from Buffer — slot a new id in when re-added); Sealed (`earntheclose`) has IG + TikTok, Threads pending.
 
 PATCH safety: unknown field names are silently skipped (see `if (COL[field] === undefined) continue;` in `server.js:111`). Sending only unknown fields returns `{ ok: true }` with no writes.
 
@@ -138,16 +149,25 @@ Defined in `env.example`. All are required for full functionality:
 | `BUFFER_TOKEN`                  | `POST /api/buffer/send/:row`. Buffer public API token (Bearer) for posting to IG/X/Threads via Buffer's GraphQL API (`https://api.buffer.com`). Unset ⇒ that route 500s. |
 | `PUBLIC_BASE_URL`              | Optional. Base URL Buffer uses to fetch the graphic image; defaults to the request's own `protocol://host` (correct on Railway). |
 | `DASHBOARD_PASSWORD`           | Single shared password for the dashboard (see `POST /api/login`). Unset ⇒ auth disabled (local dev convenience). |
+| `ANTHROPIC_API_KEY`            | `POST /api/sealed/generate` only. Unset ⇒ that route 500s with a clear message; everything else unaffected. |
+| `IMG_CACHE_DIR`                | Optional, defaults to `/data/img-cache` (Railway volume). Holds mirrored graphic images AND Sealed screenshot uploads. |
 | `PORT`                          | Optional, defaults to `3000`             |
 
 The service account must have edit access to the spreadsheet — share the sheet with `GOOGLE_SERVICE_ACCOUNT_EMAIL` explicitly.
+
+## Sealed workflow (no graphic engine)
+
+Sealed posts are **screenshots + captions**, nothing designed. UI flow: drop 1–10 screenshots → one-line note → pick an angle (`hook` / `honest` / `founder` / `pact` / `feature`) → Generate → three editable platform blocks (Instagram, TikTok title+caption, Threads text+topic) with char counters and on/off switches → Save draft / Send to Buffer (queue or now). History tab lists the `Sealed` tab rows; tapping one reloads it into the composer for re-edit/resend. `SEALED_BRIEF.md` is the entire brand knowledge — edit it to change voice, price wording, hashtag rules, banned words. It's read from disk per request (mtime-cached), so a redeploy is enough; no sheet involved. Keep "no free tier / £3.99 / 7-day trial" wording exact. Threads for Sealed is wired but its channel id is empty until the `earntheclose` Threads account connects in Buffer — fill `BRANDS.Sealed.channels.threads` and it lights up.
+
+**Local dev with the real env** (no `.env` in the repo): `railway run --service Auto_Social --environment production -- node -e "process.env.DASHBOARD_PASSWORD='';process.env.IMG_CACHE_DIR='/tmp/imgcache';require('./server.js')"` — note the `--` before `node` (without it `railway run` hangs), and override `DASHBOARD_PASSWORD` to blank so `/api/*` is open locally.
 
 ## Conventions
 
 - **No frameworks, no build step.** When in doubt, write more vanilla JS rather than introducing tooling.
 - **One file per layer**: all server logic in `server.js`, all UI in `public/index.html` (HTML + CSS + JS inline). Don't split unless asked.
 - **Section dividers** in `server.js` use box-drawing comments (`// ─── Section ───`). Match the style if adding routes.
-- **DOM IDs** in the frontend follow `f-<field>-<rowIndex>` for inputs (e.g. `f-headline-42`) and `cc-<field>-<rowIndex>` for character counters. `renderCard()` is the source of truth.
+- **DOM IDs** in the frontend follow `f-<field>-<rowIndex>` for SD inputs (e.g. `f-caption-42`) and `cc-<field>-<rowIndex>` for character counters; Sealed composer fields are `s-<field>` (single composer, state in the `S` object). `renderCard()` is the source of truth for SD cards.
+- **Theming**: all colours are CSS tokens on `:root`, overridden by `body[data-brand="Sealed"]` (lime `#C8F04A`, Archivo display font). `setBrand()` flips `data-brand`, the visible view, the sub-nav and the theme-color meta. Don't hardcode colours in components.
 - **PATCH-on-edit** for individual toggles (variant select, posted toggles); explicit Save button for text fields. Don't auto-save text inputs on blur — that's intentional.
 - **Newest first**: `GET /api/posts` does `.reverse()` before returning so the latest sheet row shows up top.
 
@@ -155,7 +175,9 @@ The service account must have edit access to the spreadsheet — share the sheet
 
 - **`gitignore` is missing its leading dot** (`gitignore`, not `.gitignore`). Git is not ignoring `node_modules/`, `.env`, etc. Rename when convenient, but coordinate with whoever owns the working tree first.
 - **`env.example` is also missing its leading dot.** The README references `.env.example`. Both work as docs, but tools that expect the dotfile name won't find it.
-- **Canva is being retired.** The manual Canva-template flow (deep-link + copy/paste fields) has been replaced by the auto-graphic engine: Claude designs a bespoke 1080×1350 HTML artwork per post (sheet column U `graphic_html`), the dashboard previews it live and renders a downloadable PNG via `POST /api/graphic/render`. The old Canva variant selector / "Open in Canva" button was removed from the card; `CANVA_*` constants and `selectVariant()` remain defined in `index.html` but are now dead. The README's "Canva Autofill API" claim was always false — there was never a Canva API call.
+- **Canva is gone.** The auto-graphic engine (Claude designs a bespoke 1080×1350 HTML artwork per post, column U `graphic_html`, live preview + Download PNG via `POST /api/graphic/render`) replaced it; the 2 Oct 2026 UI rewrite removed the last dead `CANVA_*` code. The README's "Canva Autofill API" claim was always false.
+- **TikTok photo posts need JPEG.** Both image paths (`/api/graphic/:row.jpg` for SD, JPEG re-encode on Sealed upload) exist for this reason. Don't send a `.png` URL to a TikTok channel.
+- **Buffer Shop Grid** = Buffer's link-in-bio page; each IG post's `metadata.instagram.link` is the URL that post tile opens. The grid page itself is set up once in desktop Buffer (Sean's side).
 - **The `hashtags` column is merged into `caption` on read.** `GET /api/posts` returns `caption = caption + "\n\n" + hashtags`, and the UI no longer renders a separate hashtags input. If you re-introduce a hashtags field, also unmerge in `server.js:63-68`. PATCH still accepts `hashtags` as a field name and writes to column H.
 - **Column map is positional.** Inserting a column mid-sheet (or in the `COL` map without matching the sheet) will silently corrupt every row. Append new columns at the end of both.
 - **Catch-all route serves `index.html` for any unmatched GET**, including paths that look like missing API routes. A typo'd API path won't 404 — it'll return the dashboard HTML. Check the response `Content-Type` when debugging.
