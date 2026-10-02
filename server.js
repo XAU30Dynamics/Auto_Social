@@ -574,7 +574,9 @@ async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, pl
   // Instagram requires post metadata (type + shouldShareToFeed); Threads doesn't.
   // `link` is the Shop Grid URL — tapping the post on the link-in-bio grid opens it.
   if (platform === 'instagram') {
-    input.metadata = { instagram: { type: urls.length > 1 ? 'carousel' : 'post', shouldShareToFeed: true, ...(link ? { link } : {}) } };
+    // type stays 'post' for carousels too — Buffer infers carousel from multiple assets
+    // ("Instagram does not support the 'carousel' post type", verified 2 Oct 2026).
+    input.metadata = { instagram: { type: 'post', shouldShareToFeed: true, ...(link ? { link } : {}) } };
   }
   if (platform === 'tiktok') {
     input.metadata = { tiktok: { title: String(tiktokTitle || text || '').split('\n')[0].slice(0, 90) } };
@@ -591,7 +593,7 @@ async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, pl
     if (threadsTopic) threads.topic = threadsTopic;
     input.metadata = { ...(input.metadata || {}), threads };
   }
-  const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on RestProxyError{message code} ... on UnexpectedError{message} ... on NotFoundError{message} ... on UnauthorizedError{message} ... on LimitReachedError{message}}}';
+  const query = 'mutation($input:CreatePostInput!){createPost(input:$input){__typename ... on PostActionSuccess{post{id}} ... on MutationError{message}}}';
   const resp = await fetch('https://api.buffer.com', {
     method: 'POST',
     headers: { Authorization: `Bearer ${BUFFER_TOKEN}`, 'Content-Type': 'application/json' },
@@ -600,7 +602,8 @@ async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, pl
   const json = await resp.json().catch(() => ({}));
   const cp = json?.data?.createPost;
   if (cp?.__typename === 'PostActionSuccess') return { ok: true, id: cp.post?.id };
-  const error = cp?.message || json?.errors?.[0]?.message || `HTTP ${resp.status}`;
+  const error = cp?.message || json?.errors?.[0]?.message || `HTTP ${resp.status}${cp?.__typename ? ' ' + cp.__typename : ''}`;
+  if (!cp) console.error('buffer createPost unexpected response:', JSON.stringify(json).slice(0, 500));
   return { ok: false, error };
 }
 
