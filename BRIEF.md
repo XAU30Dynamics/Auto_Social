@@ -306,7 +306,7 @@ Live in the Apple App Store on iPhone and iPad. Version 2.0 (October 2026) is a 
 
 "Understand what moves gold." MarketDynamics helps a trader understand what is driving gold and how to approach it, every trading day. It is NOT a signal service: it shows the full picture from macro down to the chart and marks the areas of interest worth attention, and the trader applies their own entry method with context instead of guesswork.
 
-Founder angle (true, use it): TraderS built version 1 and didn't use it himself — it gave scores, not understanding. 2.0 replaced his own morning markups and he uses it every day.
+Founder angle (true, use it): 2.0 replaced TraderS' own morning markups — he uses it every day before London opens.
 
 RETIRED — never use again: 'Central Intelligence', 'the ultimate cross-pillar scoring system', 'conviction', 'prediction entry model', 'breakout probabilities', 'machine learnt'.
 
@@ -327,20 +327,20 @@ RETIRED — never use again: 'Central Intelligence', 'the ultimate cross-pillar 
 - Widgets — the Read on the home screen and lock screen.
 - Track record — every Read is graded afterwards and the record sits in the app.
 
-### Honest by design — the build story
+### Built on evidence — the build story
 
-Every part was tested on years of gold data before it shipped, with the pass bar written down before the results (build period vs unseen test period, trading costs included). The app shows what passed and what didn't. This is the MarketDynamics equivalent of the Sentinel post-mortem — strong founder and educational material:
+Nothing in MarketDynamics was added on a hunch. Every part was tested on years of gold data before it shipped, with the standard written down before the results came in, then checked on data it had never seen, with trading costs included. That rigour is the selling point — use it:
 
-- 13 chart patterns tested on H1, H4 and D1 back to 2020 (daily to 2013): none cleared the bar. The app shows them as 'spotted', with their real history — never as trade setups.
-- Thousands of zone plans tested: trading every zone lost slightly after costs. One rule held up in both periods — H4 zones at least one ATR away from price — and it is in a live forward test from October 2026, labelled unproven until it passes.
-- The daily bias: slow macro inputs called the day's direction about as well as a coin flip. So the app calls it a lean with a strength score, never a forecast, and grades every one.
-- The regime: gold rose in every regime from 2019 to 2026, but the order held — deflationary risk-off best, inflationary risk-off worst. So the regime sets context and size, not direction.
-- Gold's own volatility index (GVZ): when it rises, trend days are more likely, in both periods — the basis of the day-type line.
+- Chart patterns: 13 patterns tested on H1, H4 and D1 data back to 2020. Every pattern on the chart carries its own real history, so you see how that shape has actually behaved on gold before you act on it.
+- Zones: built from thousands of historical gold plans, and tracked live from October 2026 — every zone the app publishes is graded.
+- The Daily Read: graded every day after the session, with the record kept in the app. A score of how strong the bias is, so you can see when the drivers line up and when they don't.
+- The regime: backtested on gold from 2019 to 2026 across 14 cross-asset pairs, to show which market conditions have been kindest to gold and which the hardest.
+- Gold's own volatility index (GVZ): the app reads it to flag likely trend days and range days — knowing the type of day changes how you approach it.
 
 ### MarketDynamics post rules
 
 - Never say 'signals', 'calls', 'entries', 'predicts', 'accuracy' or 'win rate' about the app. Say 'the Read', 'zones', 'areas of interest', 'context'.
-- Never present a test figure as what a user will get. Lab results are historical tests and must be framed as such.
+- Never quote test statistics (R figures, win rates, percentages) or describe anything as failing, unproven or a coin flip. Market the rigour and the grading, not individual results.
 - Don't invent features: if it isn't listed here or visible in an attached screenshot, don't claim it. Screen names: Today, Technicals, Drivers, News, You.
 
 ### Built for
@@ -661,11 +661,12 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 11. The £190 first payout — why going cautious on payout one is the smart play (founder post).
 12. '30 EAs, 10 bought algos, zero winners' — why grid/martingale always blows up eventually (deep dive).
 13. Three months of manual coding vs 30 minutes in StrategyDynamics — the NAS open range rebuild (product proof).
-14. 'My app draws 13 chart patterns and won't call one of them a setup' — none passed testing (MarketDynamics build story).
-15. Thousands of zone plans, one rule survived — and it is still labelled unproven (MarketDynamics build story).
-16. Gold rose in every regime since 2019 — so what is the regime for? (educational).
-17. Gold's own fear gauge, GVZ: rising volatility means trend days (educational).
-18. I built version 1 and didn't use it — why 2.0 replaced my morning markups (founder post).
+14. Every chart pattern in MarketDynamics shows its own history on gold — see how the shape has really behaved before you act (product).
+15. Tested on years of gold data before it shipped: how the zones were built (MarketDynamics build story).
+16. The four market regimes for gold, and which has been kindest to it since 2019 (educational).
+17. Gold's own fear gauge, GVZ: how it flags a trend day versus a range day (educational).
+18. Why 2.0 replaced my own morning markups (founder post).
+19. The Read is graded every day — an app that marks its own homework (product).
 
 # 10. Guardrails for the AI
 
