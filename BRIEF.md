@@ -316,16 +316,42 @@ RETIRED — never use again: 'Central Intelligence', 'the ultimate cross-pillar 
 - Areas of interest, not signals.
 - Everything is graded — the app marks its own homework, and the record is in the app.
 
-### What's inside (2.0)
+### What's inside (2.0), screen by screen
 
-- The Daily Read — every weekday before London opens: the bias and how strong it is (a score, not a probability), the market regime, and how many of the drivers agree. Macro, positioning, structure and event risk are scored separately, so you see why, not just what. A day-type line (trend day or range day) appears when the evidence supports one, and London and New York pulses check through the day whether the read is holding.
-- Technicals — the trend on D1, H4 and H1 read from swing structure (higher highs and higher lows, lower highs and lower lows) and the latest break of structure; EMA stacks, RSI and divergences; 13 chart patterns (triangles, double tops and bottoms, head and shoulders, harmonics, trendline breaks) drawn on the chart from Possible to Forming to Confirmed, each with its own past record.
-- Zones — buy and sell zones on M30, H4 and D1, built where structure clusters: pivots, prior day and week highs and lows, swing points, averages, the Asia range, and TraderS' own mechanical support and resistance (section 9.2). Each zone shows its stop, targets and reward-to-risk; tap one to see what built it.
-- Drivers — the market regime from 14 cross-asset pairs (risk-on, deflationary risk-off, inflationary risk-off, liquidation); what real yields, the dollar, inflation expectations and oil are doing to gold; CFTC COT positioning — who is long and short, how it is changing, and the streaks.
-- News — the red-news calendar with times and forecasts, a geopolitical read updated through the day, and cautions on event days, when levels are less reliable.
-- Alerts — push notifications for the morning Read, regime changes, H4 and H1 patterns, price nearing a zone at the distance you set, and red news 15 minutes before release.
-- Widgets — the Read on the home screen and lock screen.
-- Track record — every Read is graded afterwards and the record sits in the app.
+Four tabs — Today, Technicals, Drivers, News — plus You. Each card has a '?' explainer in plain English.
+
+**Today — the day on one screen**
+- The Daily Read, every weekday before London opens: bias (bullish, bearish or neutral) and its strength — mild, moderate or strong — the market regime, and how many of the drivers agree. 'What's behind the bias' breaks it into macro, positioning, structure and regime.
+- Day type: trend day or range day more likely, from gold's own volatility (GVZ) and other measures.
+- Asia tape: what oil, the Nasdaq and the yen did overnight, and whether it agrees with the bias.
+- Day range: today's range against the average daily range (ADR) — how much of a typical day is already used.
+- The H4 trade idea: the day's standout H4 zone with its stop, two targets and reward-to-risk, and a size guide (full, three-quarter, half or quarter) set by the regime and the day type.
+- Pulses: London and New York updates through the day on whether the Read is holding.
+- Next red news, the geopolitical mood, a live gold price, and the track record.
+
+**Technicals — the chart, read for you**
+- H4 and H1 chart, candles or flowing line, with EMAs, the D50, the Asia range and every level near price drawn on. Drag to test a price and see what sits around it.
+- Buy and sell zones on M30, H4 and D1, built where structure clusters: pivots, prior day and week highs and lows, swing points, averages, the Asia range, and TraderS' own mechanical support and resistance (section 9.2). Each shows stop, targets and reward-to-risk; 'Why this zone' shows what built it, and a confluence ladder ranks the levels.
+- Technical picture: the trend on D1, H4 and H1 from swing structure (stepping higher or lower), the last high or low broken, EMA stacks, the daily 10/20/50 averages and their crosses, RSI with overbought, oversold and divergences.
+- Patterns spotted: 13 chart patterns — triangles, double tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks — drawn on the chart from Possible to Forming to Confirmed, with where each confirms and breaks, and its own history on gold.
+
+**Drivers — why gold is moving**
+- Market regime: risk-on, deflationary risk-off, inflationary risk-off or liquidation, read from 14 cross-asset pairs, with how the odds have moved over 60 days, how fragile the regime is, and 'What's changed this month' naming the drivers behind a shift.
+- Risk mood board: bonds, the dollar, stocks, small caps, the AUDJPY carry trade, gold vs silver, credit spreads, the volatility curve and the yield curve — each marked supportive or a headwind for gold.
+- Macro: real yields, inflation expectations, the Fed funds rate, the dollar and oil, the yen, gold, oil and bond volatility, and funding stress, with trend charts.
+- COT positioning: large speculators, commercials and small traders — net long, crowded long or short, streaks, who's who in the report, and other markets for comparison.
+
+**News — what could move it**
+- The red-news calendar for the week with times, forecasts and previous figures, and a countdown to the next release.
+- Geopolitics: the latest threads, each marked bullish, bearish or mixed for gold, with 'What it means for gold'.
+- What markets are doing right now, and event-day cautions.
+
+**Alerts, widgets and You**
+- Push alerts you choose: the morning Read, regime changes, H4 and H1 patterns, price nearing a zone at a distance you set, and red news 15 minutes before release.
+- Home-screen and lock-screen widgets showing the Read.
+- Position size calculator: set your risk per trade and default size, and the zone's stop sizes the trade.
+- Track record: every daily bias settled right or wrong, and how often regime changes held.
+- Feedback straight to TraderS from inside the app.
 
 ### Built on evidence — the build story
 
