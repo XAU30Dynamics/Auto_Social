@@ -4,9 +4,9 @@ Social Media Brand Brief
 
 *The single source of truth for every post the AI generates.*
 
-**Version 1.5**
+**Version 1.6**
 
-Last updated: 11 July 2026
+Last updated: 26 October 2026 (MarketDynamics 2.0)
 
 Owner: TraderS
 
@@ -22,7 +22,7 @@ To update this brief in future, just edit and save. The system will pick up the 
 
 StrategyDynamics is a trading education and automation business specialising in XAUUSD (gold), with automation services and live automated trading extending across any asset. The brand combines verified prop firm trading credentials with a growing ecosystem of automation tools (cTrader algorithms), a flagship Discord membership, and proprietary mobile apps (MarketDynamics and StrategyDynamics).
 
-Recent rebrand fully under the StrategyDynamics banner as my app is the main focus, discord branding aligned.  MarketDynamics is also my app which is my primary XAUUSD trading tool – will also be marketed heavily too.
+Recent rebrand fully under the StrategyDynamics banner as my app is the main focus, discord branding aligned.  MarketDynamics is also my app — rebuilt from scratch as version 2.0 in October 2026, and now the gold analysis tool I use myself every morning. It is marketed heavily too.
 
 ### Founder origin story
 
@@ -148,17 +148,15 @@ These phrases will get accounts shadowbanned, removed by Meta/X, or damage the b
 
 £79/month a useful soft CTA hook — and StrategyDynamics Institutional is the same £79/month with Discord membership included, so "the Discord alone, or the Discord plus the whole platform for the same money" is the natural framing.
 
-### XAUUSD multi-timeframe analysis
+### Daily gold editions (produced by MarketDynamics)
 
-Focused fully on XAUUSD with breakdowns across all timeframes. Done every morning on Daily, H4, M30 timeframes, with deeper analysis at weekends – originally undertaken by TraderS over 2 years but now machine learnt on over 2,000 posts and screenshots and built in to the backend of MarketDynamics App which completes the analysis and posts daily using all my data, it also machine learns and evaluates its own performance against its analysis and evolves where needed.  Note – this is also available for app users.
+TraderS did the XAUUSD analysis by hand every morning for over two years. Since October 2026 MarketDynamics produces it from the same method and posts it to the Discord automatically — the same data app users see:
 
-### Weekly fundamentals breakdown
+- The Daily Read — every weekday at 05:40 UK, before London opens: the Read card (bias, strength, regime, drivers agreeing), the H4 chart with the day's zones, and a written plan for the day.
+- Pulses — 08:10 (London) and 13:40 (New York): a short check on whether the morning read is holding.
+- The Weekly — every Sunday at 12:00: the week's cover, the daily chart, the drivers, and the week ahead.
 
-A detailed weekly review covering macro fundamentals, institutional positioning, geopolitical landscape, and technical analysis. Previously produced manually from scratch — now MarketDynamics pulls the data, undertakes the review, and posts the full output to both app users and the Discord group with one click.
-
-### MarketDynamics insights
-
-Twice-daily mini briefings delivered into the group, giving members the most important information from the MarketDynamics app in concise format.
+Everything the editions publish is graded afterwards by the app — the analysis marks its own homework.
 
 ### Economic calendar coverage
 
@@ -302,73 +300,55 @@ Two tiers, scaled by depth of work involved:
 
 ## 2.3 MarketDynamics App
 
-Live in the Apple App Store. Price: £16.99 per month (auto-renewing subscription — cancel anytime). IMPORTANT: MarketDynamics is a MONTHLY SUBSCRIPTION. Never describe it as a one-time purchase, lifetime access, or 'no subscription' — always '£16.99/month, cancel anytime'.
-
-MarketDynamics is positioned as a serious, premium product. The positioning should feel professional, intelligent, and differentiated.
+Live in the Apple App Store on iPhone and iPad. Version 2.0 (October 2026) is a complete native rebuild — present it as a new product, not an update. Price: Gold Monthly, £16.99 per month, auto-renewing, cancel anytime — one plan unlocks everything. IMPORTANT: always '£16.99/month, cancel anytime'. Never describe it as a one-time purchase, lifetime access, credits or 'no subscription'. There is no free trial and no free tier — never offer either. No Android, no web version.
 
 ### Core positioning
 
-"Central Intelligence for the Gold (XAUUSD) market. The ultimate cross-pillar scoring and data system, built by a trader for traders."
+"Understand what moves gold." MarketDynamics helps a trader understand what is driving gold and how to approach it, every trading day. It is NOT a signal service: it shows the full picture from macro down to the chart and marks the areas of interest worth attention, and the trader applies their own entry method with context instead of guesswork.
 
-MarketDynamics is a professional gold analysis engine built for serious traders who want to understand why gold moves, not just react to price action. Rather than relying on isolated indicators, MarketDynamics integrates macro fundamentals, technicals, institutional positioning, cross-asset sentiment, and geopolitical risk into one unified bias framework.
+Founder angle (true, use it): TraderS built version 1 and didn't use it himself — it gave scores, not understanding. 2.0 replaced his own morning markups and he uses it every day.
+
+RETIRED — never use again: 'Central Intelligence', 'the ultimate cross-pillar scoring system', 'conviction', 'prediction entry model', 'breakout probabilities', 'machine learnt'.
 
 ### Core message
 
-- See the environment
+- Understand the day before London opens.
+- Areas of interest, not signals.
+- Everything is graded — the app marks its own homework, and the record is in the app.
 
-- See the alignment
+### What's inside (2.0)
 
-- Trade with context
+- The Daily Read — every weekday before London opens: the bias and how strong it is (a score, not a probability), the market regime, and how many of the drivers agree. Macro, positioning, structure and event risk are scored separately, so you see why, not just what. A day-type line (trend day or range day) appears when the evidence supports one, and London and New York pulses check through the day whether the read is holding.
+- Technicals — the trend on D1, H4 and H1 read from swing structure (higher highs and higher lows, lower highs and lower lows) and the latest break of structure; EMA stacks, RSI and divergences; 13 chart patterns (triangles, double tops and bottoms, head and shoulders, harmonics, trendline breaks) drawn on the chart from Possible to Forming to Confirmed, each with its own past record.
+- Zones — buy and sell zones on M30, H4 and D1, built where structure clusters: pivots, prior day and week highs and lows, swing points, averages, the Asia range, and TraderS' own mechanical support and resistance (section 9.2). Each zone shows its stop, targets and reward-to-risk; tap one to see what built it.
+- Drivers — the market regime from 14 cross-asset pairs (risk-on, deflationary risk-off, inflationary risk-off, liquidation); what real yields, the dollar, inflation expectations and oil are doing to gold; CFTC COT positioning — who is long and short, how it is changing, and the streaks.
+- News — the red-news calendar with times and forecasts, a geopolitical read updated through the day, and cautions on event days, when levels are less reliable.
+- Alerts — push notifications for the morning Read, regime changes, H4 and H1 patterns, price nearing a zone at the distance you set, and red news 15 minutes before release.
+- Widgets — the Read on the home screen and lock screen.
+- Track record — every Read is graded afterwards and the record sits in the app.
 
-### The Gold Regime Engine
+### Honest by design — the build story
 
-Gold does not move randomly. It responds to factors such as:
+Every part was tested on years of gold data before it shipped, with the pass bar written down before the results (build period vs unseen test period, trading costs included). The app shows what passed and what didn't. This is the MarketDynamics equivalent of the Sentinel post-mortem — strong founder and educational material:
 
-- Real yields and opportunity cost
+- 13 chart patterns tested on H1, H4 and D1 back to 2020 (daily to 2013): none cleared the bar. The app shows them as 'spotted', with their real history — never as trade setups.
+- Thousands of zone plans tested: trading every zone lost slightly after costs. One rule held up in both periods — H4 zones at least one ATR away from price — and it is in a live forward test from October 2026, labelled unproven until it passes.
+- The daily bias: slow macro inputs called the day's direction about as well as a coin flip. So the app calls it a lean with a strength score, never a forecast, and grades every one.
+- The regime: gold rose in every regime from 2019 to 2026, but the order held — deflationary risk-off best, inflationary risk-off worst. So the regime sets context and size, not direction.
+- Gold's own volatility index (GVZ): when it rises, trend days are more likely, in both periods — the basis of the day-type line.
 
-- Federal Reserve liquidity conditions
+### MarketDynamics post rules
 
-- US dollar strength
-
-- Institutional positioning through CFTC COT data
-
-- Cross-asset risk sentiment
-
-- Geopolitical risk premium
-
-- Multi-timeframe structural alignment
-
-MarketDynamics measures these factors live and translates the dispersion into a clear directional bias with confidence scoring. The backend rules system does the heavy lifting, removing the need for traders to spend hours doing this research manually.
-
-### What's inside
-
-- Macro Fundamentals Dashboard — tracks real yields, liquidity expansion, inflation trends, volatility, and dollar conditions, weighted into a live macro score for gold.
-
-- Institutional Positioning (COT) — monitors commercial hedging, large and small speculator flows to identify whether institutional exposure is building or reducing.
-
-- Cross-Asset Sentiment Engine — incorporates treasuries, equities, volatility, USD, and crypto to assess whether capital is rotating toward safety or chasing risk.
-
-- Geopolitical Risk Monitor — tracks active global flashpoints and translates them into safe-haven impact and gold-bias context.
-
-- Technical Analysis Layer — multi-timeframe trend calculations, EMA alignment, momentum analysis, daily range calculations, breakout probabilities, AI-supported research, and key levels (daily/weekly/session highs and lows).
-
-- Economic Calendar — the week's red-flag (high-impact) news events in one in-app view, with actual results delivered as they land — see the number that moves gold without leaving the app.
-
-### Recent updates
-
-- Now has a detailed weekly written report summarising the full gold intelligence dataset and also daily detailed analysis on Daily, H4, M30 timeframes machine learned from all TraderS analysis with prediction entry model and self evaluating performance metrics— educational purposes only
+- Never say 'signals', 'calls', 'entries', 'predicts', 'accuracy' or 'win rate' about the app. Say 'the Read', 'zones', 'areas of interest', 'context'.
+- Never present a test figure as what a user will get. Lab results are historical tests and must be framed as such.
+- Don't invent features: if it isn't listed here or visible in an attached screenshot, don't claim it. Screen names: Today, Technicals, Drivers, News, You.
 
 ### Built for
 
-- Serious Gold (XAUUSD) traders
-
-- Prop firm traders
-
-- Macro-aware swing traders
-
-- Intraday traders seeking context
-
-- Traders who want conviction, not noise
+- Gold traders who want to understand the day before London opens
+- Prop firm traders who need context and defined risk
+- Swing and intraday traders who bring their own entry method
+- Traders who would rather check a record than trust a promise
 
 ## 2.4 StrategyDynamics App
 
@@ -596,6 +576,10 @@ Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted in
 
 - 'Custom bot builds from £199 — DM "BOT" or visit the site.'
 
+- 'MarketDynamics — £16.99/month on the App Store. Link in bio.'
+
+- 'Get the Read before London opens — MarketDynamics on the App Store.'
+
 ### Engagement CTAs (commentary/educational)
 
 - 'Drop your XAUUSD bias for tomorrow in the comments.'
@@ -607,6 +591,8 @@ Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted in
 - 'How fast do you think I can build a bot using StrategyDynamics?'
 
 - 'Who will win this week — me vs the algos?'
+
+- 'What do you check on gold before London opens?'
 
 # 9. Trading methodology — depth for content
 
@@ -675,6 +661,11 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 11. The £190 first payout — why going cautious on payout one is the smart play (founder post).
 12. '30 EAs, 10 bought algos, zero winners' — why grid/martingale always blows up eventually (deep dive).
 13. Three months of manual coding vs 30 minutes in StrategyDynamics — the NAS open range rebuild (product proof).
+14. 'My app draws 13 chart patterns and won't call one of them a setup' — none passed testing (MarketDynamics build story).
+15. Thousands of zone plans, one rule survived — and it is still labelled unproven (MarketDynamics build story).
+16. Gold rose in every regime since 2019 — so what is the regime for? (educational).
+17. Gold's own fear gauge, GVZ: rising volatility means trend days (educational).
+18. I built version 1 and didn't use it — why 2.0 replaced my morning markups (founder post).
 
 # 10. Guardrails for the AI
 
