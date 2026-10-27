@@ -670,7 +670,7 @@ const CAPTION_FIELDS=['ig_caption','tiktok_title','tiktok_caption','threads_text
 const C={};
 function Composer(cfg){
   const ns=cfg.ns;
-  const self={ cfg, images:[], angle:cfg.angles[0].v, brand:cfg.brands[0], mode:'queue', rowIndex:null, on:{}, posts:[], loadedHist:false };
+  const self={ cfg, images:[], angle:cfg.angles[0].v, brand:cfg.brands[0], mode:'queue', rowIndex:null, on:{}, posts:[], loadedHist:false, useImages:true };
   C[ns]=self;
   const id=k=>ns+'-'+k, $=k=>document.getElementById(id(k)), call=m=>"C['"+ns+"']."+m;
   const cols=cfg.angles.length<=5?cfg.angles.length:3;
@@ -683,6 +683,7 @@ function Composer(cfg){
     +'<div class="drop" id="'+id('drop')+'" onclick="document.getElementById(\''+id('file')+'\').click()"><strong>Add screenshots</strong><span>Tap to choose · up to 10 · first image leads the carousel</span></div>'
     +'<input type="file" id="'+id('file')+'" accept="image/*" multiple hidden onchange="'+call('addFiles(this.files)')+'; this.value=\'\'">'
     +'<div class="thumbs" id="'+id('thumbs')+'"></div>'
+    +'<div class="plat-head" style="margin:4px 0 0"><span class="tiny" style="color:var(--text)">Use screenshots when writing captions</span><span class="sp"></span><button class="sw on" id="'+id('useimg')+'" onclick="'+call('toggleUseImages()')+'" aria-label="Use screenshots for captions on/off"></button></div><div class="tiny" id="'+id('useimgnote')+'" style="margin-top:4px">Claude reads the screenshots and writes about what is on screen.</div>'
     +'<div class="lbl">What\'s this post about?</div><textarea class="in" id="'+id('note')+'" rows="3" placeholder="'+esc(cfg.notePlaceholder)+'"></textarea>'
     +'<div class="lbl">'+esc(cfg.angleLabel)+'</div><div class="angles" style="grid-template-columns:repeat('+cols+',1fr)" id="'+id('angles')+'">'+cfg.angles.map(a=>'<button class="angle'+(a.v===self.angle?' active':'')+'" data-a="'+esc(a.v)+'" onclick="'+call("setAngle(this.dataset.a,this)")+'">'+esc(a.l)+'</button>').join('')+'</div>'
     +'<button class="btn primary block gen-btn" id="'+id('gen')+'" onclick="'+call('generate()')+'">Generate captions</button>'
@@ -721,6 +722,7 @@ function Composer(cfg){
     const l=$('link'); if(l&&(!l.value||l.value===old)) l.value=self.defaultLink();
     self.applyChannels();
   };
+  self.toggleUseImages=function(){ self.useImages=!self.useImages; $('useimg').classList.toggle('on',self.useImages); $('useimgnote').textContent=self.useImages?'Claude reads the screenshots and writes about what is on screen.':'Captions come from the brief and your note only. The screenshots still attach to the post.'; };
   self.toggleSw=function(p){ if(!hasChannel(self.brand,p))return; self.on[p]=!self.on[p]; $('sw-'+p).classList.toggle('on',self.on[p]); $('plat-'+p).classList.toggle('off',!self.on[p]); };
   self.setAngle=function(a,btn){ self.angle=a; document.querySelectorAll('#'+id('angles')+' .angle').forEach(x=>x.classList.toggle('active',btn?x===btn:x.dataset.a===a)); };
   self.setMode=function(m){ self.mode=m; $('mode-queue').classList.toggle('active',m==='queue'); $('mode-now').classList.toggle('active',m==='now'); $('send').textContent=m==='now'?'Post now via Buffer':'Send to Buffer'; };
@@ -749,8 +751,9 @@ function Composer(cfg){
 
   self.generate=async function(){
     const note=$('note').value.trim();
-    const images=self.images.filter(x=>x.url).map(x=>x.url);
-    if(self.images.some(x=>x.uploading)){ showToast('Still uploading…'); return; }
+    const images=self.useImages?self.images.filter(x=>x.url).map(x=>x.url):[];
+    if(self.useImages&&self.images.some(x=>x.uploading)){ showToast('Still uploading…'); return; }
+    if(!self.useImages&&!note){ showToast('Add a note first — screenshots are switched off for captions'); return; }
     if(!note&&!images.length){ showToast('Add a screenshot or a note first'); return; }
     const btn=$('gen'); btn.disabled=true; btn.classList.add('loading'); btn.textContent='Writing captions…';
     try{

@@ -164,6 +164,8 @@ The service account must have edit access to the spreadsheet — share the sheet
 
 **Frontend architecture**: both composers are instances of the `Composer(cfg)` factory in `public/index.html` (`C.s` = Sealed, `C.p` = SD photo). It renders its own markup into `#composer-<ns>` with every DOM id namespaced `<ns>-<field>` (e.g. `s-ig_caption`, `p-ig_caption`), and inline handlers call `C['<ns>'].method()`. The paste-to-upload listener targets whichever composer is on screen. Change the composer once and both brands get it.
 
+**"Use screenshots when writing captions" switch** (both composers, default on): off ⇒ the generate call sends `images: []`, so Claude writes from the brief + note only, while the uploaded screenshots still attach to the Buffer post. A note is required in that mode. Server unchanged — an empty image list already means "write from the note alone".
+
 **Local dev with the real env** (no `.env` in the repo): `railway run --service Auto_Social --environment production -- node -e "process.env.DASHBOARD_PASSWORD='';process.env.IMG_CACHE_DIR='/tmp/imgcache';require('./server.js')"` — note the `--` before `node` (without it `railway run` hangs), and override `DASHBOARD_PASSWORD` to blank so `/api/*` is open locally.
 
 ## Conventions
