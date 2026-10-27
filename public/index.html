@@ -263,6 +263,7 @@ select.in { appearance: none; -webkit-appearance: none; background-image: linear
   </div>
   <nav class="subnav" id="subnav-StrategyDynamics">
     <button class="active" onclick="setPane('sd','posts',this)">Posts<span class="n" id="postsN"></span></button>
+    <button onclick="setPane('sd','photo',this)">Photo post</button>
     <button onclick="setPane('sd','threads',this)">Thread Generator</button>
     <button onclick="setPane('sd','auto',this)">Auto Threads</button>
     <button onclick="setPane('sd','insights',this)">Insights</button>
@@ -286,6 +287,14 @@ select.in { appearance: none; -webkit-appearance: none; background-image: linear
       <button class="pill" onclick="setFilter('all',this)">All</button>
     </div>
     <div id="postsContainer"></div>
+  </div>
+
+  <div class="pane" id="pane-sd-photo">
+    <div id="composer-p"></div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-head"><span class="card-title">Recent photo posts</span><span class="card-sub">Photos tab</span></div>
+      <div id="hist-p"></div>
+    </div>
   </div>
 
   <div class="pane" id="pane-sd-threads">
@@ -336,94 +345,11 @@ select.in { appearance: none; -webkit-appearance: none; background-image: linear
 <section class="view" id="view-Sealed">
 
   <div class="pane active" id="pane-sealed-compose">
-    <div class="card hl">
-      <div class="card-head"><span class="card-title">New post</span><span class="card-sub" id="sealedDraftLabel">Draft</span></div>
-      <div class="card-body">
-        <div class="drop" id="drop" onclick="document.getElementById('fileIn').click()">
-          <strong>Add screenshots</strong>
-          <span>Tap to choose · up to 10 · first image leads the carousel</span>
-        </div>
-        <input type="file" id="fileIn" accept="image/*" multiple hidden onchange="addFiles(this.files); this.value=''">
-        <div class="thumbs" id="thumbs"></div>
-
-        <div class="lbl">What's this post about?</div>
-        <textarea class="in" id="sNote" rows="3" placeholder="e.g. Tuesday push day, hit every set, sealed at 96% — gilded"></textarea>
-
-        <div class="lbl">Angle</div>
-        <div class="angles" id="angles">
-          <button class="angle active" data-a="hook" onclick="setAngle('hook',this)">Hook</button>
-          <button class="angle" data-a="honest" onclick="setAngle('honest',this)">Honest</button>
-          <button class="angle" data-a="founder" onclick="setAngle('founder',this)">Founder</button>
-          <button class="angle" data-a="pact" onclick="setAngle('pact',this)">Pact</button>
-          <button class="angle" data-a="feature" onclick="setAngle('feature',this)">Feature</button>
-        </div>
-
-        <button class="btn primary block gen-btn" id="genBtn" onclick="sealedGenerate()">Generate captions</button>
-      </div>
-    </div>
-
-    <div id="sealedOut" style="display:none">
-      <div class="what" id="sWhat" style="display:none"></div>
-
-      <div class="plat" id="plat-instagram">
-        <div class="plat-head">
-          <span class="plat-name"><span class="sv ig">IG</span>Instagram</span>
-          <span class="sp"></span>
-          <button class="btn sm" onclick="copyEl('s-ig_caption',this)">Copy</button>
-          <button class="sw on" id="sw-instagram" onclick="toggleSw('instagram')" aria-label="Instagram on/off"></button>
-        </div>
-        <textarea class="in" id="s-ig_caption" rows="6" oninput="sCC('ig_caption',2200);autosize(this)"></textarea>
-        <div class="cc" id="cc-ig_caption">0 / 2200</div>
-      </div>
-
-      <div class="plat" id="plat-tiktok">
-        <div class="plat-head">
-          <span class="plat-name"><span class="sv tt">TT</span>TikTok</span>
-          <span class="sp"></span>
-          <button class="btn sm" onclick="copyEl('s-tiktok_caption',this)">Copy</button>
-          <button class="sw on" id="sw-tiktok" onclick="toggleSw('tiktok')" aria-label="TikTok on/off"></button>
-        </div>
-        <input class="in" id="s-tiktok_title" placeholder="Title (bold, ≤ 90)" oninput="sCC('tiktok_title',90)">
-        <div class="cc" id="cc-tiktok_title">0 / 90</div>
-        <textarea class="in" id="s-tiktok_caption" rows="4" oninput="sCC('tiktok_caption',2200);autosize(this)"></textarea>
-        <div class="cc" id="cc-tiktok_caption">0 / 2200</div>
-      </div>
-
-      <div class="plat" id="plat-threads">
-        <div class="plat-head">
-          <span class="plat-name"><span class="sv th">@</span>Threads</span>
-          <span class="sp"></span>
-          <button class="btn sm" onclick="copyEl('s-threads_text',this)">Copy</button>
-          <button class="sw on" id="sw-threads" onclick="toggleSw('threads')" aria-label="Threads on/off"></button>
-        </div>
-        <textarea class="in" id="s-threads_text" rows="4" oninput="sCC('threads_text',500);autosize(this)"></textarea>
-        <div class="cc" id="cc-threads_text">0 / 500</div>
-        <input class="in mono" id="s-threads_topic" placeholder="topic tag (no #)" style="margin-top:6px">
-        <div class="tiny" id="threadsNote" style="margin-top:6px"></div>
-      </div>
-
-      <div class="plat">
-        <div class="lbl">Shop Grid link (Instagram)</div>
-        <input class="in mono" id="s-link" placeholder="https://…">
-      </div>
-
-      <div class="send-bar">
-        <div class="mode">
-          <button class="active" id="mode-queue" onclick="setMode('queue')">Add to queue</button>
-          <button id="mode-now" onclick="setMode('now')">Post now</button>
-        </div>
-        <div class="row">
-          <button class="btn" onclick="sealedSave(true)">Save draft</button>
-          <button class="btn primary" id="sendBtn" style="flex:2" onclick="sealedSend()">Send to Buffer</button>
-        </div>
-        <div class="res" id="sealedRes"></div>
-      </div>
-      <button class="btn ghost block" style="margin-top:10px" onclick="sealedReset()">Start a new post</button>
-    </div>
+    <div id="composer-s"></div>
   </div>
 
   <div class="pane" id="pane-sealed-history">
-    <div class="card"><div id="sealedHistory"></div></div>
+    <div class="card"><div id="hist-s"></div></div>
   </div>
 </section>
 
@@ -438,8 +364,7 @@ select.in { appearance: none; -webkit-appearance: none; background-image: linear
 let brand = localStorage.getItem('as.brand') || 'StrategyDynamics';
 let channels = null;              // from GET /api/channels
 let allPosts = [], currentFilter = 'Pending Review';
-let sealedPosts = [];
-const loaded = { auto:false, insights:false, sealedHistory:false };
+const loaded = { auto:false, insights:false };
 
 // ── Auth gate: any /api 401 pops the login overlay ──
 const _fetch = window.fetch.bind(window);
@@ -487,23 +412,24 @@ function setBrand(b){
   document.querySelector('meta[name=theme-color]').content = b==='Sealed'?'#0C0D0F':'#080C12';
   const pb=document.getElementById('pendingBadge'); pb.style.display=(b==='StrategyDynamics'&&pb.textContent)?'':'none';
   if(b==='StrategyDynamics' && !allPosts.length) loadPosts();
-  if(b==='Sealed'){ applySealedChannels(); if(!loaded.sealedHistory) loadSealedHistory(); }
+  if(b==='Sealed'){ C.s.applyChannels(); if(!C.s.loadedHist) C.s.loadHistory(); }
 }
 function setPane(group, name, btn){
   btn.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active')); btn.classList.add('active');
   document.querySelectorAll('#view-'+(group==='sd'?'StrategyDynamics':'Sealed')+' .pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+group+'-'+name));
   if(name==='auto'&&!loaded.auto) loadThreadLog();
   if(name==='insights'&&!loaded.insights) loadInsights();
-  if(name==='history') loadSealedHistory();
+  if(name==='history') C.s.loadHistory();
+  if(name==='photo') C.p.loadHistory();
   window.scrollTo({top:0});
 }
 function refreshCurrent(){
-  if(brand==='StrategyDynamics'){ loadPosts(); loaded.auto=loaded.insights=false; const a=document.querySelector('#pane-sd-auto.active'); if(a)loadThreadLog(); const i=document.querySelector('#pane-sd-insights.active'); if(i)loadInsights(); }
-  else loadSealedHistory();
+  if(brand==='StrategyDynamics'){ loadPosts(); loaded.auto=loaded.insights=false; const a=document.querySelector('#pane-sd-auto.active'); if(a)loadThreadLog(); const i=document.querySelector('#pane-sd-insights.active'); if(i)loadInsights(); if(document.querySelector('#pane-sd-photo.active')) C.p.loadHistory(); }
+  else C.s.loadHistory();
 }
 async function loadChannels(){
   try{ const r=await fetch('/api/channels'); channels=await r.json(); }catch{ channels=null; }
-  applySealedChannels();
+  Object.values(C).forEach(c=>c.applyChannels());
   if(allPosts.length) renderPosts();
 }
 
@@ -734,31 +660,186 @@ async function loadInsights(){
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sealed — composer
+// Photo composers — one factory, two instances (screenshots → note → angle →
+// Generate → edit per platform → Save / Send to Buffer):
+//   C.s  Sealed                         /api/sealed  brand fixed, angles
+//   C.p  StrategyDynamics/MarketDynamics /api/photo   brand toggle, pillars
+// Every DOM id is namespaced `<ns>-<field>`; inline handlers call C['<ns>'].
 // ─────────────────────────────────────────────────────────────────────────────
-const S={ images:[], angle:'hook', mode:'queue', rowIndex:null, on:{instagram:true,tiktok:true,threads:true} };
-const SEALED_FIELDS=['ig_caption','tiktok_title','tiktok_caption','threads_text','threads_topic','link'];
+const CAPTION_FIELDS=['ig_caption','tiktok_title','tiktok_caption','threads_text','threads_topic','link'];
+const C={};
+function Composer(cfg){
+  const ns=cfg.ns;
+  const self={ cfg, images:[], angle:cfg.angles[0].v, brand:cfg.brands[0], mode:'queue', rowIndex:null, on:{}, posts:[], loadedHist:false };
+  C[ns]=self;
+  const id=k=>ns+'-'+k, $=k=>document.getElementById(id(k)), call=m=>"C['"+ns+"']."+m;
+  const cols=cfg.angles.length<=5?cfg.angles.length:3;
+  const plat=(p,sv,name,inner)=>'<div class="plat" id="'+id('plat-'+p)+'"><div class="plat-head"><span class="plat-name"><span class="sv '+sv+'">'+(sv==='th'?'@':sv.toUpperCase())+'</span>'+name+'</span><span class="sp"></span><button class="btn sm" onclick="copyEl(\''+id(p==='instagram'?'ig_caption':p==='tiktok'?'tiktok_caption':'threads_text')+'\',this)">Copy</button><button class="sw on" id="'+id('sw-'+p)+'" onclick="'+call("toggleSw('"+p+"')")+'" aria-label="'+name+' on/off"></button></div>'+inner+'</div>';
+  const ta=(f,max,rows)=>'<textarea class="in" id="'+id(f)+'" rows="'+rows+'" oninput="'+call("cc('"+f+"',"+max+")")+';autosize(this)"></textarea><div class="cc" id="'+id('cc-'+f)+'">0 / '+max+'</div>';
 
-function applySealedChannels(){
-  for(const p of ['instagram','tiktok','threads']){
-    const ok=hasChannel('Sealed',p); const sw=document.getElementById('sw-'+p);
-    if(!ok){ S.on[p]=false; } else if(S.on[p]===undefined) S.on[p]=true;
-    if(sw){ sw.disabled=!ok; sw.classList.toggle('on',!!S.on[p]); }
-    const plat=document.getElementById('plat-'+p); if(plat)plat.classList.toggle('off',!S.on[p]);
-  }
-  const tn=document.getElementById('threadsNote'); if(tn) tn.textContent=hasChannel('Sealed','threads')?'The topic tag shows beside the account name — hashtags don\'t link on Threads.':'Threads isn\'t connected in Buffer yet — the caption is still generated so you can copy it.';
+  document.getElementById(cfg.mount).innerHTML=
+    '<div class="card hl"><div class="card-head"><span class="card-title">'+esc(cfg.title)+'</span><span class="card-sub" id="'+id('label')+'">Draft</span></div><div class="card-body">'
+    +(cfg.brands.length>1?'<div class="lbl">Brand</div><div class="angles" style="grid-template-columns:repeat('+cfg.brands.length+',1fr)" id="'+id('brands')+'">'+cfg.brands.map(b=>'<button class="angle'+(b===self.brand?' active':'')+'" data-b="'+esc(b)+'" onclick="'+call("setBrand(this.dataset.b,this)")+'">'+esc(b)+'</button>').join('')+'</div><div class="tiny" id="'+id('brandnote')+'" style="margin:6px 0 12px"></div>':'')
+    +'<div class="drop" id="'+id('drop')+'" onclick="document.getElementById(\''+id('file')+'\').click()"><strong>Add screenshots</strong><span>Tap to choose · up to 10 · first image leads the carousel</span></div>'
+    +'<input type="file" id="'+id('file')+'" accept="image/*" multiple hidden onchange="'+call('addFiles(this.files)')+'; this.value=\'\'">'
+    +'<div class="thumbs" id="'+id('thumbs')+'"></div>'
+    +'<div class="lbl">What\'s this post about?</div><textarea class="in" id="'+id('note')+'" rows="3" placeholder="'+esc(cfg.notePlaceholder)+'"></textarea>'
+    +'<div class="lbl">'+esc(cfg.angleLabel)+'</div><div class="angles" style="grid-template-columns:repeat('+cols+',1fr)" id="'+id('angles')+'">'+cfg.angles.map(a=>'<button class="angle'+(a.v===self.angle?' active':'')+'" data-a="'+esc(a.v)+'" onclick="'+call("setAngle(this.dataset.a,this)")+'">'+esc(a.l)+'</button>').join('')+'</div>'
+    +'<button class="btn primary block gen-btn" id="'+id('gen')+'" onclick="'+call('generate()')+'">Generate captions</button>'
+    +'</div></div>'
+    +'<div id="'+id('out')+'" style="display:none"><div class="what" id="'+id('what')+'" style="display:none"></div>'
+    +plat('instagram','ig','Instagram',ta('ig_caption',2200,6))
+    +plat('tiktok','tt','TikTok','<input class="in" id="'+id('tiktok_title')+'" placeholder="Title (bold, ≤ 90)" oninput="'+call("cc('tiktok_title',90)")+'"><div class="cc" id="'+id('cc-tiktok_title')+'">0 / 90</div>'+ta('tiktok_caption',2200,4))
+    +plat('threads','th','Threads',ta('threads_text',500,4)+'<input class="in mono" id="'+id('threads_topic')+'" placeholder="topic tag (no #)" style="margin-top:6px"><div class="tiny" id="'+id('threadsnote')+'" style="margin-top:6px"></div>')
+    +'<div class="plat"><div class="lbl">Link (Instagram Shop Grid)</div><input class="in mono" id="'+id('link')+'" placeholder="https://…"></div>'
+    +'<div class="send-bar"><div class="mode"><button class="active" id="'+id('mode-queue')+'" onclick="'+call("setMode('queue')")+'">Add to queue</button><button id="'+id('mode-now')+'" onclick="'+call("setMode('now')")+'">Post now</button></div>'
+    +'<div class="row"><button class="btn" onclick="'+call('save(true)')+'">Save draft</button><button class="btn primary" id="'+id('send')+'" style="flex:2" onclick="'+call('send()')+'">Send to Buffer</button></div><div class="res" id="'+id('res')+'"></div></div>'
+    +'<button class="btn ghost block" style="margin-top:10px" onclick="'+call('reset()')+'">Start a new post</button></div>';
+
+  const drop=$('drop');
+  ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+  ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+  drop.addEventListener('drop',e=>self.addFiles(e.dataTransfer.files));
+
+  self.visible=()=>{ const m=document.getElementById(cfg.mount); return !!(m&&m.offsetParent!==null); };
+  self.defaultLink=()=>(channels&&channels.brands[self.brand]&&channels.brands[self.brand].link)||'';
+  self.applyChannels=function(){
+    let any=false;
+    for(const p of ['instagram','tiktok','threads']){
+      const ok=hasChannel(self.brand,p); any=any||ok; const sw=$('sw-'+p);
+      if(!ok) self.on[p]=false; else if(self.on[p]===undefined) self.on[p]=true;
+      if(sw){ sw.disabled=!ok; sw.classList.toggle('on',!!self.on[p]); }
+      const pl=$('plat-'+p); if(pl)pl.classList.toggle('off',!self.on[p]);
+    }
+    const tn=$('threadsnote'); if(tn) tn.textContent=hasChannel(self.brand,'threads')?'The topic tag shows beside the account name — hashtags don\'t link on Threads.':self.brand+' Threads isn\'t connected in Buffer yet — the caption is still generated so you can copy it.';
+    const bn=$('brandnote'); if(bn) bn.textContent=(channels&&!any)?self.brand+' has no Buffer channels connected yet — captions can still be generated, saved and copied.':'';
+  };
+  self.setBrand=function(b,btn){
+    const old=self.defaultLink(); self.brand=b;
+    document.querySelectorAll('#'+id('brands')+' .angle').forEach(x=>x.classList.toggle('active',x===btn||(!btn&&x.dataset.b===b)));
+    for(const p of ['instagram','tiktok','threads']) self.on[p]=hasChannel(b,p)?true:false;
+    const l=$('link'); if(l&&(!l.value||l.value===old)) l.value=self.defaultLink();
+    self.applyChannels();
+  };
+  self.toggleSw=function(p){ if(!hasChannel(self.brand,p))return; self.on[p]=!self.on[p]; $('sw-'+p).classList.toggle('on',self.on[p]); $('plat-'+p).classList.toggle('off',!self.on[p]); };
+  self.setAngle=function(a,btn){ self.angle=a; document.querySelectorAll('#'+id('angles')+' .angle').forEach(x=>x.classList.toggle('active',btn?x===btn:x.dataset.a===a)); };
+  self.setMode=function(m){ self.mode=m; $('mode-queue').classList.toggle('active',m==='queue'); $('mode-now').classList.toggle('active',m==='now'); $('send').textContent=m==='now'?'Post now via Buffer':'Send to Buffer'; };
+  self.cc=function(f,max){ const el=$(f), cc=$('cc-'+f); if(!el||!cc)return; cc.textContent=el.value.length+' / '+max; cc.classList.toggle('over',el.value.length>max); el.classList.toggle('over',el.value.length>max); };
+
+  self.addFiles=async function(files){
+    const list=[...files].filter(f=>f.type.startsWith('image/'));
+    if(!list.length)return;
+    if(self.images.length+list.length>10){ showToast('Max 10 images'); return; }
+    for(const f of list){
+      const slot={ url:'', local:URL.createObjectURL(f), uploading:true }; self.images.push(slot); self.renderThumbs();
+      try{
+        const data=await fileToJpeg(f);
+        const r=await fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:[{data}]})});
+        const j=await r.json(); if(!r.ok)throw new Error(j.error||'Upload failed');
+        slot.url=j.images[0].url; slot.uploading=false;
+      }catch(e){ self.images=self.images.filter(x=>x!==slot); showToast('Upload failed: '+e.message); }
+      self.renderThumbs();
+    }
+  };
+  self.renderThumbs=function(){
+    $('thumbs').innerHTML=self.images.map((im,i)=>'<div class="thumb'+(im.uploading?' uploading':'')+'"><img src="'+esc(im.local||im.url)+'" alt=""><span class="n">'+(i+1)+(im.uploading?' ↑':'')+'</span><button class="x" onclick="'+call('removeImg('+i+')')+'" aria-label="Remove">×</button></div>').join('');
+    drop.querySelector('strong').textContent=self.images.length?'Add more':'Add screenshots';
+  };
+  self.removeImg=function(i){ self.images.splice(i,1); self.renderThumbs(); };
+
+  self.generate=async function(){
+    const note=$('note').value.trim();
+    const images=self.images.filter(x=>x.url).map(x=>x.url);
+    if(self.images.some(x=>x.uploading)){ showToast('Still uploading…'); return; }
+    if(!note&&!images.length){ showToast('Add a screenshot or a note first'); return; }
+    const btn=$('gen'); btn.disabled=true; btn.classList.add('loading'); btn.textContent='Writing captions…';
+    try{
+      const r=await fetch(cfg.api+'/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({brand:self.brand,note,angle:self.angle,pillar:self.angle,images})});
+      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Generation failed');
+      self.fill(d);
+      const w=$('what'); if(d.what_i_see){ w.textContent='Model sees: '+d.what_i_see; w.style.display=''; } else w.style.display='none';
+      setTimeout(()=>$('out').scrollIntoView({behavior:'smooth',block:'start'}),50);
+      showToast('Captions ready — edit, then send');
+    }catch(e){ showToast(e.message); }
+    finally{ btn.disabled=false; btn.classList.remove('loading'); btn.textContent='Regenerate captions'; }
+  };
+  self.fill=function(d){
+    for(const f of CAPTION_FIELDS){ const el=$(f); if(el&&d[f]!==undefined)el.value=d[f]||''; }
+    if(!$('link').value) $('link').value=self.defaultLink();
+    self.cc('ig_caption',2200); self.cc('tiktok_title',90); self.cc('tiktok_caption',2200); self.cc('threads_text',500);
+    $('out').style.display='';
+    requestAnimationFrame(()=>['ig_caption','tiktok_caption','threads_text'].forEach(f=>autosize($(f))));
+  };
+  self.payload=function(){
+    const o={ brand:self.brand, note:$('note').value.trim(), angle:self.angle, images:self.images.filter(x=>x.url).map(x=>x.url), hook:$('tiktok_title').value.trim() };
+    for(const f of CAPTION_FIELDS) o[f]=$(f).value;
+    return o;
+  };
+  self.save=async function(toast){
+    const body=self.payload();
+    try{
+      if(self.rowIndex){ const r=await fetch(cfg.api+'/posts/'+self.rowIndex,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(!r.ok)throw new Error('Save failed'); }
+      else { const r=await fetch(cfg.api+'/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); const j=await r.json(); if(!r.ok||!j.rowIndex)throw new Error(j.error||'Save failed'); self.rowIndex=j.rowIndex; }
+    }catch(e){ if(!toast)throw e; showToast(e.message); return; }
+    $('label').textContent='Row '+self.rowIndex;
+    self.loadedHist=false;
+    if(toast)showToast('Draft saved ✓');
+  };
+  self.send=async function(){
+    const chs=['instagram','tiktok','threads'].filter(p=>self.on[p]&&hasChannel(self.brand,p));
+    if(!chs.length){ showToast('No channel switched on'); return; }
+    if(!self.images.filter(x=>x.url).length){ showToast('Add at least one screenshot'); return; }
+    if(self.mode==='now'&&!confirm('Post to '+self.brand+' '+chs.join(', ')+' NOW — this goes live. Continue?'))return;
+    const btn=$('send'), out=$('res'); out.innerHTML='';
+    const orig=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
+    try{
+      await self.save(false);
+      const r=await fetch(cfg.api+'/send/'+self.rowIndex,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({channels:chs,mode:self.mode})});
+      const d=await r.json(); if(!r.ok)throw new Error(d.error||'Send failed');
+      out.innerHTML=Object.entries(d.results||{}).map(([k,v])=>v.ok?'<div class="ok">✓ '+esc(k)+' — '+(self.mode==='now'?'posted':'queued')+'</div>':'<div class="err">✕ '+esc(k)+' — '+esc(v.error||'failed')+'</div>').join('');
+      const anyFail=Object.values(d.results||{}).some(v=>!v.ok);
+      showToast(anyFail?'Sent — some channels failed':(self.mode==='now'?'Posted via Buffer ✓':'Queued in Buffer ✓'));
+      self.loadedHist=false; if(cfg.hist&&self.visible()) self.loadHistory();
+    }catch(e){ out.innerHTML='<div class="err">'+esc(e.message)+'</div>'; showToast('Send failed'); }
+    finally{ btn.disabled=false; btn.textContent=orig; }
+  };
+  self.reset=function(){
+    self.images=[]; self.rowIndex=null; self.renderThumbs();
+    $('note').value=''; for(const f of CAPTION_FIELDS)$(f).value='';
+    $('out').style.display='none'; $('res').innerHTML='';
+    $('label').textContent='Draft'; $('gen').textContent='Generate captions';
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  // ── History (saved rows in this store's sheet tab) ──
+  self.loadHistory=async function(){
+    const el=document.getElementById(cfg.hist); if(!el)return;
+    if(!self.loadedHist)el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
+    spin(true);
+    try{
+      const r=await fetch(cfg.api+'/posts'); self.posts=await r.json(); if(!Array.isArray(self.posts))throw 0; self.loadedHist=true;
+      if(cfg.countEl) document.getElementById(cfg.countEl).textContent=self.posts.filter(p=>p.status!=='Sent').length||'';
+      if(!self.posts.length){ el.innerHTML='<div class="empty"><div class="ic">○</div><div class="tx">No '+esc(cfg.noun)+' yet</div><div class="sb">Compose one — it lands here</div></div>'; return; }
+      el.innerHTML=self.posts.map(p=>{
+        const sent=['instagram','tiktok','threads'].filter(k=>p['sent_'+k]);
+        return '<button class="hist" onclick="'+call('open('+p.rowIndex+')')+'">'+(p.images[0]?'<img src="'+esc(p.images[0])+'" alt="">':'<div style="width:42px;height:74px;border-radius:6px;background:var(--bg3);flex:none"></div>')+'<div class="t"><div class="h">'+esc(p.hook||p.tiktok_title||p.note||'Untitled')+'</div><div class="m"><span>'+esc(String(p.created_at).slice(0,10))+'</span>'+(cfg.brands.length>1?'<span>'+esc(p.brand||'')+'</span>':'')+'<span>'+esc(cfg.angleShort?cfg.angleShort(p.angle):(p.angle||''))+'</span>'+(sent.length?'<span class="s">✓ '+sent.join(' · ')+'</span>':'<span>'+esc(p.status||'Draft')+'</span>')+'</div></div><span class="chev">›</span></button>';
+      }).join('');
+    }catch{ el.innerHTML='<div class="empty"><div class="tx">Couldn\'t load history</div></div>'; }
+    finally{ spin(false); }
+  };
+  self.open=function(row){
+    const p=self.posts.find(x=>x.rowIndex===row); if(!p)return;
+    self.rowIndex=row; self.images=p.images.map(u=>({url:u,uploading:false})); self.renderThumbs();
+    $('note').value=p.note||'';
+    if(cfg.brands.length>1) self.setBrand(cfg.brands.includes(p.brand)?p.brand:cfg.brands[0]);
+    self.setAngle(cfg.angles.some(a=>a.v===p.angle)?p.angle:cfg.angles[0].v);
+    self.fill(p); $('what').style.display='none';
+    $('label').textContent='Row '+row+(p.status==='Sent'?' · sent':''); $('gen').textContent='Regenerate captions';
+    $('res').innerHTML='';
+    if(cfg.afterOpen) cfg.afterOpen(); else window.scrollTo({top:0,behavior:'smooth'});
+  };
+  return self;
 }
-function toggleSw(p){ if(!hasChannel('Sealed',p))return; S.on[p]=!S.on[p]; document.getElementById('sw-'+p).classList.toggle('on',S.on[p]); document.getElementById('plat-'+p).classList.toggle('off',!S.on[p]); }
-function setAngle(a,btn){ S.angle=a; document.querySelectorAll('.angle').forEach(x=>x.classList.toggle('active',x===btn)); }
-function setMode(m){ S.mode=m; document.getElementById('mode-queue').classList.toggle('active',m==='queue'); document.getElementById('mode-now').classList.toggle('active',m==='now'); document.getElementById('sendBtn').textContent=m==='now'?'Post now via Buffer':'Send to Buffer'; }
-function sCC(f,max){ const el=document.getElementById('s-'+f), cc=document.getElementById('cc-'+f); if(!el||!cc)return; cc.textContent=el.value.length+' / '+max; cc.classList.toggle('over',el.value.length>max); el.classList.toggle('over',el.value.length>max); }
-
-// Drag & drop + paste
-const drop=document.getElementById('drop');
-['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
-['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
-drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
-document.addEventListener('paste',e=>{ if(brand!=='Sealed')return; const fs=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/')); if(fs.length)addFiles(fs); });
 
 // Downscale on the client (max 2048px long edge, JPEG q.9) so uploads are
 // quick on mobile data and the server never has to re-encode.
@@ -770,115 +851,17 @@ function fileToJpeg(file){
     img.src=url;
   });
 }
-async function addFiles(files){
-  const list=[...files].filter(f=>f.type.startsWith('image/'));
-  if(!list.length)return;
-  if(S.images.length+list.length>10){ showToast('Max 10 images'); return; }
-  for(const f of list){
-    const slot={ url:'', local:URL.createObjectURL(f), uploading:true }; S.images.push(slot); renderThumbs();
-    try{
-      const data=await fileToJpeg(f);
-      const r=await fetch('/api/sealed/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({images:[{data}]})});
-      const j=await r.json(); if(!r.ok)throw new Error(j.error||'Upload failed');
-      slot.url=j.images[0].url; slot.uploading=false;
-    }catch(e){ S.images=S.images.filter(x=>x!==slot); showToast('Upload failed: '+e.message); }
-    renderThumbs();
-  }
-}
-function renderThumbs(){
-  const el=document.getElementById('thumbs');
-  el.innerHTML=S.images.map((im,i)=>'<div class="thumb'+(im.uploading?' uploading':'')+'"><img src="'+esc(im.local||im.url)+'" alt=""><span class="n">'+(i+1)+(im.uploading?' ↑':'')+'</span><button class="x" onclick="removeImg('+i+')" aria-label="Remove">×</button></div>').join('');
-  document.querySelector('#drop strong').textContent=S.images.length?'Add more':'Add screenshots';
-}
-function removeImg(i){ S.images.splice(i,1); renderThumbs(); }
+// Paste a screenshot anywhere → goes to whichever composer is on screen.
+document.addEventListener('paste',e=>{ const fs=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/')); if(!fs.length)return; const c=Object.values(C).find(x=>x.visible()); if(c)c.addFiles(fs); });
 
-async function sealedGenerate(){
-  const note=document.getElementById('sNote').value.trim();
-  const images=S.images.filter(x=>x.url).map(x=>x.url);
-  if(S.images.some(x=>x.uploading)){ showToast('Still uploading…'); return; }
-  if(!note&&!images.length){ showToast('Add a screenshot or a note first'); return; }
-  const btn=document.getElementById('genBtn'); btn.disabled=true; btn.classList.add('loading'); btn.textContent='Writing captions…';
-  try{
-    const r=await fetch('/api/sealed/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({note,angle:S.angle,images})});
-    const d=await r.json(); if(!r.ok)throw new Error(d.error||'Generation failed');
-    fillSealed(d); document.getElementById('sealedOut').style.display='';
-    const w=document.getElementById('sWhat'); if(d.what_i_see){ w.textContent='Model sees: '+d.what_i_see; w.style.display=''; } else w.style.display='none';
-    setTimeout(()=>document.getElementById('sealedOut').scrollIntoView({behavior:'smooth',block:'start'}),50);
-    showToast('Captions ready — edit, then send');
-  }catch(e){ showToast(e.message); }
-  finally{ btn.disabled=false; btn.classList.remove('loading'); btn.textContent='Regenerate captions'; }
-}
-function fillSealed(d){
-  for(const f of SEALED_FIELDS){ const el=document.getElementById('s-'+f); if(el&&d[f]!==undefined)el.value=d[f]||''; }
-  if(!document.getElementById('s-link').value) document.getElementById('s-link').value=(channels&&channels.brands.Sealed&&channels.brands.Sealed.link)||'';
-  sCC('ig_caption',2200); sCC('tiktok_title',90); sCC('tiktok_caption',2200); sCC('threads_text',500);
-  document.getElementById('sealedOut').style.display='';
-  requestAnimationFrame(()=>['s-ig_caption','s-tiktok_caption','s-threads_text'].forEach(id=>autosize(document.getElementById(id))));
-}
-function sealedPayload(){
-  const o={ note:document.getElementById('sNote').value.trim(), angle:S.angle, images:S.images.filter(x=>x.url).map(x=>x.url), hook:document.getElementById('s-tiktok_title').value.trim() };
-  for(const f of SEALED_FIELDS) o[f]=document.getElementById('s-'+f).value;
-  return o;
-}
-async function sealedSave(toast){
-  const body=sealedPayload();
-  if(S.rowIndex){ const r=await fetch('/api/sealed/posts/'+S.rowIndex,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); if(!r.ok)throw new Error('Save failed'); }
-  else { const r=await fetch('/api/sealed/posts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}); const j=await r.json(); if(!r.ok||!j.rowIndex)throw new Error(j.error||'Save failed'); S.rowIndex=j.rowIndex; }
-  document.getElementById('sealedDraftLabel').textContent='Row '+S.rowIndex;
-  loaded.sealedHistory=false;
-  if(toast)showToast('Draft saved ✓');
-}
-async function sealedSend(){
-  const chs=['instagram','tiktok','threads'].filter(p=>S.on[p]&&hasChannel('Sealed',p));
-  if(!chs.length){ showToast('No channel switched on'); return; }
-  if(!S.images.filter(x=>x.url).length){ showToast('Add at least one screenshot'); return; }
-  if(S.mode==='now'&&!confirm('Post to '+chs.join(', ')+' NOW — this goes live. Continue?'))return;
-  const btn=document.getElementById('sendBtn'), out=document.getElementById('sealedRes'); out.innerHTML='';
-  const orig=btn.textContent; btn.disabled=true; btn.textContent='Sending…';
-  try{
-    await sealedSave(false);
-    const r=await fetch('/api/sealed/send/'+S.rowIndex,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({channels:chs,mode:S.mode})});
-    const d=await r.json(); if(!r.ok)throw new Error(d.error||'Send failed');
-    out.innerHTML=Object.entries(d.results||{}).map(([k,v])=>v.ok?'<div class="ok">✓ '+esc(k)+' — '+(S.mode==='now'?'posted':'queued')+'</div>':'<div class="err">✕ '+esc(k)+' — '+esc(v.error||'failed')+'</div>').join('');
-    const anyFail=Object.values(d.results||{}).some(v=>!v.ok);
-    showToast(anyFail?'Sent — some channels failed':(S.mode==='now'?'Posted via Buffer ✓':'Queued in Buffer ✓'));
-    loaded.sealedHistory=false;
-  }catch(e){ out.innerHTML='<div class="err">'+esc(e.message)+'</div>'; showToast('Send failed'); }
-  finally{ btn.disabled=false; btn.textContent=orig; }
-}
-function sealedReset(){
-  S.images=[]; S.rowIndex=null; renderThumbs();
-  document.getElementById('sNote').value=''; for(const f of SEALED_FIELDS)document.getElementById('s-'+f).value='';
-  document.getElementById('sealedOut').style.display='none'; document.getElementById('sealedRes').innerHTML='';
-  document.getElementById('sealedDraftLabel').textContent='Draft'; document.getElementById('genBtn').textContent='Generate captions';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ── Sealed history ──
-async function loadSealedHistory(){
-  const el=document.getElementById('sealedHistory'); if(!loaded.sealedHistory)el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
-  spin(true);
-  try{
-    const r=await fetch('/api/sealed/posts'); sealedPosts=await r.json(); if(!Array.isArray(sealedPosts))throw 0; loaded.sealedHistory=true;
-    document.getElementById('sealedN').textContent=sealedPosts.filter(p=>p.status!=='Sent').length||'';
-    if(!sealedPosts.length){ el.innerHTML='<div class="empty"><div class="ic">○</div><div class="tx">No Sealed posts yet</div><div class="sb">Compose one — it lands here</div></div>'; return; }
-    el.innerHTML=sealedPosts.map(p=>{
-      const sent=['instagram','tiktok','threads'].filter(k=>p['sent_'+k]);
-      return '<button class="hist" onclick="openSealed('+p.rowIndex+')">'+(p.images[0]?'<img src="'+esc(p.images[0])+'" alt="">':'<div style="width:42px;height:74px;border-radius:6px;background:var(--bg3);flex:none"></div>')+'<div class="t"><div class="h">'+esc(p.hook||p.tiktok_title||p.note||'Untitled')+'</div><div class="m"><span>'+esc(String(p.created_at).slice(0,10))+'</span><span>'+esc(p.angle||'')+'</span>'+(sent.length?'<span class="s">✓ '+sent.join(' · ')+'</span>':'<span>'+esc(p.status||'Draft')+'</span>')+'</div></div><span class="chev">›</span></button>';
-    }).join('');
-  }catch{ el.innerHTML='<div class="empty"><div class="tx">Couldn\'t load history</div></div>'; }
-  finally{ spin(false); }
-}
-function openSealed(row){
-  const p=sealedPosts.find(x=>x.rowIndex===row); if(!p)return;
-  S.rowIndex=row; S.images=p.images.map(u=>({url:u,uploading:false})); renderThumbs();
-  document.getElementById('sNote').value=p.note||'';
-  const ab=document.querySelector('.angle[data-a="'+(p.angle||'hook')+'"]'); if(ab)setAngle(p.angle||'hook',ab);
-  fillSealed(p); document.getElementById('sealedOut').style.display=''; document.getElementById('sWhat').style.display='none';
-  document.getElementById('sealedDraftLabel').textContent='Row '+row+(p.status==='Sent'?' · sent':''); document.getElementById('genBtn').textContent='Regenerate captions';
-  document.getElementById('sealedRes').innerHTML='';
-  const nav=document.querySelector('#subnav-Sealed button'); setPane('sealed','compose',nav);
-}
+Composer({ ns:'s', mount:'composer-s', hist:'hist-s', countEl:'sealedN', api:'/api/sealed', title:'New post', noun:'Sealed posts',
+  brands:['Sealed'], angleLabel:'Angle', notePlaceholder:'e.g. Tuesday push day, hit every set, sealed at 96% — gilded',
+  angles:[{v:'hook',l:'Hook'},{v:'honest',l:'Honest'},{v:'founder',l:'Founder'},{v:'pact',l:'Pact'},{v:'feature',l:'Feature'}],
+  afterOpen:()=>setPane('sealed','compose',document.querySelector('#subnav-Sealed button')) });
+Composer({ ns:'p', mount:'composer-p', hist:'hist-p', api:'/api/photo', title:'Photo post', noun:'photo posts',
+  brands:['StrategyDynamics','MarketDynamics'], angleLabel:'Pillar', angleShort:pillarShort,
+  notePlaceholder:'e.g. Friday payout certificate from FTMO — £4,200, third this quarter',
+  angles:[{v:'Educational',l:'Educational'},{v:'Market Commentary',l:'Commentary'},{v:'Strategy Deep Dive',l:'Deep Dive'},{v:'Performance Proof',l:'Proof'},{v:'Product Showcase',l:'Product'},{v:'Behind the Scenes',l:'Founder'}] });
 
 // ── Boot ──
 loadChannels();
