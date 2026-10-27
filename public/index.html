@@ -399,7 +399,7 @@ function flashBtn(btn){ if(!btn)return; const o=btn.textContent; btn.classList.a
 function copyEl(id,btn){ const el=document.getElementById(id); if(!el)return; doC(el.value!==undefined?el.value:el.textContent); flashBtn(btn); showToast('Copied'); }
 function pillarShort(p){ const m={'Performance Proof':'Proof','Strategy Deep Dive':'Strat','Strategy / Algo Deep Dives':'Strat','Product Showcase':'Product','Educational':'Edu','Educational Principles':'Edu','Market Commentary':'Commentary','Behind the Scenes':'BTS','Behind the Scenes / Founder':'BTS'}; return m[p]||p||'—'; }
 function spin(on){ document.getElementById('refreshBtn').classList.toggle('spinning',!!on); }
-function hasChannel(b,p){ return !!(channels && channels.brands[b] && channels.brands[b].channels[p]); }
+function hasChannel(b,p){ return !!(channels && channels.brands && channels.brands[b] && channels.brands[b].channels[p]); }
 
 // ── Brand + panes ──
 function setBrand(b){
@@ -428,7 +428,7 @@ function refreshCurrent(){
   else C.s.loadHistory();
 }
 async function loadChannels(){
-  try{ const r=await fetch('/api/channels'); channels=await r.json(); }catch{ channels=null; }
+  try{ const r=await fetch('/api/channels'); channels=r.ok?await r.json():null; }catch{ channels=null; }
   Object.values(C).forEach(c=>c.applyChannels());
   if(allPosts.length) renderPosts();
 }
