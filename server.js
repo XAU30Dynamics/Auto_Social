@@ -516,7 +516,7 @@ const BRANDS = {
   },
   MarketDynamics: {
     label: 'MarketDynamics',
-    link: 'https://strategydynamics.co.uk',
+    link: 'https://apps.apple.com/app/marketdynamics/id6759715965', // App Store page (Shop Grid link on IG posts)
     channels: {
       instagram: '', // marketdynamics_app — removed from Buffer 1 Oct 2026
       threads:   '',
