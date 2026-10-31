@@ -992,12 +992,22 @@ app.post('/api/photo/generate', async (req, res) => {
   const brief = await loadSDBrief();
   if (!brief) return res.status(500).json({ error: 'Brand brief unavailable' });
   const label = BRANDS[brand].label;
+  // MarketDynamics photo posts are about the app itself — its pillars ('App: …') steer the angle.
+  const pillarGuide = {
+    'App: Product': 'An overview of the MarketDynamics app as a whole — what it is and who it is for.',
+    'App: Key Feature': 'Spotlight ONE specific feature of the app (the note/screenshot says which) — what it shows and why it helps.',
+    'App: Daily Read': "The Daily Read in the app — understanding the day before London opens.",
+    'App: Build Story': 'The "built on evidence" story — how the app was tested and is graded (no test statistics).',
+  }[pillar];
+  const pillarLine = pillarGuide
+    ? `CONTENT PILLAR: ${pillar.replace(/^App: /, '')} — ${pillarGuide} This post is about the MarketDynamics app itself: follow section 2.3 of the brief (what's inside, core message, MarketDynamics post rules, price wording) exactly.`
+    : `CONTENT PILLAR: ${pillar}`;
   try {
     const images = await loadImageBlocks(urls);
     res.json(await generateCaptions({
       system: `You write social media captions for StrategyDynamics and its app MarketDynamics. The brand brief below is your only source of truth.\n\n=== BRAND BRIEF ===\n\n${brief}`,
       userText: `Write the social captions for ONE ${label} photo post. This is a real screenshot/photo post uploaded by Sean and published as-is — there is NO designed graphic, so the caption carries the whole message.\n\n` +
-        `BRAND: ${label} — write as this brand, with this brand's CTAs and links.\nCONTENT PILLAR: ${pillar}\n\nWHAT THIS POST IS ABOUT (from Sean): ${note || '(no note — go entirely off the screenshots)'}\n\n` +
+        `BRAND: ${label} — write as this brand, with this brand's CTAs and links.\n${pillarLine}\n\nWHAT THIS POST IS ABOUT (from Sean): ${note || '(no note — go entirely off the screenshots)'}\n\n` +
         `${imageCountLine(images.length)} Apply the brief's Image Handling Rules (section 11): the image is authoritative, visible numbers are used as-is, nothing not visible is invented.\n\n` +
         'Follow the brief exactly: voice, guardrails, UK spelling, CTA rules. Instagram hashtags come from the approved pool and go ONLY in the hashtags array. Threads text contains NO hashtags; pick topic_tag from the approved Threads topic pool, never a brand name. TikTok: title ≤ 90 chars. Return the JSON only.',
       images, maxIgTags: 10,

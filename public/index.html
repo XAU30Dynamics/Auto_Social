@@ -397,7 +397,7 @@ function doC(text){ if(navigator.clipboard){navigator.clipboard.writeText(text).
 function fallbackCopy(text){ const ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0;top:0;left:0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); }
 function flashBtn(btn){ if(!btn)return; const o=btn.textContent; btn.classList.add('copied'); btn.textContent='✓'; setTimeout(()=>{btn.classList.remove('copied');btn.textContent=o;},1400); }
 function copyEl(id,btn){ const el=document.getElementById(id); if(!el)return; doC(el.value!==undefined?el.value:el.textContent); flashBtn(btn); showToast('Copied'); }
-function pillarShort(p){ const m={'Performance Proof':'Proof','Strategy Deep Dive':'Strat','Strategy / Algo Deep Dives':'Strat','Product Showcase':'Product','Educational':'Edu','Educational Principles':'Edu','Market Commentary':'Commentary','Behind the Scenes':'BTS','Behind the Scenes / Founder':'BTS'}; return m[p]||p||'—'; }
+function pillarShort(p){ const m={'Performance Proof':'Proof','Strategy Deep Dive':'Strat','Strategy / Algo Deep Dives':'Strat','Product Showcase':'Product','Educational':'Edu','Educational Principles':'Edu','Market Commentary':'Commentary','Behind the Scenes':'BTS','Behind the Scenes / Founder':'BTS','App: Product':'Product','App: Key Feature':'Feature','App: Daily Read':'Daily Read','App: Build Story':'Build'}; return m[p]||p||'—'; }
 function spin(on){ document.getElementById('refreshBtn').classList.toggle('spinning',!!on); }
 function hasChannel(b,p){ return !!(channels && channels.brands && channels.brands[b] && channels.brands[b].channels[p]); }
 
@@ -673,7 +673,10 @@ function Composer(cfg){
   const self={ cfg, images:[], angle:cfg.angles[0].v, brand:cfg.brands[0], mode:'queue', rowIndex:null, on:{}, posts:[], loadedHist:false, useImages:true };
   C[ns]=self;
   const id=k=>ns+'-'+k, $=k=>document.getElementById(id(k)), call=m=>"C['"+ns+"']."+m;
-  const cols=cfg.angles.length<=5?cfg.angles.length:3;
+  // Per-brand angle lists (cfg.brandAngles[brand]) override cfg.angles — e.g. MarketDynamics' app-focused pillars.
+  const angles=()=>(cfg.brandAngles&&cfg.brandAngles[self.brand])||cfg.angles;
+  const anglesHtml=()=>angles().map(a=>'<button class="angle'+(a.v===self.angle?' active':'')+'" data-a="'+esc(a.v)+'" onclick="'+call("setAngle(this.dataset.a,this)")+'">'+esc(a.l)+'</button>').join('');
+  const cols=()=>{ const n=angles().length; return n<=5?n:3; };
   const plat=(p,sv,name,inner)=>'<div class="plat" id="'+id('plat-'+p)+'"><div class="plat-head"><span class="plat-name"><span class="sv '+sv+'">'+(sv==='th'?'@':sv.toUpperCase())+'</span>'+name+'</span><span class="sp"></span><button class="btn sm" onclick="copyEl(\''+id(p==='instagram'?'ig_caption':p==='tiktok'?'tiktok_caption':'threads_text')+'\',this)">Copy</button><button class="sw on" id="'+id('sw-'+p)+'" onclick="'+call("toggleSw('"+p+"')")+'" aria-label="'+name+' on/off"></button></div>'+inner+'</div>';
   const ta=(f,max,rows)=>'<textarea class="in" id="'+id(f)+'" rows="'+rows+'" oninput="'+call("cc('"+f+"',"+max+")")+';autosize(this)"></textarea><div class="cc" id="'+id('cc-'+f)+'">0 / '+max+'</div>';
 
@@ -685,7 +688,7 @@ function Composer(cfg){
     +'<div class="thumbs" id="'+id('thumbs')+'"></div>'
     +'<div class="plat-head" style="margin:4px 0 0"><span class="tiny" style="color:var(--text)">Use screenshots when writing captions</span><span class="sp"></span><button class="sw on" id="'+id('useimg')+'" onclick="'+call('toggleUseImages()')+'" aria-label="Use screenshots for captions on/off"></button></div><div class="tiny" id="'+id('useimgnote')+'" style="margin-top:4px">Claude reads the screenshots and writes about what is on screen.</div>'
     +'<div class="lbl">What\'s this post about?</div><textarea class="in" id="'+id('note')+'" rows="3" placeholder="'+esc(cfg.notePlaceholder)+'"></textarea>'
-    +'<div class="lbl">'+esc(cfg.angleLabel)+'</div><div class="angles" style="grid-template-columns:repeat('+cols+',1fr)" id="'+id('angles')+'">'+cfg.angles.map(a=>'<button class="angle'+(a.v===self.angle?' active':'')+'" data-a="'+esc(a.v)+'" onclick="'+call("setAngle(this.dataset.a,this)")+'">'+esc(a.l)+'</button>').join('')+'</div>'
+    +'<div class="lbl">'+esc(cfg.angleLabel)+'</div><div class="angles" style="grid-template-columns:repeat('+cols()+',1fr)" id="'+id('angles')+'">'+anglesHtml()+'</div>'
     +'<button class="btn primary block gen-btn" id="'+id('gen')+'" onclick="'+call('generate()')+'">Generate captions</button>'
     +'</div></div>'
     +'<div id="'+id('out')+'" style="display:none"><div class="what" id="'+id('what')+'" style="display:none"></div>'
@@ -719,6 +722,7 @@ function Composer(cfg){
     const old=self.defaultLink(); self.brand=b;
     document.querySelectorAll('#'+id('brands')+' .angle').forEach(x=>x.classList.toggle('active',x===btn||(!btn&&x.dataset.b===b)));
     for(const p of ['instagram','tiktok','threads']) self.on[p]=hasChannel(b,p)?true:false;
+    if(cfg.brandAngles){ if(!angles().some(a=>a.v===self.angle)) self.angle=angles()[0].v; const g=$('angles'); if(g){ g.style.gridTemplateColumns='repeat('+cols()+',1fr)'; g.innerHTML=anglesHtml(); } }
     const l=$('link'); if(l&&(!l.value||l.value===old)) l.value=self.defaultLink();
     self.applyChannels();
   };
@@ -835,7 +839,7 @@ function Composer(cfg){
     self.rowIndex=row; self.images=p.images.map(u=>({url:u,uploading:false})); self.renderThumbs();
     $('note').value=p.note||'';
     if(cfg.brands.length>1) self.setBrand(cfg.brands.includes(p.brand)?p.brand:cfg.brands[0]);
-    self.setAngle(cfg.angles.some(a=>a.v===p.angle)?p.angle:cfg.angles[0].v);
+    self.setAngle(angles().some(a=>a.v===p.angle)?p.angle:angles()[0].v);
     self.fill(p); $('what').style.display='none';
     $('label').textContent='Row '+row+(p.status==='Sent'?' · sent':''); $('gen').textContent='Regenerate captions';
     $('res').innerHTML='';
@@ -864,7 +868,8 @@ Composer({ ns:'s', mount:'composer-s', hist:'hist-s', countEl:'sealedN', api:'/a
 Composer({ ns:'p', mount:'composer-p', hist:'hist-p', api:'/api/photo', title:'Photo post', noun:'photo posts',
   brands:['StrategyDynamics','MarketDynamics'], angleLabel:'Pillar', angleShort:pillarShort,
   notePlaceholder:'e.g. Friday payout certificate from FTMO — £4,200, third this quarter',
-  angles:[{v:'Educational',l:'Educational'},{v:'Market Commentary',l:'Commentary'},{v:'Strategy Deep Dive',l:'Deep Dive'},{v:'Performance Proof',l:'Proof'},{v:'Product Showcase',l:'Product'},{v:'Behind the Scenes',l:'Founder'}] });
+  angles:[{v:'Educational',l:'Educational'},{v:'Market Commentary',l:'Commentary'},{v:'Strategy Deep Dive',l:'Deep Dive'},{v:'Performance Proof',l:'Proof'},{v:'Product Showcase',l:'Product'},{v:'Behind the Scenes',l:'Founder'}],
+  brandAngles:{ MarketDynamics:[{v:'App: Product',l:'Product'},{v:'App: Key Feature',l:'Key Feature'},{v:'App: Daily Read',l:'Daily Read'},{v:'App: Build Story',l:'Build Story'}] } });
 
 // ── Boot ──
 loadChannels();
