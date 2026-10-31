@@ -518,9 +518,9 @@ const BRANDS = {
     label: 'MarketDynamics',
     link: 'https://apps.apple.com/gb/app/marketdynamics-gold-analysis/id6759715965', // App Store page (Shop Grid link on IG posts)
     channels: {
-      instagram: '', // marketdynamics_app — removed from Buffer 1 Oct 2026
-      threads:   '',
-      tiktok:    '',
+      instagram: '6ae59a692f1f5ed6482e3435', // marketdynamics_app
+      threads:   '6ae59c0f2f1f5ed6482e3dd4', // marketdynamics_app
+      tiktok:    '6ae59d382f1f5ed6482e4422', // marketdynamics_app
     },
   },
   Sealed: {
@@ -529,7 +529,7 @@ const BRANDS = {
     channels: {
       instagram: '6abf503eea19ca0bde5037d7', // earntheclose
       tiktok:    '6abf508cea19ca0bde503994', // earntheclose
-      threads:   '', // earntheclose — not connected yet (Buffer/Meta auth pending)
+      threads:   '6ae5960c2f1f5ed6482e1645', // earntheclose
     },
   },
 };
