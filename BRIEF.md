@@ -4,9 +4,9 @@ Social Media Brand Brief
 
 *The single source of truth for every post the AI generates.*
 
-**Version 1.7**
+**Version 1.8**
 
-Last updated: 12 November 2026 (StrategyDynamics 2.0: new features, new prices, no trial; Discord no longer bundled)
+Last updated: 12 November 2026 (StrategyDynamics 2.0: new features, new prices, no trial, the engine; Discord no longer bundled)
 
 Owner: TraderS
 
@@ -425,6 +425,19 @@ Build a trading system, test it with real costs, forward test it on new bars eve
 | Engine queue | | | Runs first |
 
 Portfolio tests are free on every plan; a portfolio tune uses one optimisation, however many settings it tries.
+
+### The engine — the part nobody can copy overnight
+
+The app is the window; the engine is the product. Engine 4.0 is TraderS's own Python engine, rebuilt from scratch for 2.0 and run only on StrategyDynamics servers. Numbers as at 12 Nov 2026:
+
+- Over 200 capabilities: 152 functions a rule can use (indicators, price action, smart money structure, all 25 named candle patterns, sessions, levels, VWAP and volume profile, higher timeframes, a second market as a filter) and 61 settings on every system (stops, targets, trails, breakeven, partials, pyramiding, grids, sessions, days, flatten hour, prop firm guards).
+- One engine does everything: backtests, sweeps, the morning forward test run, 9 stress tests, portfolio tunes, Edge Finder hunts and breeds, and compiling and checking the exported bots for 6 platforms.
+- Around 23,500 lines of engine code, checked by 978 automated tests, against a single 4,388-line file in the original 1.x engine. The whole 2.0 platform (engine, server, iPhone app and web app) is close to 90,000 lines.
+- It never looks ahead, charges real measured costs on every trade, and stamps every result with where it came from: engine version, costs, pip size, bars and window.
+
+Why it matters for content: anyone can make an app screen, and an AI chat can write a bot. Neither can produce an engine that tests hundreds of rule combinations honestly, forward tests them every morning and turns them into compile-checked bots that trade the same rules. That took months of building and testing and is not something that can be prompted into existence overnight. Say it with restraint: state what the engine does and the numbers, never sneer at competitors.
+
+It also stays closed. In 1.x, users could run the engine on their own VPS, which meant handing it out. In 2.0 the engine only ever runs on our servers: users get results and their own exported bots, never the engine. Never describe how the engine is built internally beyond what is written here.
 
 ### Backstory
 
