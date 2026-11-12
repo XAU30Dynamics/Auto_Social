@@ -4,9 +4,9 @@ Social Media Brand Brief
 
 *The single source of truth for every post the AI generates.*
 
-**Version 1.6**
+**Version 1.7**
 
-Last updated: 26 October 2026 (MarketDynamics 2.0)
+Last updated: 12 November 2026 (StrategyDynamics 2.0: new features, new prices, no trial; Discord no longer bundled)
 
 Owner: TraderS
 
@@ -22,7 +22,7 @@ To update this brief in future, just edit and save. The system will pick up the 
 
 StrategyDynamics is a trading education and automation business specialising in XAUUSD (gold), with automation services and live automated trading extending across any asset. The brand combines verified prop firm trading credentials with a growing ecosystem of automation tools (cTrader algorithms), a flagship Discord membership, and proprietary mobile apps (MarketDynamics and StrategyDynamics).
 
-Recent rebrand fully under the StrategyDynamics banner as my app is the main focus, discord branding aligned.  MarketDynamics is also my app — rebuilt from scratch as version 2.0 in October 2026, and now the gold analysis tool I use myself every morning. It is marketed heavily too.
+Recent rebrand fully under the StrategyDynamics banner as my app is the main focus, discord branding aligned. StrategyDynamics was rebuilt from the ground up as version 2.0 in November 2026 (section 2.4 is the source of truth for what it does and costs). MarketDynamics is also my app — rebuilt from scratch as version 2.0 in October 2026, and now the gold analysis tool I use myself every morning. It is marketed heavily too.
 
 ### Founder origin story
 
@@ -54,7 +54,7 @@ Podcasts like Trading Nut (Cam Hawkins) were the inspiration to build rule-based
 
 So I built StrategyDynamics, and it now forms the core infrastructure of my group and brand. The edge is hidden in the backend: over 45 specific conversion rules that took six months of personal testing, governing the conversion from strategy rules to MT4 (MQL4), MT5 (MQL5), cTrader C#, Python, and agent code — ensuring seamless logic across every code path. It turns strategy building from months into minutes, and it's the first app I'm aware of where you can backtest and optimise directly from your phone. Before launch I proved the concept by rebuilding my NAS open range strategy — three months of manual work originally, replicated exactly in 30 minutes.
 
-I then built the web version of StrategyDynamics — same login and synced data as the iOS app, but users can sign up with Stripe instead of through Apple, which is also perfect for non-iPhone users.
+There is a web version of StrategyDynamics too — one account across iPhone and the web, so a plan bought in either place works in both. Paying by card on the web is also perfect for non-iPhone users.
 
 It's built by an actual trader, not an app developer — so it contains exactly the tools a trader needs to build a system, test it, and validate it on past data, with nothing designed to blind you with complexity. And the honest positioning matters: automation is not a golden ticket. Market conditions change — a system built for trending markets can get chopped up in consolidation. That's why you build multiple systems into a portfolio to smooth out the peaks and troughs. I personally run different methods on different accounts, focus on prop challenges and funded accounts, and don't expect success all the time.
 
@@ -146,7 +146,7 @@ These phrases will get accounts shadowbanned, removed by Meta/X, or damage the b
 
 ### Pricing & access
 
-£79/month a useful soft CTA hook — and StrategyDynamics Institutional is the same £79/month with Discord membership included, so "the Discord alone, or the Discord plus the whole platform for the same money" is the natural framing.
+£79/month, a standalone membership — no app account needed. It is NOT included in any StrategyDynamics plan (that bundle ended with StrategyDynamics 2.0, 12 Nov 2026): never say Institutional, or any plan, includes the Discord, and never compare the Discord price with an app plan. The app is the core focus of the brand; the Discord is the gold desk beside it.
 
 ### Daily gold editions (produced by MarketDynamics)
 
@@ -212,7 +212,7 @@ Discord bot enables /suggest commands with full voting, threads, and a sticky ke
 
 ### Algo section in Discord (All from StrategyDynamics App)
 
-Includes Edge Finder, Backtest, Optimisation, Strategy Maps, Strategy code, Robustness testing, Strategy-runner and Development Ideas. Within the app, posts can be sent directly to Discord for any bots or strategies being worked on – community fully involved
+Results posted straight from the StrategyDynamics app by TraderS: Edge Finder hunts and breeds, backtests, optimisations, each stress test, portfolios, strategy code and development ideas — the community watches systems being built and judged, including the unseen result even when it is weak. Strategy-runner downloads live here too.
 
 ### Automated Portfolios — validated mechanical systems (shared, not sold)
 
@@ -378,55 +378,73 @@ Nothing in MarketDynamics was added on a hunch. Every part was tested on years o
 
 ## 2.4 StrategyDynamics App
 
-Live in the App Store and on the web. Starter £2.99/month (7-day free trial), Pro £24.99/month, Institutional £79/month; annual plans £24.99 / £199 / £649. There is NO free plan — never say "free plan", "free tier" or "free account". "Free trial" (7 days, Starter) is correct. Latest version: v1.4.0 — the pricing reset release.
+StrategyDynamics 2.0 — rebuilt from the ground up in November 2026. Native iPhone app (App Store) and a web version (strategydynamics.co.uk) on ONE account: pay once, in either place, and it works on both. Every number below is the live plan; do not use any older figure.
+
+### Pricing — exact, monthly only
+
+- Starter — £9.99/month
+- Pro — £39/month
+- Institutional — £149/month
+
+There is NO free plan, NO free trial and NO annual plan. Never write "free plan", "free tier", "free account", "free trial", "7-day trial", "try it free", "annual" or "per year". Never quote the old prices (£2.99, £24.99, £79 for the app, or any annual price). Monthly, renews until cancelled; paid through Apple in the app or by card (Stripe) on the web.
+
+### What it is — the one-line version
+
+Build a trading system, test it with real costs, forward test it on new bars every morning, then send it to your platform as a bot. One object runs through the whole app: the System, which moves Idea → Draft → Tested → Forward → Deployed → Retired.
+
+### The core loop
+
+- **Build.** Describe a strategy in plain English, or build it from a file: a chart screenshot, a photo of written rules, pasted code (Pine, MQL, cBot, Python), a URL, a YouTube video or a PDF. 140 building blocks from price action to smart money (order blocks, fair value gaps, liquidity sweeps, change of character), indicators, all 25 named candle patterns, sessions, prior day and week levels, VWAP and volume profile. The rules read back in plain words; anything changed later goes through "Change it", so the words and the code always move together.
+- **Test.** Backtests on our engine with real measured costs (spread plus slippage per instrument) on every trade. The last part of the window is kept unseen so you see how the system did on bars it was never built on. 59 million candles: 49 markets, 10 timeframes from 1 minute to monthly, updated every day. No CSV uploads, no VPS, no setup.
+- **Forward test** — the key feature. Seat a tested system forward and it runs once every morning on every new bar since the last run, with the same costs, without touching a live account. One summary each morning. The forward record decides, not the backtest. A forward test runs to 40 trades or 60 days unless renewed. If a forward test trades outside what its backtest said was possible, the Breaker fires: a red warning, one tap to retire or re-seat.
+- **Deploy.** Export the system as a bot (Institutional): cTrader cBot, MetaTrader 4, MetaTrader 5, TradingView Pine Script, Python, and an AI agent package. Every export is compiled on our servers before you see it, with a parity number beside the code and install steps. Every bot checks your broker against what it was tested on and says so in one line; it refuses to trade only when a difference would change the risk.
+
+### The tools around it
+
+- **Optimise — the lightning optimiser.** Sweeps a system's settings and draws every setting landing live. Thin results (few trades) never win the ranking. It leads with the robust pick — chosen from the top tenth, with its neighbouring settings also holding up — not the single luckiest number, and shows how it did on unseen bars.
+- **Edge Finder.** Pick up to 4 markets, a timeframe and up to 4 styles from 18 (trend, breakout, mean reversion, sweep, session, pattern, momentum, pullback, squeeze, retest, smart money, levels, gap, higher timeframe, trend flip, ladder, grid, calendar). It proposes ideas, tests each one across a grid of settings with real costs, keeps the survivors and breeds the next generation. The unseen part is sealed from the AI and read once at the end. Every result says best of how many and how many windows made money. Stop any time and keep what it found.
+- **Breed.** Cross your own systems (or any of their runs) and watch the bloodline race: children that beat their parents survive, the rest die.
+- **Stress — 9 tests, for the moment before money.** Monte Carlo, walk forward, prop challenge race, best trades removed, missed trades, the 8-gate scorecard, stability terrain, regime, and parity (does the exported bot match the engine). Results are kept on the system. Stress never uses up backtests or optimisations.
+- **Portfolios.** Combine systems into one account over the dates they share: combined equity, correlation, and "losing together" days when two or more systems fall at once. The tune hunts better settings for the whole book, scored as one, without ever changing a system. Prop firm daily and total loss limits respected.
+- **Prop firm rule packs.** FTMO, FundedNext and The5%ers rules simulated in the backtest and built into exported bots as guards.
+- **The galaxy.** Every system is a star coloured by its stage; spin it, zoom it, open it. Home leads with your forward tests.
+- **iPhone extras.** Home screen widgets (forward tests, forward clock, latest run, usage, top systems, portfolio), a push when a run finishes or a hunt is waiting, and one forward summary each morning.
+
+### What each plan includes (monthly)
+
+| | Starter £9.99 | Pro £39 | Institutional £149 |
+|---|---|---|---|
+| Backtests | 20 | 50 | 1,000 |
+| Optimisations | 1 | 20 | 200 |
+| Forward tests running | 1 | 5 | 20 |
+| Edge Finder hunts or breeds | — | 2 | 10 |
+| Strategy Builder ideas or files | 3 | 20 | 300 |
+| Rule changes | 20 | 100 | 500 |
+| Stress tests | Monte Carlo | 5 (Monte Carlo, walk forward, challenge race, best trades, missed trades) | All 9 |
+| Code export (6 targets) | — | — | 200 |
+| Engine queue | | | Runs first |
+
+Portfolio tests are free on every plan; a portfolio tune uses one optimisation, however many settings it tries.
 
 ### Backstory
 
-Built because manually building bots in visual builders is slow and time-consuming. StrategyDynamics lets users create strategies through simple input methods, test them within the app, and generate MT4, MT5, cTrader, Python or agent code at the click of a button — delivering near 100% accuracy in one pass between strategy rules and usable code output.  This was done my many months of testing and building a 45 rule set.  It can also deploy ‘agent code’ which can be used by Strategy Runner to execute without a VPS or by any customers building agents.
-
-No VPS is needed for the app, my fastAPI backtest engine runs on our servers— allowing the app to run backtesting and optimisation at high speed, around 20x faster than cTrader with no set up needed for any paid customers.  Instant results. Now also has a built-in broker-accurate data library now removes the need to upload CSV files so over 45million candles are available, on 25 assets and 10 timeframes. Edge Finder is the headline feature — designed to find market edges using data and automation.
+Built because building bots in visual builders is slow and ChatGPT-coded bots drift from the rules. The edge is in the backend: deterministic templates own the bot's execution loop and the AI fills only the strategy logic, so the exported code trades the rules you tested. Proof: a TradingView export matched the engine 155 of 155 trades on identical bars (3 Nov 2026). Before the first launch TraderS rebuilt his NAS open range strategy — three months of manual coding — in 30 minutes. 2.0 was rebuilt from scratch in October–November 2026 around one idea: the forward record decides.
 
 ### Product positioning
 
-StrategyDynamics is a professional algorithmic trading research platform for serious traders who want to build, test, and refine systematic strategies using AI.
+StrategyDynamics is a research platform for traders who want to build, test and forward test their own systematic strategies, from their phone or the web. Built by a trader, not an app developer.
 
-The value case: buying a single algo typically costs £500–£1,500 — with StrategyDynamics you can build unlimited systems of your own for a fraction of that. Automating your own rules gives you your time back in the day, so you don't need to always watch the charts. And if you're in a community or follow a mentor with a rule-based system, you can replicate it with ease in no time at all.
+Honest by design — say it, it builds trust: every number shows where it came from, results are tested on unseen bars and with real costs, Edge Finder shows weak results as weak, and nothing is called an edge until the forward test agrees. No system is a golden ticket: markets change, so build several systems and judge them as a portfolio — exactly how the founder runs his own accounts.
 
-Honest framing (use it — it builds trust): no system is a golden ticket. Market conditions change, and a strategy built for trending markets may get chopped up in consolidation. The answer is building multiple systems into a portfolio to smooth out the peaks and troughs — exactly how the founder runs his own accounts.
+The value case: a single bought EA typically costs £500–£1,500 and you can't read or trust it. With StrategyDynamics you build, test and own the logic yourself.
 
-### Core features
+### Never say (retired features and claims)
 
-- Edge Finder (headline feature— chat with your StrategyDynamics agent and it finds a real, profitable edge in your data. It reads the market, proposes a specific strategy, codes it, and backtests it, all in a conversation. Tests in-sample and out-of-sample so you see whether an edge actually holds up rather than curve-fits. Honest grading — it only flags a "Confirmed Edge" when the edge is strong across both periods. Confirmed edges save straight into the strategy library, ready to backtest, optimise, or export.
+The 1.x features are gone — never mention them as current: free trial, annual plans, VPS or self-hosted engines, Strategy Runner inside the app, Trade Journal, Lot Size Calculator, community templates, Strategy Map, Market Intelligence, the old "Confirmed Edge" chat, "unlimited backtests", "45 million candles on 25 assets", "five export targets". Never say Institutional includes the Discord — it does not. Never promise that Edge Finder finds profitable strategies; it tests ideas honestly and most die after costs, which is the point.
 
-- Broker-Accurate Data Library (new in v1.2.0) — a built-in shared library of real cTrader/FTMO broker data across multiple instruments and timeframes, with correct pip sizing and prop-firm conventions. Pick a symbol and go — no CSV uploads required.
+### Hooks that work
 
-- Market Intelligence (upgraded in v1.2.0) — tap any instrument for an instant breakdown: trend character, volatility, session behaviour, top patterns, and AI-generated strategy ideas for that market. Also supports uploading OHLC data to generate AI-powered market intelligence reports.
-
-- Strategy Lab — create strategies manually or from almost any source. Upload images of rules, paste code, describe ideas in plain English, or let AI extract a fully structured strategy from a document. For Institutional members, strategy ideas convert into MT4 (MQL4), MT5 (MQL5), cTrader, Python, and agent code at the click of a button.
-
-- Backtester — connect VPS or remote server running the StrategyDynamics backtest engine. Full equity curves, drawdown analysis, trade-by-trade breakdowns, and performance metrics — all from a phone. Cleaner backtest results with clear in-sample/out-of-sample equity curves.
-
-- Optimiser — in-sample testing, out-of-sample validation, Monte Carlo robustness testing. Designed to reduce overfitting before risking real capital.
-
-- Robustness – full suite of 8 different tests to really stress test your strategy, including monte carlo simulations and prop firm passing models.
-
-- Code Export — export your strategies as **MT4 (MQL4), MT5 (MQL5), cTrader cBot, Python, or autonomous trading-agent code**, ready to run a strategy live. Five targets from one strategy definition. MT4/MT5 was added in July 2026 and is the single biggest reach expansion the app has had: MetaTrader is where the overwhelming majority of retail algo traders already are, while cTrader is comparatively niche. Content angle: most traders on MT4/MT5 have bought EAs they cannot read, modify, or trust — this lets them build and own the logic instead.
-
-- Lot Size Calculator — a built-in position-size calculator so you can size every trade correctly to your risk. Included on every plan.
-
-- Trade Journal — unlimited live trade journal for logging, tracking, and organising performance.  Now also available in calendar view
-
-- Strategy Map — interactive flowchart visualisation of any strategy's logic, showing entry rules, exits, and filters at a glance.
-
-### Subscription tiers
-
-- Starter — £2.99/month or £24.99/year, first 7 days free — unlimited strategy creation, trade journal, community templates, lot calculator, 3 AI extracts, 3 hosted backtests and 1 optimisation per month. The point of Starter is that you can test the strategy you wrote for less than a coffee.
-
-- Pro — £24.99/month or £199/year — 50 backtests, 20 optimisations, 20 AI extracts per month, broker-accurate data library, market intelligence, strategy map visualisation, the full 8-test robustness suite and Monte Carlo.
-
-- Institutional — £79/month or £649/year — unlimited backtests and optimisations, Edge Finder (10 autonomous searches/month), code export to MT4 (MQL4), MT5 (MQL5), cTrader, Python and agent code, Strategy-Runner, unlimited AI extracts, and the private Discord included.
-
-Hooks that replace "start free": "7-day free trial", "test your strategy for £2.99", "see a real backtest result in your first ten minutes", "the Discord is £79 — Institutional is £79 with the whole platform on top".
+"Build it. Test it. Seat it forward." · "The forward record decides." · "Your strategy, tested on 59 million candles with real costs." · "Every bot checks your broker before it trades." · "Find out on bars it has never seen." · "From an idea to a bot on your broker." · "Start at £9.99 a month."
 
 ## 2.5 PropDynamics
 
@@ -528,7 +546,7 @@ Technical breakdowns of how a specific algo or methodology works. Shows depth, b
 
 ## Pillar 3: Product Showcase (20% of posts)
 
-Discord, bot builds, MarketDynamics, StrategyDynamics. Soft sell — feature-led, not pressure-led. Examples: 'StrategyDynamics walkthrough: extract a strategy from a YouTube video, backtest it, export it as an MT4 EA. From your phone.' 'What's actually inside the Discord this week.'
+Discord, bot builds, MarketDynamics, StrategyDynamics. Soft sell — feature-led, not pressure-led. Examples: 'StrategyDynamics walkthrough: extract a strategy from a YouTube video, backtest it, export it as an MT4 EA. From your phone.' 'I seated this system forward 30 days ago. Here is what the forward record says.' 'Edge Finder tested 18 ideas on gold. 17 died after costs.' 'The lightning optimiser picked the robust setting, not the luckiest one.' 'What's actually inside the Discord this week.'
 
 ## Pillar 4: Educational Principles (20% of posts)
 
@@ -546,7 +564,7 @@ Building the algos, your trading routine, your journey. Builds parasocial trust 
 
 ## 7.1 Primary keywords
 
-XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing, FTMO challenge strategy, cTrader algo, MT4 EA, MT5 EA, MQL4, MQL5, MetaTrader, Expert Advisor, EA builder, Automated trading bot, NAS100 strategy, Trader / Daytrader, Trader Lifestyle, Trading App, Apple.
+XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing, FTMO challenge strategy, cTrader algo, MT4 EA, MT5 EA, MQL4, MQL5, MetaTrader, Expert Advisor, EA builder, TradingView, Pine Script, forward testing, backtesting app, strategy builder, Edge Finder, Automated trading bot, NAS100 strategy, Trader / Daytrader, Trader Lifestyle, Trading App, Apple.
 
 ## 7.2 Hashtag strategy by platform
 
@@ -554,7 +572,7 @@ XAUUSD trading, Automated system, Algo, Bot, trading strategy, Prop firm passing
 
 Mix of 3 sizes: 3–4 large (>500k posts), 5–7 mid (50k–500k posts), 3–4 niche (<50k posts). Avoid banned/saturated tags like #forex, #trading.
 
-Approved tag pool: #XAUUSD #automatedtrading #PropFirm #FTMO #cTrader #MT4 #MT5 #MetaTrader #ExpertAdvisor #MQL5 #AlgoTrading #Bots #Algo #US30 #NAS100 #DayTrading #automated #agent #Apple #iPhone #Challenge #Tradingapp #Automate #Automation #TradingStrategy #Strategy #Agentic #AI #Algorithm #AlgorithmicTrading #Bot #TradingBot #Backtest #Backtesting #Optimise #Optimisation #GoldTrading #PropTrading #Fintech #MachineLearning
+Approved tag pool: #XAUUSD #automatedtrading #PropFirm #FTMO #cTrader #MT4 #MT5 #MetaTrader #ExpertAdvisor #MQL5 #AlgoTrading #Bots #Algo #US30 #NAS100 #DayTrading #automated #agent #Apple #iPhone #Challenge #Tradingapp #Automate #Automation #TradingStrategy #Strategy #Agentic #AI #Algorithm #AlgorithmicTrading #Bot #TradingBot #Backtest #Backtesting #Optimise #Optimisation #GoldTrading #PropTrading #Fintech #MachineLearning #TradingView #PineScript #ForwardTesting
 
 Branded: #MarketDynamics #StrategyDynamics
 
@@ -599,6 +617,10 @@ Threads supports exactly ONE hashtag per post: the FIRST hashtag is converted in
 - 'Discord access: £79/month — strategydynamics.co.uk
 
 - 'Build your strategy in StrategyDynamics — link in bio.'
+
+- 'StrategyDynamics from £9.99 a month, on iPhone and the web — link in bio.'
+
+- 'Seat it forward in StrategyDynamics — link in bio.'
 
 - 'Custom bot builds from £199 — DM "BOT" or visit the site.'
 
@@ -706,6 +728,8 @@ Each of these is a proven TraderS method or view, distilled from his own teachin
 
 - Never invent stats, trades, or testimonials. If a number is needed and unavailable, omit it.
 
+- **StrategyDynamics facts come only from section 2.4.** Prices are £9.99 / £39 / £149 a month, monthly only, no free trial, no free plan, no annual plan, and no plan includes the Discord. Never describe a retired 1.x feature (the list is in 2.4) as current. When a post talks about a feature, use its 2.0 name: Build, Test, Forward test, Optimise, Edge Finder, Breed, Stress, Portfolio, Deploy.
+
 - **Live counts carry an 'as at' date or they don't get used.** The live strategy/portfolio count moves constantly (see section 2). Never state it without the date it was stamped with, never round it up, never extrapolate a newer figure. Prefer the stable proof numbers, which never move: 8,302 configurations validated, 98.5% killed, 35+ payouts, $83,235, the £190 first payout, the $25,000 learning cost, 8 years to consistency, 13 years on one pair.
 
 - **Vary the opener — and vary the FRAME, not just the words. Never reuse a frame within a fortnight.** A frame is the sentence-shape of the opening, independent of vocabulary. Retired by measurement: **'Most traders…'** (and 'Most people', 'Most retail traders', 'Almost every trader') — it opened roughly half of all posts through July 2026 and now reads as machine-written; and **'I used to think / I used to believe / I thought X… actually Y'**, the confession-reversal frame, which opened three consecutive posts on 28–30 July 2026 the moment 'Most traders' was banned. That is the lesson: ban a phrase and the next crutch grows in its place unless the *shape* is what gets checked. Also retired: 'X doesn't care about Y, it cares about Z' and 'Here's why/what/the thing…' as an opening clause. Rotate deliberately across hook archetypes and pick one the last three posts did not use: a hard number ('8,302 configurations. 98.5% died.'), a first-person admission of a specific cost ('I lost $25,000 learning this.'), a direct question, a flat contrarian statement, a short concrete scene, a named mistake, a before-and-after, or a piece of process stated plainly with no setup.
@@ -757,6 +781,8 @@ When the image is a clean chart, read it in this order before writing anything: 
 ## 11.4 App screenshots (StrategyDynamics, MarketDynamics, etc.)
 
 When the image shows an app screen, describe the actual feature visible on screen. Do not infer functionality from the brief's product knowledge alone. If the screen shows a market data list, talk about market data. If it shows Edge Finder, talk about Edge Finder.
+
+Reading StrategyDynamics 2.0 screens. Colours carry meaning: green = money made or deployed, red = loss or a stop, blue = tested (in-sample), amber = forward test, violet = idea, a shaded band = the unseen part. Common screens: Home (a forward test hero card and the galaxy of systems as coloured stars); the whole-life chart (one line: blue tested, shaded unseen, amber forward, TODAY at the end); the lightning optimiser (a grid of settings lighting up, an equity race of many lines); Edge Finder (generations, candidates born and died, a leader's unseen result); Breed (a bloodline of parents and children); Stress (Monte Carlo fan, challenge race, scorecard); Portfolio (combined equity, correlation, red losing-together days, before and after a tune); Deploy (a list of export targets with a parity number). A grey or ghosted system is retired or empty, not a loss. Never call a backtest or the unseen part "live" — only the amber forward line is new bars.
 
 ## 11.5 Payout certificates and proof screenshots
 
