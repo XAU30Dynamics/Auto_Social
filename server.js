@@ -1180,7 +1180,10 @@ app.get('/api/threadlog', async (req, res) => {
 const BUFFER_ORG_ID = '6a4b7b7d1ee432a8454c6455';
 const INSIGHTS_SHEET = 'Insights';
 const INSIGHTS_HEADER = ['pulled_at', 'sent_at', 'channel', 'post_id', 'text',
-  'views', 'reach', 'reactions', 'comments', 'shares', 'saves', 'follows', 'eng_rate', 'clicks'];
+  'views', 'reach', 'reactions', 'comments', 'shares', 'saves', 'follows', 'eng_rate', 'clicks',
+  // Added 13 Nov 2026 (appended, older rows leave them blank): which brand's account
+  // posted it, and for picture-rotation posts which picture and caption version.
+  'brand', 'rotation_key', 'caption_version'];
 
 async function bufferGql(query, variables = {}) {
   const resp = await fetch('https://api.buffer.com', {
@@ -1198,11 +1201,47 @@ async function bufferGql(query, variables = {}) {
 async function bufferSentPosts() {
   const data = await bufferGql(`query($input: PostsInput!) {
     posts(input: $input, first: 100) {
-      edges { node { id sentAt channelService text metrics { type value }
+      pageInfo { hasNextPage endCursor }
+      edges { node { id sentAt channelId channelService text metrics { type value }
         metadata { ... on ThreadsPostMetadata { thread { text } } } } }
     }
   }`, { input: { organizationId: BUFFER_ORG_ID, filter: { status: ['sent'] }, sort: [{ field: 'dueAt', direction: 'desc' }] } });
   return (data?.posts?.edges || []).map((e) => e.node).filter((p) => p.sentAt);
+}
+
+// The collector needs every post back to its last snapshot (7+ days). With the
+// picture rotation posting 9 a day, one page of 100 no longer reaches that far.
+async function bufferSentPostsSince(sinceMs, maxPages = 8) {
+  const out = [];
+  let after = null;
+  for (let i = 0; i < maxPages; i++) {
+    const data = await bufferGql(`query($input: PostsInput!, $after: String) {
+      posts(input: $input, first: 100, after: $after) {
+        pageInfo { hasNextPage endCursor }
+        edges { node { id sentAt channelId channelService text metrics { type value }
+          metadata { ... on ThreadsPostMetadata { thread { text } } } } }
+      }
+    }`, { after, input: { organizationId: BUFFER_ORG_ID, filter: { status: ['sent'] }, sort: [{ field: 'dueAt', direction: 'desc' }] } });
+    const nodes = (data?.posts?.edges || []).map((e) => e.node).filter((p) => p.sentAt);
+    out.push(...nodes);
+    if (!data?.posts?.pageInfo?.hasNextPage || !nodes.length || Date.parse(nodes[nodes.length - 1].sentAt) <= sinceMs) break;
+    after = data.posts.pageInfo.endCursor;
+  }
+  return out;
+}
+
+// What Buffer did with one post (used by the picture rotation's publish check).
+async function bufferPostStatus(id) {
+  const data = await bufferGql('query($input: PostInput!) { post(input: $input) { status error { message } } }', { input: { id } });
+  return { status: data?.post?.status || '', error: data?.post?.error?.message || '' };
+}
+
+// Private error channel (Discord-style webhook: POST { content }). Unset ⇒ no-op.
+async function sendAlert(text) {
+  const url = process.env.ALERT_WEBHOOK_URL;
+  if (!url) return;
+  await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: `Auto Social: ${String(text).slice(0, 1800)}` }) })
+    .catch((e) => console.error('alert webhook failed:', e.message));
 }
 
 // Threads chains publish the whole thread under the root post, so Buffer's
@@ -1258,7 +1297,18 @@ async function collectInsights() {
     const matured = Date.now() - 7 * 86400e3;
     if (since >= matured) return;
     const pulledAt = new Date().toISOString();
-    const rows = (await bufferSentPosts())
+    // Header grows by appending; write it again if the tab predates the newer columns.
+    const head = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!1:1` });
+    if ((head.data.values?.[0] || []).length < INSIGHTS_HEADER.length) {
+      await sheets.spreadsheets.values.update({ spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!A1`, valueInputOption: 'RAW', requestBody: { values: [INSIGHTS_HEADER] } });
+    }
+    const brandOf = {};
+    for (const [b, v] of Object.entries(BRANDS)) for (const id of Object.values(v.channels || {})) if (id) brandOf[id] = b;
+    // RotationLog (G = buffer_id, E = key, F = variant) links a post back to its picture.
+    const rotLog = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: 'RotationLog!A2:G' }).catch(() => ({ data: {} }));
+    const rotOf = {};
+    for (const r of rotLog.data.values || []) if (r[6]) rotOf[r[6]] = { key: r[4] || '', variant: r[5] || '' };
+    const rows = (await bufferSentPostsSince(since))
       .filter((p) => { const t = Date.parse(p.sentAt); return t > since && t <= matured; })
       .sort((a, b) => Date.parse(a.sentAt) - Date.parse(b.sentAt))
       .map((p) => [pulledAt, p.sentAt, p.channelService, p.id,
@@ -1266,7 +1316,8 @@ async function collectInsights() {
         metricVal(p, 'views', 'impressions'), metricVal(p, 'reach'),
         metricVal(p, 'reactions', 'likes'), realComments(p),
         metricSum(p, 'shares', 'reposts', 'quotes'), metricVal(p, 'saves'),
-        metricVal(p, 'follows'), metricVal(p, 'engagementRate'), metricVal(p, 'clicks')]);
+        metricVal(p, 'follows'), metricVal(p, 'engagementRate'), metricVal(p, 'clicks'),
+        brandOf[p.channelId] || '', rotOf[p.id]?.key || '', rotOf[p.id]?.variant || '']);
     if (!rows.length) return;
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID, range: `${INSIGHTS_SHEET}!A1`,
@@ -1330,6 +1381,7 @@ app.get('/api/insights', async (req, res) => {
 // only the wiring. Off unless ROTATION_BRANDS names the brand.
 require('./rotation').mount({
   app, getSheets: getSheetsClient, SPREADSHEET_ID, ensureTab, BRANDS, PLATFORMS, bufferCreatePost, publicBase, IMG_CACHE_DIR,
+  bufferPostStatus, alert: sendAlert,
   // Same model, schema and briefs as the photo composers; the picture goes in as base64.
   generate: async (brand, userText, imageFile) => {
     const sealed = brand === 'Sealed';

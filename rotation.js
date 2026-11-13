@@ -19,7 +19,7 @@ const crypto = require('crypto');
 
 const VISUALS_DIR = path.join(__dirname, 'visuals');
 const ROT = { sheet: 'Rotation', header: ['created_at', 'brand', 'key', 'variant', 'status', 'facts_hash', 'source', 'hook', 'ig_caption', 'tiktok_title', 'tiktok_caption', 'threads_text', 'threads_topic', 'lint'] };
-const LOG = { sheet: 'RotationLog', header: ['logged_at', 'brand', 'platform', 'due_at', 'key', 'variant', 'buffer_id', 'error'] };
+const LOG = { sheet: 'RotationLog', header: ['logged_at', 'brand', 'platform', 'due_at', 'key', 'variant', 'buffer_id', 'error', 'status'] };
 const CAPTION_FIELDS = ['hook', 'ig_caption', 'tiktok_title', 'tiktok_caption', 'threads_text', 'threads_topic'];
 // UK clock, seven days a week. Threads sits away from the Make auto-poster's slots.
 const TIMES = { instagram: '12:00', threads: '18:30', tiktok: '19:00' };
@@ -194,7 +194,8 @@ function needsCaption(pool, rows, log, platforms, post) {
 
 // ── Server wiring ──
 // d = { app, getSheets, SPREADSHEET_ID, ensureTab, BRANDS, PLATFORMS, bufferCreatePost,
-//       generate(brand, userText, imageFile) → caption fields, publicBase, IMG_CACHE_DIR }
+//       generate(brand, userText, imageFile) → caption fields, publicBase, IMG_CACHE_DIR,
+//       bufferPostStatus(id) → { status, error }, alert(text) }
 function mount(d) {
   const colLetter = (i) => String.fromCharCode(65 + i);
   // A dry run never creates the tabs: a missing tab just reads as empty.
@@ -248,6 +249,34 @@ function mount(d) {
     return { cap, lint: lintCaption(cap, post, pool.rules) };
   }
 
+  // Alerts go to the private error channel (ALERT_WEBHOOK_URL). The same message
+  // is sent at most once every 12 hours, so a stuck problem doesn't flood it.
+  const alerted = new Map();
+  function alert(key, text) {
+    if (Date.now() - (alerted.get(key) || 0) < 12 * 3600e3) return;
+    alerted.set(key, Date.now());
+    Promise.resolve(d.alert?.(`Picture rotation: ${text}`)).catch(() => {});
+  }
+
+  // Buffer accepting a post is not the post going out: the network can still
+  // refuse it at publish time. Once a slot is past due, ask Buffer what happened
+  // and record it in `status` (sent | failed: … | late), alerting on anything but sent.
+  async function checkPublished(sheets, log, now) {
+    const due = log.filter((l) => l.buffer_id && l.buffer_id !== 'ok' && !l.error && !l.status && now - Date.parse(l.due_at) > 30 * 60e3).slice(0, 20);
+    for (const l of due) {
+      const r = await d.bufferPostStatus(l.buffer_id).catch((e) => ({ status: '', error: e.message }));
+      const overdueH = (now - Date.parse(l.due_at)) / 3600e3;
+      let status = '';
+      if (r.status === 'sent') status = 'sent';
+      else if (r.status === 'error') status = `failed: ${r.error || 'Buffer could not publish it'}`.slice(0, 300);
+      else if (overdueH > 3) status = `late: Buffer says ${r.status || r.error || 'unknown'}`.slice(0, 300);
+      if (!status) continue;
+      l.status = status;
+      await setCells(sheets, LOG, l._row, { status });
+      if (status !== 'sent') alert(`pub:${l.buffer_id}`, `${l.brand} ${l.platform} post ${l.key} due ${l.due_at} did not publish. ${status}`);
+    }
+  }
+
   let running = false;
   async function tick({ dry = false } = {}) {
     if (running) return { skipped: 'already running' };
@@ -258,6 +287,7 @@ function mount(d) {
       const rows = await readTab(sheets, ROT, !dry);
       const log = await readTab(sheets, LOG, !dry);
       const now = new Date();
+      if (!dry && d.bufferPostStatus) await checkPublished(sheets, log, now).catch((e) => console.error('rotation publish check:', e.message));
       for (const brand of Object.keys(d.BRANDS)) {
         const pool = loadPool(brand);
         if (!pool.posts.length) continue;
@@ -303,7 +333,7 @@ function mount(d) {
           const sameDay = log.filter((l) => l.brand === brand && l.platform === pf && londonDate(new Date(l.due_at)) === slot.date);
           if (sameDay.some((l) => !l.error) || sameDay.length >= 3) continue;
           const pick = pickNext(pool, rows, log, pf);
-          if (!pick) { rep.scheduled[pf] = 'no picture with a ready caption'; continue; }
+          if (!pick) { rep.scheduled[pf] = 'no picture with a ready caption'; if (!dry) alert(`nopick:${brand}:${pf}`, `${brand} ${pf} has no picture with a usable caption, so nothing was scheduled for ${slot.date}.`); continue; }
           const { post, caption } = pick;
           const entry = { logged_at: new Date().toISOString(), brand, platform: pf, due_at: slot.dueAt.toISOString(), key: post.key, variant: caption.variant, buffer_id: '', error: '' };
           rep.scheduled[pf] = { due: entry.due_at, key: post.key, variant: caption.variant };
@@ -311,6 +341,7 @@ function mount(d) {
           // Log first: if we die between here and Buffer's reply, the slot is
           // skipped rather than posted twice.
           const logRow = await append(sheets, LOG, entry);
+          entry._row = logRow;
           log.push(entry);
           const B = d.BRANDS[brand];
           const r = await d.bufferCreatePost({
@@ -323,12 +354,17 @@ function mount(d) {
           Object.assign(entry, r.ok ? { buffer_id: r.id || 'ok' } : { error: r.error || 'failed' });
           rep.scheduled[pf].result = r.ok ? 'scheduled' : entry.error;
           if (logRow) await setCells(sheets, LOG, logRow, { buffer_id: entry.buffer_id, error: entry.error });
-          if (!r.ok) console.error(`rotation: ${brand} ${pf} ${post.key}: ${entry.error}`);
+          if (!r.ok) {
+            console.error(`rotation: ${brand} ${pf} ${post.key}: ${entry.error}`);
+            const tries = sameDay.length + 1;
+            alert(`sched:${brand}:${pf}:${slot.date}:${tries}`, `Buffer refused the ${brand} ${pf} post ${post.key} for ${slot.date} (attempt ${tries} of 3${tries < 3 ? ', retrying next hour' : ', giving up for that day'}). ${entry.error}`);
+          }
         }
       }
     } catch (e) {
       console.error('rotation tick error:', e.message);
       report.error = e.message;
+      if (!dry) alert(`tick:${e.message}`, `the hourly run failed, so nothing was scheduled this hour. ${e.message}`);
     } finally { running = false; }
     return report;
   }
