@@ -1,0 +1,1530 @@
+{
+ "sources": "sources",
+ "out": "2026-11-launch",
+ "brand": {
+  "name": "MarketDynamics",
+  "field": "#07080C",
+  "mark": "mark.png",
+  "wordmark": [
+   "Market",
+   "Dynamics"
+  ],
+  "accentText": "#EBC75E",
+  "url": "On the App Store",
+  "cta": [
+   "#C9972B",
+   "#EBC75E",
+   "#F7DD8A"
+  ],
+  "defaultCta": "Get the Read",
+  "defaultWash": "gold",
+  "fine": "Real screens from the app, on live and past gold data. Analysis and education, not advice or signals. Trading can lose money.",
+  "washes": {
+   "gold": {
+    "bloom1": "rgba(201,151,43,.85)",
+    "bloom2": "rgba(138,100,20,.7)",
+    "ink": "#EBC75E",
+    "glow": "rgba(235,199,94,.38)"
+   },
+   "amber": {
+    "bloom1": "rgba(214,110,30,.8)",
+    "bloom2": "rgba(201,151,43,.5)",
+    "ink": "#FDB37A",
+    "glow": "rgba(235,199,94,.38)"
+   },
+   "teal": {
+    "bloom1": "rgba(20,150,138,.8)",
+    "bloom2": "rgba(201,151,43,.45)",
+    "ink": "#5EEAD4",
+    "glow": "rgba(235,199,94,.38)"
+   },
+   "blue": {
+    "bloom1": "rgba(52,106,210,.8)",
+    "bloom2": "rgba(201,151,43,.45)",
+    "ink": "#8EC2FF",
+    "glow": "rgba(235,199,94,.38)"
+   },
+   "violet": {
+    "bloom1": "rgba(120,96,220,.8)",
+    "bloom2": "rgba(201,151,43,.45)",
+    "ink": "#C4B5FD",
+    "glow": "rgba(235,199,94,.38)"
+   },
+   "red": {
+    "bloom1": "rgba(190,56,62,.8)",
+    "bloom2": "rgba(201,151,43,.45)",
+    "ink": "#FF9A9A",
+    "glow": "rgba(235,199,94,.38)"
+   }
+  }
+ },
+ "posts": [
+  {
+   "id": "01",
+   "slug": "daily-read",
+   "feature": "The Daily Read",
+   "pillar": "Product Showcase",
+   "wash": "amber",
+   "kicker": "The Daily Read",
+   "headline": "Where gold stands,|*before London opens.",
+   "sub": "Bias, strength out of 100, the live price and how much of the day's range is left.",
+   "cta": "Get the Read",
+   "visuals": [
+    {
+     "src": "ios/today.png",
+     "crop": [
+      0.0359,
+      0.1157,
+      0.9641,
+      0.6612
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Today screen: a dial reading Bearish 36/100, moderate lean, beside the live XAUUSD price and the day range, with the written Read under it.",
+   "angle": "One screen tells you where gold stands before the London open.",
+   "facts": [
+    "Bias Bearish, strength 36 out of 100, moderate lean",
+    "Day range: 38 of 85 left, 56% used so far",
+    "The Read lands every weekday before London opens",
+    "Gold Monthly is £16.99/month, cancel anytime. On iPhone and iPad"
+   ],
+   "bottomScrim": 330
+  },
+  {
+   "id": "02",
+   "slug": "read-paragraph",
+   "feature": "The Daily Read: the written read",
+   "pillar": "Product Showcase",
+   "wash": "amber",
+   "kicker": "Today",
+   "headline": "The whole day|*in one paragraph.",
+   "sub": "2 of 3 drivers agreeing, the range left, the live H4 zone and the red news to watch.",
+   "cta": "Get the Read",
+   "visuals": [
+    {
+     "src": "ios/today-28.png",
+     "crop": [
+      0.0359,
+      0.1653,
+      0.9641,
+      0.3306
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/today-28.png",
+     "crop": [
+      0.0359,
+      0.7556,
+      0.9641,
+      0.8288
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 872,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The written Read on the Today screen: a moderate bearish lean with 2 of 3 drivers agreeing, 38 of the 85 average range left, the H4 sell zone 3,957-3,974 live and Core PPI at 13:30, with the H4 trade idea row under it.",
+   "angle": "The morning's context written out in plain English, so you start the day with a plan.",
+   "facts": [
+    "2 of 3 drivers agreeing",
+    "38 of the 85 average range is left",
+    "H4 sell zone 3,957-3,974",
+    "Event day: Core PPI m/m at 13:30",
+    "The app marks areas of interest. It does not give buy or sell calls"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "03",
+   "slug": "behind-the-bias",
+   "feature": "What's behind the bias",
+   "pillar": "Educational Principles",
+   "wash": "amber",
+   "kicker": "The bias, explained",
+   "headline": "Why, not|*just what.",
+   "sub": "Regime, macro and positioning each get a verdict. Here, 2 of 3 agree.",
+   "cta": "See the why",
+   "visuals": [
+    {
+     "src": "ios/today-bottom.png",
+     "crop": [
+      0.0359,
+      0.1889,
+      0.9641,
+      0.4109
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 470,
+     "r": 34
+    }
+   ],
+   "callouts": [
+    {
+     "text": "The one that disagrees",
+     "sub": "shown, not hidden",
+     "x": 600,
+     "y": 965,
+     "at": [
+      815,
+      700
+     ],
+     "mw": 330
+    }
+   ],
+   "shows": "The 'What's behind the bias' row: Regime bearish and Macro bearish both marked Agrees, Positioning bullish marked Against, '2 of 3 agree', with the H4 trade idea under it.",
+   "angle": "A bias you can check: you see which drivers agree and which one does not.",
+   "facts": [
+    "2 of 3 agree",
+    "Regime bearish, macro bearish, positioning bullish",
+    "The bias is built from the regime, macro and positioning"
+   ]
+  },
+  {
+   "id": "04",
+   "slug": "regime-card",
+   "feature": "Market regime",
+   "pillar": "Educational Principles",
+   "wash": "blue",
+   "kicker": "The regime",
+   "headline": "What kind of|*market is this?",
+   "sub": "Four regimes, read from 14 cross-asset pairs, and what each one means for gold.",
+   "cta": "Read the regime",
+   "visuals": [
+    {
+     "src": "ios/today-40.png",
+     "crop": [
+      0.0359,
+      0.2881,
+      0.9641,
+      0.5455
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Market regime card: Deflationary risk-off, with the odds bar On 10%, Defl 19%, Infl 25%, Liq 46%, a note that liquidation leads today on day 1 of 2 to confirm, and the balance for gold.",
+   "angle": "Gold behaves differently in each regime, so the app tells you which one you are trading in.",
+   "facts": [
+    "Regime: deflationary risk-off",
+    "Odds: risk-on 10%, deflationary 19%, inflationary 25%, liquidation 46%",
+    "On the day shown, liquidation led, day 1 of 2 to confirm",
+    "The regime is read from 14 cross-asset pairs"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "05",
+   "slug": "which-regime",
+   "feature": "Regime sheet",
+   "pillar": "Educational Principles",
+   "wash": "blue",
+   "kicker": "Which regime?",
+   "headline": "It needs 2 days|*to change its mind.",
+   "sub": "A challenger must lead on 2 readings in a row, so a one-day swing can't flip the regime.",
+   "cta": "Read the regime",
+   "visuals": [
+    {
+     "src": "ios/regime.png",
+     "crop": [
+      0.0359,
+      0.137,
+      0.9641,
+      0.4345
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The 'Which regime?' sheet: deflationary risk-off confirmed at 19%, liquidation leading at 46% on day 1 of 2 to confirm, and the rule that the name only changes after a challenger leads on 2 readings in a row.",
+   "angle": "The regime call is built to be steady: no flip-flopping on one noisy day.",
+   "facts": [
+    "Deflationary risk-off 19%, confirmed regime",
+    "Liquidation 46%, leading on the day shown, day 1 of 2 to confirm",
+    "The name only changes once a challenger leads on 2 readings in a row"
+   ],
+   "bottomScrim": 280
+  },
+  {
+   "id": "06",
+   "slug": "regime-odds",
+   "feature": "How the odds have moved",
+   "pillar": "Product Showcase",
+   "wash": "amber",
+   "kicker": "The regime, over time",
+   "headline": "Watch the regime|*shift.",
+   "sub": "How the odds of each regime have moved, day by day, with the latest change named.",
+   "cta": "Read the regime",
+   "visuals": [
+    {
+     "src": "ios/drivers-55.png",
+     "crop": [
+      0.0359,
+      0.307,
+      0.9641,
+      0.5053
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/drivers-80.png",
+     "crop": [
+      0.0359,
+      0.2279,
+      0.9641,
+      0.4959
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 940,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The 'How the odds have moved' chart: a stacked area of the four regime odds from August to November, captioned 'Over the last month, Liquidation rose from 38% to 46%', with the gold direction list beneath.",
+   "angle": "A regime is not a switch. You can watch one build before it takes over.",
+   "facts": [
+    "Over the last month, liquidation rose from 38% to 46%",
+    "Four regimes: risk-on, deflationary risk-off, inflationary risk-off, liquidation"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "07",
+   "slug": "technical-picture",
+   "feature": "Technical picture",
+   "pillar": "Product Showcase",
+   "wash": "teal",
+   "kicker": "Technicals",
+   "headline": "The chart,|*read for you.",
+   "sub": "D1, H4 and H1 trend from swing structure, in one verdict, with the break drawn on.",
+   "cta": "See the chart",
+   "visuals": [
+    {
+     "src": "ios/t2-levels.png",
+     "crop": [
+      0.0359,
+      0.1771,
+      0.9641,
+      0.7556
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 470,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Technicals screen: a 'Downtrend' verdict with D1, H4 and H1 chips, a plain-English summary, and the H4 candle chart with swing labels, the buy target band and the break marked under it.",
+   "angle": "The trend on three timeframes read from structure, before you draw a single line.",
+   "facts": [
+    "Technical picture: downtrend. D1 down, H4 sideways, H1 down",
+    "Price is below its 10, 20 and 50-day averages",
+    "On H4, price broke below the last higher low at 3,895"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "08",
+   "slug": "h4-chart",
+   "feature": "H4 chart with zones",
+   "pillar": "Product Showcase",
+   "wash": "teal",
+   "kicker": "The H4 chart",
+   "headline": "Every level,|*already drawn.",
+   "sub": "Swings, zones, the break of structure and live price on one chart.",
+   "cta": "See the chart",
+   "visuals": [
+    {
+     "src": "ios/t2-levels-12.png",
+     "crop": [
+      0.0359,
+      0.1417,
+      0.9641,
+      0.5667
+     ],
+     "w": 830,
+     "x": 125,
+     "y": 462,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "The H4 gold chart in the app: candles from 4,150 down to 3,850, swing points labelled HH and LL, a sell zone and a buy zone shaded, 'Buy target 1 3,960.8', 'Broke 3,895' and 'Buy stop 3,875.0' marked, and live price at 3,898.3.",
+   "angle": "The morning markup done for you: structure, zones and levels on the chart when you open it.",
+   "facts": [
+    "H4 chart, 5 day view",
+    "Buy target 1 at 3,960.8",
+    "Broke 3,895",
+    "The chart also switches to H1, and to a flowing line"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "09",
+   "slug": "sell-zone",
+   "feature": "Zones: a trade idea",
+   "pillar": "Educational Principles",
+   "wash": "teal",
+   "kicker": "Zones",
+   "headline": "Areas of interest,|*not signals.",
+   "sub": "A zone with its stop and two targets. You wait for price, then apply your own entry.",
+   "cta": "See the zones",
+   "visuals": [
+    {
+     "src": "ios/t2-levels-40.png",
+     "crop": [
+      0.0359,
+      0.2007,
+      0.9641,
+      0.4156
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "A Sell idea card marked 'Qualifies today': zone 3,957-3,974, 59 points above price, stop 3,991.0, target 1 3,895.4, target 2 3,874.0, with the note to wait for price to reach the zone and an H4 candle to close back out below it.",
+   "angle": "The app marks where to pay attention. The trader still decides.",
+   "facts": [
+    "Sell zone 3,957-3,974, 59 pts above price",
+    "Stop 3,991.0, target 1 3,895.4, target 2 3,874.0",
+    "Wait for price to reach the zone, then an H4 candle that closes back out below it",
+    "Zones on M30, H4 and D1"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "10",
+   "slug": "why-this-zone",
+   "feature": "Why this zone",
+   "pillar": "Educational Principles",
+   "wash": "teal",
+   "kicker": "Why this zone",
+   "headline": "Four reasons|*for one zone.",
+   "sub": "Zones are built where structure clusters. Tap one to see what built it.",
+   "cta": "See the zones",
+   "visuals": [
+    {
+     "src": "ios/t2-levels-40.png",
+     "crop": [
+      0.0359,
+      0.2007,
+      0.9641,
+      0.2975
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/t2-levels-40.png",
+     "crop": [
+      0.0359,
+      0.4746,
+      0.9641,
+      0.5667
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 712,
+     "r": 34
+    }
+   ],
+   "callouts": [
+    {
+     "text": "4 levels in 17 points",
+     "sub": "that cluster is the zone",
+     "x": 470,
+     "y": 1010,
+     "at": [
+      400,
+      880
+     ],
+     "mw": 350
+    }
+   ],
+   "shows": "The sell zone 3,957-3,974 with its 'Why this zone' chips: pair resistance H4 3960.8, ADR exhaustion 3961.9, pivot R1 3967.1 and swing high H4 3970.9.",
+   "angle": "A zone is not a guess. It is where several levels sit on top of each other.",
+   "facts": [
+    "Sell zone 3,957-3,974",
+    "Built from: pair resistance H4 3960.8, ADR exhaustion 3961.9, pivot R1 3967.1, swing high H4 3970.9"
+   ]
+  },
+  {
+   "id": "11",
+   "slug": "structure-ladder",
+   "feature": "Structure: levels near price",
+   "pillar": "Product Showcase",
+   "wash": "teal",
+   "kicker": "Structure",
+   "headline": "Every level|*near price.",
+   "sub": "Pivots, swings, ranges and prior highs and lows, ranked, with the distance in points.",
+   "cta": "See the levels",
+   "visuals": [
+    {
+     "src": "ios/structure.png",
+     "crop": [
+      0.0359,
+      0.3022,
+      0.9641,
+      0.8217
+     ],
+     "w": 860,
+     "x": 110,
+     "y": 470,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Structure sheet: a ladder of levels around live price 3,888.32, from Pivot R1 3,967.1 above to the prior day and week low 3,852.4 below, with confluence tags and the distance to each in points.",
+   "angle": "Know what sits above and below price before you plan a trade.",
+   "facts": [
+    "Live price 3,888.32",
+    "Above: pivot R1 3,967.1, ADR exhaustion and pair resistance 3,961.9, daily pivot 3,909.8",
+    "Below: range low H4 3,874.0, swing low H4 3,870.1, prior day and week low 3,852.4"
+   ],
+   "bottomScrim": 260
+  },
+  {
+   "id": "12",
+   "slug": "h1-chart",
+   "feature": "H1 chart with a forming pattern",
+   "pillar": "Product Showcase",
+   "wash": "teal",
+   "kicker": "H1 on tap",
+   "headline": "Zoom in to|*the hourly.",
+   "sub": "One tap to H1. The trendline forming there is drawn, target 4,031.",
+   "cta": "See the chart",
+   "visuals": [
+    {
+     "src": "ios/t2-levels-h1-12.png",
+     "crop": [
+      0.0359,
+      0.1393,
+      0.9641,
+      0.5903
+     ],
+     "w": 800,
+     "x": 140,
+     "y": 462,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "The Technicals chart switched to H1: hourly candles stepping down with swing labels, a falling trendline drawn in blue with a dotted projection to 'Target 4,031', 'Broke 3,870' marked, the buy target band at 3,960.8, and a 'Falling trendline, Forming' chip under the chart.",
+   "angle": "The same read on the timeframe you actually trade from, with the pattern forming on it drawn for you.",
+   "facts": [
+    "H1 chart, 5 day view",
+    "A falling trendline is forming on H1, target 4,031",
+    "Broke 3,870",
+    "Buy target 1 at 3,960.8",
+    "The chart shows H4 or H1, as candles or a flowing line"
+   ],
+   "bottomScrim": 200
+  },
+  {
+   "id": "13",
+   "slug": "patterns-grid",
+   "feature": "Pattern detection",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Pattern detection",
+   "headline": "20 patterns.|*Spotted for you.",
+   "sub": "Drawn on the gold chart, each with its stop and its target.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-3.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-30.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-15.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 898,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-37.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 898,
+     "r": 28
+    }
+   ],
+   "callouts": [],
+   "shows": "Four gold charts from the app, each with a pattern drawn on it in blue with a shaded fill: a double bottom, a falling wedge, an inverse head and shoulders and a Gartley, each with its stop line and a dotted path to its target.",
+   "angle": "The app watches the chart for patterns so you do not have to stare at it.",
+   "facts": [
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks",
+    "Each pattern shows where it confirms, its target and its stop",
+    "Shown: double bottom, falling wedge, inverse head and shoulders, Gartley",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 250
+  },
+  {
+   "id": "14",
+   "slug": "double-bottom",
+   "feature": "Pattern: double bottom",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · double bottom",
+   "headline": "Two lows.|*One neckline.",
+   "sub": "Drawn on H4 with its target at 4,561 and its stop at 4,302.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-3.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with a double bottom drawn on it in blue: Bottom 1 and Bottom 2 near 4,310 with the shaded shape between them, the neckline above, the stop at 4,302 and a dotted path to the target at 4,561, with price running up through the target.",
+   "angle": "A textbook pattern, found and measured by the app.",
+   "facts": [
+    "Double bottom on H4, 19 Aug 2026",
+    "Broke the neckline at 4,436, target 4,561, stop 4,302",
+    "A past example on gold, drawn by the app's own chart",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "15",
+   "slug": "inverse-head-shoulders",
+   "feature": "Pattern: inverse head and shoulders",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · head and shoulders",
+   "headline": "Left. Head. Right.|*Drawn for you.",
+   "sub": "The inverse kind, on H4. Target 3,393, stop 3,322.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-15.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with an inverse head and shoulders drawn on it in blue: the left shoulder, head and right shoulder shaded under a falling neckline, the stop at 3,322 and a dotted path to the target at 3,393, with price climbing through the target.",
+   "angle": "The shape most traders spot too late, marked as it completes.",
+   "facts": [
+    "Inverse head and shoulders on H4, 22 Aug 2025",
+    "Broke at 3,348, target 3,393, stop 3,322",
+    "A past example on gold, drawn by the app's own chart",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks"
+   ],
+   "bottomScrim": 230
+  },
+  {
+   "id": "16",
+   "slug": "head-shoulders",
+   "feature": "Pattern: head and shoulders",
+   "pillar": "Product Showcase",
+   "wash": "red",
+   "kicker": "Patterns · the bearish ones",
+   "headline": "It spots the|*tops too.",
+   "sub": "A head and shoulders on H4. Target 2,027, stop 2,081.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-12.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with a head and shoulders top drawn on it in blue: the head at the high with a shoulder either side, a rising neckline, the stop at 2,081 above and a dotted path to the target at 2,027 below, with price falling to the target.",
+   "angle": "Bullish or bearish, the app draws what the chart is doing.",
+   "facts": [
+    "Head and shoulders on H4, 2 Jan 2024",
+    "Broke at 2,061, target 2,027, stop 2,081",
+    "A past example on gold, drawn by the app's own chart",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "17",
+   "slug": "falling-wedge",
+   "feature": "Pattern: falling wedge",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · wedges",
+   "headline": "A falling wedge.|*Then the turn.",
+   "sub": "Drawn on H4 with both lines. Target 5,215, stop 4,829.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-30.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with a falling wedge drawn on it in blue: two falling lines closing in on price with the wedge shaded between them, the stop at 4,829 below and a dotted path to the target at 5,215, with price breaking up and out to the target.",
+   "angle": "Wedges are drawn with both lines, so you can see the squeeze and the break.",
+   "facts": [
+    "Falling wedge on H4, 18 Feb 2026",
+    "Broke at 4,958, target 5,215, stop 4,829",
+    "Rising and falling wedges are both detected",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "18",
+   "slug": "gartley",
+   "feature": "Pattern: Gartley harmonic",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · harmonics",
+   "headline": "X, A, B, C, D.|*Measured for you.",
+   "sub": "A Gartley on H4. Target 4,400, stop 4,265.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-37.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with a Gartley harmonic drawn on it in blue: points X, A, B, C and D joined as two shaded triangles, a dotted path to the target at 4,400 and the stop at 4,265.",
+   "angle": "Harmonics take a ruler and patience. The app does the measuring.",
+   "facts": [
+    "Gartley on H4, 10 Sep 2026",
+    "Completed at 4,331, target 4,400, stop 4,265",
+    "Four harmonics detected: Gartley, Bat, Butterfly, Crab",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "19",
+   "slug": "bat-butterfly",
+   "feature": "Pattern: Bat and Butterfly",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · harmonics",
+   "headline": "A Bat.|*And a Butterfly.",
+   "sub": "Same five points, different ratios. The app names each one.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-40.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.7792
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-43.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.7792
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 452,
+     "r": 28
+    }
+   ],
+   "callouts": [],
+   "shows": "Two H4 gold charts side by side: a Bat with target 4,134 and stop 4,055, and a Butterfly with target 1,827 and stop 1,798, each with its X, A, B, C, D points drawn in blue and a 'Confirmed' pattern card under it.",
+   "angle": "Harmonic patterns named and levelled, with no manual measuring.",
+   "facts": [
+    "Bat on H4, 14 Oct 2026: target 4,134, stop 4,055",
+    "Butterfly on H4, 17 Jan 2021: target 1,827, stop 1,798",
+    "Four harmonics detected: Gartley, Bat, Butterfly, Crab",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "20",
+   "slug": "trendline-break",
+   "feature": "Pattern: trendline break",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · trendlines",
+   "headline": "It draws the line.|*Then watches it.",
+   "sub": "A falling trendline on H4. Target 4,103, stop 3,861.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-47.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 770,
+     "x": 155,
+     "y": 446,
+     "r": 40
+    }
+   ],
+   "callouts": [],
+   "shows": "An H4 gold chart with a falling trendline drawn in blue from point 1 through point 2, price breaking above it, the stop at 3,861 and a dotted path to the target at 4,103, with price rallying to the target.",
+   "angle": "Trendline breaks, drawn the same way every time, not by eye.",
+   "facts": [
+    "Falling trendline on H4, 3 Nov 2026",
+    "Broke at 3,937, target 4,103, stop 3,861",
+    "A past example on gold, drawn by the app's own chart",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "21",
+   "slug": "more-shapes",
+   "feature": "Patterns: triple bottoms, rectangles, wedges, triangles",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Patterns · more shapes",
+   "headline": "Wedges. Rectangles.|*Triple bottoms.",
+   "sub": "Bullish or bearish, each drawn with its stop and its target.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-9.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-33.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-28.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 898,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-22.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.6045
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 898,
+     "r": 28
+    }
+   ],
+   "callouts": [],
+   "shows": "Four H4 gold charts from the app, each with a pattern drawn in blue: a triple bottom, a rectangle, a rising wedge and a descending triangle, each with its stop line and a dotted path to its target.",
+   "angle": "More shapes than most traders can hold in their head, all checked on every bar.",
+   "facts": [
+    "Shown: triple bottom, rectangle, rising wedge, descending triangle",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks",
+    "Each pattern shows where it confirms, its target and its stop",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 250
+  },
+  {
+   "id": "22",
+   "slug": "pattern-forming",
+   "feature": "Patterns: Possible to Confirmed",
+   "pillar": "Educational Principles",
+   "wash": "blue",
+   "kicker": "Possible · Forming · Confirmed",
+   "headline": "Dashed is possible.|*Solid is confirmed.",
+   "sub": "Every pattern carries its status, and the price that would confirm it.",
+   "cta": "Spot patterns",
+   "visuals": [
+    {
+     "src": "ios/p2-29.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.7792
+     ],
+     "w": 466,
+     "x": 64,
+     "y": 452,
+     "r": 28
+    },
+    {
+     "src": "ios/p2-27.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.7792
+     ],
+     "w": 466,
+     "x": 550,
+     "y": 452,
+     "r": 28
+    }
+   ],
+   "callouts": [],
+   "shows": "Two H4 gold charts side by side, each with a rising wedge: on the left the wedge is drawn with dashed lines and its card reads 'Possible', confirms at 4,024; on the right the lines are solid and the card reads 'Confirmed', broke at 4,516, with price falling to the target.",
+   "angle": "The honest part of pattern detection: the app tells you how far along a pattern is, and what has to happen next.",
+   "facts": [
+    "Possible rising wedge on H4: confirms at 4,024, target 3,838, stop 4,173",
+    "Confirmed rising wedge on H4: broke at 4,516, target 4,393, stop 4,587",
+    "Statuses: Possible, Forming, Confirmed. Possible patterns draw dashed",
+    "A confirmed pattern waits for the bar to close",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 240
+  },
+  {
+   "id": "23",
+   "slug": "pattern-alerts",
+   "feature": "Pattern alerts",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "Pattern alerts",
+   "headline": "A pattern forms.|*Your phone tells you.",
+   "sub": "Switch on H4 patterns, H1 patterns, or both. No chart-watching needed.",
+   "cta": "Set alerts",
+   "visuals": [
+    {
+     "src": "ios/alerts.png",
+     "crop": [
+      0.0359,
+      0.2479,
+      0.9641,
+      0.3636
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/p2-24.png",
+     "crop": [
+      0.0359,
+      0.2102,
+      0.9641,
+      0.5974
+     ],
+     "w": 640,
+     "x": 220,
+     "y": 760,
+     "r": 32
+    }
+   ],
+   "callouts": [],
+   "shows": "The Alerts sheet with the 'H4 patterns' toggle on and the 'H1 patterns' toggle off, above an H4 gold chart with a symmetrical triangle drawn on it in blue and a dotted path to its target.",
+   "angle": "You do not need to watch the chart to catch a pattern.",
+   "facts": [
+    "Alerts for H4 patterns and H1 patterns",
+    "Other alerts: the morning Read, regime changes, price near a zone, red news in 15 minutes",
+    "Chart shown: a symmetrical triangle on H4",
+    "A past example on gold, drawn by the app's own chart"
+   ],
+   "bottomScrim": 280
+  },
+  {
+   "id": "24",
+   "slug": "macro-for-gold",
+   "feature": "Macro for gold",
+   "pillar": "Educational Principles",
+   "wash": "blue",
+   "kicker": "Macro",
+   "headline": "What's pulling|*on gold?",
+   "sub": "Real yields carry 50% of the macro read, the dollar 30%. Each one marked for gold.",
+   "cta": "Check the drivers",
+   "visuals": [
+    {
+     "src": "ios/macro-pane.png",
+     "crop": [
+      0.0359,
+      0.2479,
+      0.9641,
+      0.5549
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Macro for gold card: 'Headwind for gold', real yields rising at 50% of macro, the dollar edging up at 30%, inflation expectations falling at 10% and oil edging down at 10%, each marked headwind or supportive.",
+   "angle": "The macro picture weighted by what actually matters for gold.",
+   "facts": [
+    "Macro: headwind for gold. Real yields are rising, the biggest pull",
+    "Weights: real yields 50%, dollar 30%, inflation expectations 10%, oil 10%"
+   ],
+   "bottomScrim": 290
+  },
+  {
+   "id": "25",
+   "slug": "macro-data",
+   "feature": "Macro data sheet",
+   "pillar": "Product Showcase",
+   "wash": "blue",
+   "kicker": "The data",
+   "headline": "Real yields to|*funding stress.",
+   "sub": "The series that move gold, each with its trend. Shown here: the 10-year real yield at 2.78%.",
+   "cta": "Check the drivers",
+   "visuals": [
+    {
+     "src": "ios/macro-sheet.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.7084
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Macro sheet: the 10-year real yield at 2.78% with its trend chart, then rows with sparklines for the 10y breakeven 2.24%, the 2s10s curve +24 bp, the broad dollar 121.9, Fed funds 3.88%, oil and the 2y yield.",
+   "angle": "The macro dashboard a gold trader would otherwise build across five websites.",
+   "facts": [
+    "Real yield 2.78%",
+    "10y breakeven 2.24%, 2s10s curve +24 bp, broad dollar 121.9, Fed funds effective 3.88%",
+    "Also: oil, the 2y yield, gold, oil and rates volatility, funding stress"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "26",
+   "slug": "cot-positioning",
+   "feature": "COT positioning",
+   "pillar": "Educational Principles",
+   "wash": "violet",
+   "kicker": "Positioning",
+   "headline": "Who's long,|*who's short.",
+   "sub": "The weekly CFTC report, read for you. On this one, large speculators were net long +171.4k.",
+   "cta": "See positioning",
+   "visuals": [
+    {
+     "src": "ios/cot.png",
+     "crop": [
+      0.0359,
+      0.2479,
+      0.9641,
+      0.6045
+     ],
+     "w": 860,
+     "x": 110,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Speculators in gold card: 'Supportive for gold', large speculators holding a few fewer longs than usual at the 35th percentile of the year, a slider from few longs to crowded, and net long +171.4k, longs 212.6k, shorts 41.2k.",
+   "angle": "Positioning tells you how much fuel is left in a move.",
+   "facts": [
+    "Net long +171.4k, longs 212.6k, shorts 41.2k",
+    "35th percentile of the year: not washed out, slight support",
+    "COT covers large speculators, commercials and small traders"
+   ],
+   "bottomScrim": 270
+  },
+  {
+   "id": "27",
+   "slug": "cot-six-months",
+   "feature": "COT: last six months",
+   "pillar": "Product Showcase",
+   "wash": "violet",
+   "kicker": "Positioning",
+   "headline": "8 weeks of|*cutting longs.",
+   "sub": "On this report, speculators had cut their net long for 8 weeks in a row. The app counts the streaks.",
+   "cta": "See positioning",
+   "visuals": [
+    {
+     "src": "ios/cot-50.png",
+     "crop": [
+      0.0359,
+      0.3022,
+      0.9641,
+      0.5974
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 518,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The 'Last six months' chart of speculators' net long in gold, week by week, with notes: net long cut for 8 weeks in a row (-52.5k), shorts grown for 2 weeks (+6.8k), longs closed for 3 weeks (-22.7k).",
+   "angle": "A single week of COT says little. The trend says a lot.",
+   "facts": [
+    "Net long cut for 8 weeks in a row (-52.5k)",
+    "Shorts have grown for 2 weeks (+6.8k)",
+    "Longs have been closed for 3 weeks (-22.7k)"
+   ],
+   "bottomScrim": 270
+  },
+  {
+   "id": "28",
+   "slug": "red-news",
+   "feature": "Red news calendar",
+   "pillar": "Product Showcase",
+   "wash": "red",
+   "kicker": "News",
+   "headline": "Red news,|*never a surprise.",
+   "sub": "The next high-impact release with its time, forecast and previous, and a countdown.",
+   "cta": "Check the calendar",
+   "visuals": [
+    {
+     "src": "ios/news.png",
+     "crop": [
+      0.0359,
+      0.1806,
+      0.9641,
+      0.5903
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The News screen: 'Next red news' Core PPI m/m at 13:30 London with forecast 0.3% and previous 0.7% and a countdown, then this week's calendar listing Core PPI and PPI at 13:30.",
+   "angle": "You know when the market is likely to jump, before you size a trade.",
+   "facts": [
+    "Core PPI m/m at 13:30 London, forecast 0.3%, previous 0.7%",
+    "The calendar covers USD high-impact releases for the week"
+   ],
+   "bottomScrim": 300
+  },
+  {
+   "id": "29",
+   "slug": "geopolitics",
+   "feature": "Geopolitics",
+   "pillar": "Product Showcase",
+   "wash": "red",
+   "kicker": "Geopolitics",
+   "headline": "The headlines|*that move gold.",
+   "sub": "Each thread marked bullish, bearish or mixed for gold, and whether it is priced in yet.",
+   "cta": "Read the news",
+   "visuals": [
+    {
+     "src": "ios/news-60.png",
+     "crop": [
+      0.0359,
+      0.4298,
+      0.9641,
+      0.7816
+     ],
+     "w": 900,
+     "x": 90,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "Two geopolitics threads in the News tab: one on attacks on Saudi oil infrastructure and the Strait of Hormuz marked Mixed, one on central banks' record gold accumulation marked Bullish, each with chips such as 'Oil: falling, not priced yet'.",
+   "angle": "Not a news feed. A read on what each story means for gold.",
+   "facts": [
+    "Threads are marked bullish, bearish or mixed for gold",
+    "Each thread is checked against what markets are doing: priced in or not priced yet"
+   ],
+   "bottomScrim": 280
+  },
+  {
+   "id": "30",
+   "slug": "size",
+   "feature": "Position size",
+   "pillar": "Product Showcase",
+   "wash": "gold",
+   "kicker": "Size",
+   "headline": "Risk worked|*out for you.",
+   "sub": "Account and risk in, lots out. $25,000 at 0.5% risk on this zone is 0.04 lots.",
+   "cta": "Size it",
+   "visuals": [
+    {
+     "src": "ios/size.png",
+     "crop": [
+      0.0359,
+      0.2125,
+      0.9641,
+      0.4014
+     ],
+     "w": 820,
+     "x": 130,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/size.png",
+     "crop": [
+      0.0359,
+      0.4699,
+      0.9641,
+      0.7107
+     ],
+     "w": 820,
+     "x": 130,
+     "y": 830,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Size sheet for the H4 sell zone 3,957-3,974: 0.04 lots, risk $125, stop 33.5, at target 1 +$232, with the account slider at $25,000 and risk per trade at 0.5%.",
+   "angle": "The zone's stop sets the size, so the maths is done before the trade.",
+   "facts": [
+    "0.04 lots for a $25,000 account at 0.5% risk",
+    "Risk $125, stop 33.5 points",
+    "Works in spot lots, MGC or GC"
+   ],
+   "bottomScrim": 280
+  },
+  {
+   "id": "31",
+   "slug": "alerts",
+   "feature": "Alerts",
+   "pillar": "Product Showcase",
+   "wash": "gold",
+   "kicker": "Alerts",
+   "headline": "Your levels,|*on your lock screen.",
+   "sub": "The Read, regime changes, patterns, price near a zone and red news in 15 minutes.",
+   "cta": "Set alerts",
+   "visuals": [
+    {
+     "src": "ios/alerts.png",
+     "crop": [
+      0.0359,
+      0.1346,
+      0.9641,
+      0.5962
+     ],
+     "w": 820,
+     "x": 130,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Alerts sheet: toggles for Today's Read is ready, Regime changes, H4 patterns, H1 patterns, Price near a trade zone and Red news in 15 minutes, with a zone distance slider at 0.25 ATR.",
+   "angle": "Step away from the chart. The app tells you when something needs you.",
+   "facts": [
+    "Six alerts: the Read, regime changes, H4 patterns, H1 patterns, price near a zone, red news in 15 minutes",
+    "Zone distance from 0.25 ATR"
+   ],
+   "bottomScrim": 270
+  },
+  {
+   "id": "32",
+   "slug": "track-record",
+   "feature": "Track record",
+   "pillar": "Educational Principles",
+   "wash": "gold",
+   "kicker": "The record",
+   "headline": "It marks its|*own homework.",
+   "sub": "Every regime flip is settled afterwards as held or faded, and the record stays in the app.",
+   "cta": "See the record",
+   "visuals": [
+    {
+     "src": "ios/record.png",
+     "crop": [
+      0.0359,
+      0.1771,
+      0.9641,
+      0.2361
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    },
+    {
+     "src": "ios/record.png",
+     "crop": [
+      0.0359,
+      0.5195,
+      0.9641,
+      0.8737
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 628,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The Track record sheet: tabs for Regime, Bias, Asia tape, Day type, Zones and Legacy, and a list of regime flips by date, each settled with a chip reading Open, Held or Faded.",
+   "angle": "Analysis that grades itself in public, including the flips that faded.",
+   "facts": [
+    "Every call is graded after its session and never edited",
+    "Regime flips are settled as held or faded",
+    "Record tabs: regime, bias, Asia tape, day type, zones"
+   ],
+   "bottomScrim": 280
+  },
+  {
+   "id": "33",
+   "slug": "frozen",
+   "feature": "How it works",
+   "pillar": "Educational Principles",
+   "wash": "amber",
+   "kicker": "How it works",
+   "headline": "Frozen at 06:00.|*Never edited.",
+   "sub": "The Read is scored at 05:35 London from three pillars, then locked for the day.",
+   "cta": "Get the Read",
+   "visuals": [
+    {
+     "src": "ios/method.png",
+     "crop": [
+      0.0359,
+      0.1464,
+      0.9641,
+      0.4959
+     ],
+     "w": 952,
+     "x": 64,
+     "y": 478,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The 'How it works' sheet: the Read is scored every weekday at 05:35 London from three pillars, the regime, macro and positioning, shown as a strength out of 100, and frozen at 06:00, never edited.",
+   "angle": "No hindsight. What the app said in the morning is what it is judged on.",
+   "facts": [
+    "Scored every weekday at 05:35 London from three pillars: regime, macro, positioning",
+    "Strength out of 100",
+    "The Read can be recomposed until 06:00, then it is frozen and never edited"
+   ],
+   "bottomScrim": 290
+  },
+  {
+   "id": "34",
+   "slug": "one-plan",
+   "feature": "Gold Monthly",
+   "pillar": "Offer",
+   "wash": "gold",
+   "kicker": "Gold Monthly",
+   "headline": "Everything.|*One plan.",
+   "sub": "The Read, Technicals, Drivers, News and Pulses. £16.99/month, cancel anytime.",
+   "cta": "Join Gold Monthly",
+   "visuals": [
+    {
+     "src": "ios/paywall.png",
+     "crop": [
+      0.0359,
+      0.2952,
+      0.9641,
+      0.9233
+     ],
+     "w": 760,
+     "x": 160,
+     "y": 470,
+     "r": 34
+    }
+   ],
+   "callouts": [],
+   "shows": "The membership screen: Today's Read, Technicals, Drivers, News and Pulses listed with what each does, and the Gold Monthly plan at £16.99 / month.",
+   "angle": "One plan unlocks the whole app.",
+   "facts": [
+    "£16.99/month, cancel anytime",
+    "One plan unlocks everything: Today's Read, Technicals, Drivers, News, Pulses",
+    "On iPhone and iPad"
+   ],
+   "bottomScrim": 260
+  },
+  {
+   "id": "35",
+   "slug": "understand-gold",
+   "feature": "Positioning statement",
+   "pillar": "Brand",
+   "wash": "gold",
+   "kicker": "MarketDynamics",
+   "headline": "Understand what|*moves gold.",
+   "sub": "From macro down to the chart, every trading day. Areas of interest, not signals.",
+   "cta": "Get the Read",
+   "visuals": [
+    {
+     "src": "ios/t2-today.png",
+     "crop": [
+      0.0,
+      0.0,
+      1.0,
+      1.0
+     ],
+     "w": 420,
+     "x": 600,
+     "y": 560,
+     "r": 62
+    }
+   ],
+   "callouts": [],
+   "shows": "A text-led post: the four tabs of the app listed as pills, Today, Technicals, Drivers and News, with what sits in each, beside the Today screen on an iPhone.",
+   "angle": "The whole picture for gold in one app, built by a trader who uses it every morning.",
+   "facts": [
+    "Four tabs: Today, Technicals, Drivers, News",
+    "20 chart patterns: triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks",
+    "Gold Monthly is £16.99/month, cancel anytime. On iPhone and iPad"
+   ],
+   "pills": [
+    {
+     "x": 64,
+     "y": 560,
+     "w": 500,
+     "items": [
+      "#Today",
+      "The Daily Read",
+      "Day range",
+      "Pulses",
+      "#Technicals",
+      "Zones",
+      "20 patterns",
+      "H4 and H1",
+      "#Drivers",
+      "Regime",
+      "Macro",
+      "COT",
+      "#News",
+      "Red news",
+      "Geopolitics"
+     ]
+    }
+   ],
+   "bottomScrim": 300
+  }
+ ]
+}

@@ -1,0 +1,697 @@
+{
+ "brand": "Sealed",
+ "size": [
+  1080,
+  1350
+ ],
+ "posts": [
+  {
+   "id": "01",
+   "file": "01-one-press.jpg",
+   "png": "01-one-press.png",
+   "feature": "The seal",
+   "pillar": "hook",
+   "headline": "One press a night. Only as full as you earned.",
+   "sub": "Today reads 96%. Hold the wax and that is the impression it takes.",
+   "cta": "Earn the close",
+   "shows": "The home screen: a molten wax seal inside three arcs marked TRAIN, FUEL and BASE, with 96% and HOLD TO SEAL under it.",
+   "angle": "The whole app is one object. You press it once a night and it can only form as full as the day you had.",
+   "facts": [
+    "Today's seal stands at 96%",
+    "Three arcs feed it: TRAIN, FUEL, BASE",
+    "One press a night"
+   ]
+  },
+  {
+   "id": "02",
+   "file": "02-hold-the-wax.jpg",
+   "png": "02-hold-the-wax.png",
+   "feature": "The press",
+   "pillar": "founder",
+   "headline": "Hold the wax. Feel it give.",
+   "sub": "It moves under your thumb and catches the light as you tilt the phone. The wax is a real Metal shader.",
+   "cta": "Press yours",
+   "shows": "The seal mid press: the wax spreading and throwing off droplets while the day still reads 96%, HOLD TO SEAL.",
+   "angle": "The craft. The seal is a live surface that responds to touch and tilt, caught here half way through the press.",
+   "facts": [
+    "The wax is a Metal shader",
+    "It responds to touch and to tilt",
+    "96% on screen, mid press"
+   ]
+  },
+  {
+   "id": "03",
+   "file": "03-it-sets.jpg",
+   "png": "03-it-sets.png",
+   "feature": "The close",
+   "pillar": "hook",
+   "headline": "Then it sets. And the day is final.",
+   "sub": "Sealed, 96%, beat the plan. One press and the day is done.",
+   "cta": "Seal today",
+   "shows": "The instant after the press: a ripple leaving the stamped seal, a gold ring round it, SEALED and 96% BEAT THE PLAN below.",
+   "angle": "Finality. One press and the day is closed.",
+   "facts": [
+    "Sealed at 96%, marked BEAT THE PLAN",
+    "A gold ring means the day beat the plan"
+   ]
+  },
+  {
+   "id": "04",
+   "file": "04-gilded.jpg",
+   "png": "04-gilded.png",
+   "feature": "Gilded wax",
+   "pillar": "hook",
+   "headline": "Beat the plan. The wax comes up gilded.",
+   "sub": "100%, sealed at 21:12. Doing more never makes the seal bigger. It turns it gold.",
+   "cta": "Earn the gold",
+   "shows": "A sealed day: the crimson seal stamped with a gold S and a gold ring, SEALED 21:12, 100% BEAT THE PLAN, and a SHARE THE SEAL button.",
+   "angle": "Overachieving is rewarded with gold, never with a bigger number.",
+   "facts": [
+    "Sealed at 21:12",
+    "100%, beat the plan",
+    "The seal caps at 100%; beating the plan gilds it"
+   ]
+  },
+  {
+   "id": "05",
+   "file": "05-locks-forever.jpg",
+   "png": "05-locks-forever.png",
+   "feature": "Sealed days lock",
+   "pillar": "honest",
+   "headline": "Sealed days lock forever.",
+   "sub": "Thursday: 98%. TRAIN 100, FUEL 99, BASE 96. No going back to tidy it up.",
+   "cta": "Earn the close",
+   "shows": "A sealed night opened from the wall: THURSDAY 12 NOVEMBER, 98%, TRAIN 100%, FUEL 99%, BASE 96%, 55 MIN, 435 KCAL, SEALED 21:32.",
+   "angle": "The seal cannot be edited after the fact. What you earned is what stays.",
+   "facts": [
+    "Thursday sealed at 98%",
+    "TRAIN 100%, FUEL 99%, BASE 96%",
+    "55 min, 435 kcal, sealed 21:32",
+    "No retro-edits"
+   ]
+  },
+  {
+   "id": "06",
+   "file": "06-eighty-holds.jpg",
+   "png": "06-eighty-holds.png",
+   "feature": "80% holds the day",
+   "pillar": "honest",
+   "headline": "Short of perfect? 80% still holds.",
+   "sub": "It's evening and today reads 59%. The app says it plainly: push for 80% and the streak is safe.",
+   "cta": "Hold the day",
+   "shows": "The home screen in the evening with the day behind: 59%, an amber line reading SEALED STREAK AT RISK, PUSH FOR 80%, and TRAIN 60%, BASE 62%, FUEL 57% below.",
+   "angle": "Honest and kind at once: it tells you where you stand, and 80% is enough to hold the day and the run.",
+   "facts": [
+    "Today reads 59%",
+    "TRAIN 60%, BASE 62%, FUEL 57%",
+    "80% holds the day and the streak"
+   ]
+  },
+  {
+   "id": "07",
+   "file": "07-three-arcs.jpg",
+   "png": "07-three-arcs.png",
+   "feature": "How a day works",
+   "pillar": "feature",
+   "headline": "Three arcs. One seal.",
+   "sub": "TRAIN, FUEL and BASE fill through the day. Press the wax once, in the evening. Not before.",
+   "cta": "Earn the close",
+   "shows": "The guide's YOUR DAY page: a sealed crimson seal with the day dragged to night, and three tiles: TRAIN 100% 4 OF 4 SETS, FUEL 100% 3 OF 3 MEALS, BASE 100% FILLS ITSELF.",
+   "angle": "The whole method on one card: tick training and meals, let Health fill BASE, press once at night.",
+   "facts": [
+    "TRAIN 100%: 4 of 4 sets",
+    "FUEL 100%: 3 of 3 meals",
+    "BASE 100%: fills itself from Apple Health"
+   ]
+  },
+  {
+   "id": "08",
+   "file": "08-sealed-fx.jpg",
+   "png": "08-sealed-fx.png",
+   "feature": "Sealed FX",
+   "pillar": "feature",
+   "headline": "Wax, lava or liquid. Your colour.",
+   "sub": "Three forms and a shelf of colours: crimson, ember, forest, ocean, violet, plum, brass, slate.",
+   "cta": "Pick yours",
+   "shows": "The SEALED FX screen: FORM tiles for WAX, LAVA and LIQUID, and COLOUR pots named CRIMSON, EMBER, FOREST, OCEAN, VIOLET, PLUM, BRASS and SLATE.",
+   "angle": "The seal is yours to choose, and it previews on the real thing.",
+   "facts": [
+    "3 forms: wax, lava, liquid",
+    "8 colours shown: crimson, ember, forest, ocean, violet, plum, brass, slate"
+   ]
+  },
+  {
+   "id": "09",
+   "file": "09-lava.jpg",
+   "png": "09-lava.png",
+   "feature": "Sealed FX: lava",
+   "pillar": "feature",
+   "headline": "Same seal. Poured in lava.",
+   "sub": "Today's 96%, molten. It still only forms as full as you earned.",
+   "cta": "Pick yours",
+   "shows": "The home screen with the seal set to lava: a glowing molten disc with cracked dark arcs, 96%, HOLD TO SEAL.",
+   "angle": "Same honest seal, different material.",
+   "facts": [
+    "Lava is one of 3 forms",
+    "The day reads 96%"
+   ]
+  },
+  {
+   "id": "10",
+   "file": "10-liquid.jpg",
+   "png": "10-liquid.png",
+   "feature": "Sealed FX: liquid",
+   "pillar": "feature",
+   "headline": "Or liquid chrome. Gilded all the same.",
+   "sub": "100%, sealed at 21:12, beat the plan. The gold is earned, whatever the seal is made of.",
+   "cta": "Pick yours",
+   "shows": "A sealed day with the seal set to liquid: a chrome disc with a gold S and gold ring, SEALED 21:12, 100% BEAT THE PLAN.",
+   "angle": "The look changes; the rule doesn't. Gold only appears when the day beat the plan.",
+   "facts": [
+    "Liquid is one of 3 forms",
+    "Sealed at 21:12, 100%, beat the plan"
+   ]
+  },
+  {
+   "id": "11",
+   "file": "11-oil.jpg",
+   "png": "11-oil.png",
+   "feature": "Sealed FX: oil",
+   "pillar": "founder",
+   "headline": "Oil. Every colour at once.",
+   "sub": "Liquid, in oil: the surface turns through the spectrum as it moves. Today's 96%, waiting for the press.",
+   "cta": "Pick yours",
+   "shows": "The home screen with the seal set to liquid oil: a dark disc with bands of blue, violet and green moving across it, iridescent arcs, 96%, HOLD TO SEAL.",
+   "angle": "The craft. One of the liquid finishes is oil, which shifts colour as it moves.",
+   "facts": [
+    "Oil is one of 8 liquid finishes",
+    "The day reads 96%",
+    "The seal is a Metal shader that responds to touch and tilt"
+   ]
+  },
+  {
+   "id": "12",
+   "file": "12-lava-heats.jpg",
+   "png": "12-lava-heats.png",
+   "feature": "Sealed FX: lava colours",
+   "pillar": "feature",
+   "headline": "Lava runs hot. In five colours.",
+   "sub": "Lava, blue, acid, violet and gold. Bottom right: the same lava sealed and gilded, white hot.",
+   "cta": "Pick yours",
+   "shows": "Six lava seals in a grid: molten in orange, blue, acid green, violet and gold, and one sealed with a white-hot gold ring.",
+   "angle": "Lava comes in five colours, and it glows hotter when the day is gilded.",
+   "facts": [
+    "Lava has 5 colours: lava, blue, acid, violet, gold",
+    "3 forms: wax, lava, liquid"
+   ]
+  },
+  {
+   "id": "13",
+   "file": "13-liquid-metals.jpg",
+   "png": "13-liquid-metals.png",
+   "feature": "Sealed FX: liquid finishes",
+   "pillar": "feature",
+   "headline": "Liquid metal. Copper to smoke.",
+   "sub": "Copper, gold, gunmetal, glass, rose and smoke. Each one sealed, so each one wears the gold ring.",
+   "cta": "Pick yours",
+   "shows": "Six sealed liquid seals in a grid: copper, gold, gunmetal, glass, rose and smoke, each with a gold S and a gold ring.",
+   "angle": "The liquid form is polished metal and glass, in eight finishes.",
+   "facts": [
+    "Liquid has 8 finishes: chrome, gold, copper, gunmetal, oil, glass, smoke, rose",
+    "6 shown here",
+    "A gold ring means the day beat the plan"
+   ]
+  },
+  {
+   "id": "14",
+   "file": "14-wax-pots.jpg",
+   "png": "14-wax-pots.png",
+   "feature": "Sealed FX: wax colours",
+   "pillar": "feature",
+   "headline": "Classic wax. Pick your pot.",
+   "sub": "Ember, forest, plum, slate, violet and brass, all sealed and gilded. Crimson is where everyone starts.",
+   "cta": "Pick yours",
+   "shows": "Six sealed wax seals in a grid: ember red, forest green, plum, slate, violet and brass, each stamped with a gold S and ring.",
+   "angle": "The original wax, in a shelf of colours.",
+   "facts": [
+    "Wax has 8 colours: crimson, ember, forest, ocean, violet, plum, brass, slate",
+    "6 shown here",
+    "Crimson is the default"
+   ]
+  },
+  {
+   "id": "15",
+   "file": "15-which-is-yours.jpg",
+   "png": "15-which-is-yours.png",
+   "feature": "Sealed FX: the range",
+   "pillar": "hook",
+   "headline": "Twelve seals. Which one's yours?",
+   "sub": "Wax, lava and liquid, in a few of their colours. All the same day, waiting for the press.",
+   "cta": "Pick yours",
+   "shows": "Twelve molten seals in a grid, one per finish: crimson wax, lava, oil, forest wax, blue lava, liquid gold, violet wax, acid lava, rose, brass wax, violet lava and glass.",
+   "angle": "The seal is the whole app, so it's yours to choose.",
+   "facts": [
+    "12 finishes shown",
+    "3 forms: wax, lava, liquid",
+    "Wax has 8 colours, lava 5, liquid 8"
+   ]
+  },
+  {
+   "id": "16",
+   "file": "16-one-tap.jpg",
+   "png": "16-one-tap.png",
+   "feature": "TRAIN: one tap a set",
+   "pillar": "feature",
+   "headline": "Hit the set? One tap.",
+   "sub": "Deadlift, 140 kg \u00d7 5: ticked. Barbell Row, 75 \u00d7 8, is next. No typing at any point.",
+   "cta": "Tick a set",
+   "shows": "A PULL session part way: Deadlift sets at 140 KG \u00d7 5 ticked lime, then BARBELL ROW set 1 at 75 KG \u00d7 8 still open, each showing last time's numbers.",
+   "angle": "Logging a set at target is a single tap, with last time beside it.",
+   "facts": [
+    "Deadlift 140 kg \u00d7 5, ticked",
+    "Barbell Row 75 kg \u00d7 8, next",
+    "A set at target is one tap; no keyboard"
+   ]
+  },
+  {
+   "id": "17",
+   "file": "17-real-plates.jpg",
+   "png": "17-real-plates.png",
+   "feature": "TRAIN: slide in plates",
+   "pillar": "feature",
+   "headline": "Off plan? Slide in real plates.",
+   "sub": "Hold the chip and slide: 80 kg on the bar. Bars step in plates, dumbbells in rack gaps, machines in stack pins.",
+   "cta": "Load the bar",
+   "shows": "Bench Press with its weight chip held: the 80 KG chip lit and a lens showing 80 KG above the finger, beside BAR PLATES, DUMBBELL RACK and MACHINE STACK, 4 SETS and 8 REPS.",
+   "angle": "Changing a weight is a slide in real gym steps. You never type a number.",
+   "facts": [
+    "Bench Press 4 \u00d7 8 at 80 kg",
+    "Bar steps in plates, dumbbell in rack gaps, machine in stack pins",
+    "No keyboard"
+   ]
+  },
+  {
+   "id": "18",
+   "file": "18-rest-timer.jpg",
+   "png": "18-rest-timer.png",
+   "feature": "TRAIN: rest timer",
+   "pillar": "feature",
+   "headline": "Tick the set. The rest starts itself.",
+   "sub": "1:25 left on this one. 3 of 10 sets down, and the timer runs on the lock screen too.",
+   "cta": "Start a session",
+   "shows": "A PULL session with the rest timer counting 1:25 in the corner, 3/10 SETS and 30% EARNED, and Deadlift sets at 140 KG \u00d7 5 ticked.",
+   "angle": "The rest timer is automatic: tick a set and it runs.",
+   "facts": [
+    "Rest timer at 1:25",
+    "3 of 10 sets, 30% earned",
+    "The rest timer also runs on the lock screen"
+   ]
+  },
+  {
+   "id": "19",
+   "file": "19-workout-done.jpg",
+   "png": "19-workout-done.png",
+   "feature": "TRAIN: workout done",
+   "pillar": "hook",
+   "headline": "Workout done. Every set kept.",
+   "sub": "10 of 10 sets, 100% earned, locked. That's how days get sealed.",
+   "cta": "Earn the close",
+   "shows": "A finished PULL session: 10/10 SETS, 100% EARNED, a WORKOUT DONE card reading 'Every set kept. That's how days get sealed.' and LOCKED 11:16, with the Deadlift sets ticked below.",
+   "angle": "The micro-closure: TRAIN is complete and locked before the day's seal.",
+   "facts": [
+    "10 of 10 sets",
+    "100% earned",
+    "Locked at 11:16"
+   ]
+  },
+  {
+   "id": "20",
+   "file": "20-locks-as-it-stands.jpg",
+   "png": "20-locks-as-it-stands.png",
+   "feature": "TRAIN: ending early",
+   "pillar": "honest",
+   "headline": "Cut it short? It locks as it stands.",
+   "sub": "3 of 10 sets done. Hold to end, and the rest stay honest at zero.",
+   "cta": "Earn the close",
+   "shows": "The foot of a part-done session: FIVE-A-SIDE 60 MIN unticked with USE 55 MIN FROM HEALTH, then HOLD TO END \u00b7 LOCKS AS IT STANDS and '3 OF 10 SETS \u00b7 THE REST STAY HONEST AT ZERO'.",
+   "angle": "You can stop early, but the app won't round it up for you.",
+   "facts": [
+    "3 of 10 sets done",
+    "Ending early locks the workout as it stands",
+    "Unticked sets count as zero"
+   ]
+  },
+  {
+   "id": "21",
+   "file": "21-rate-it.jpg",
+   "png": "21-rate-it.png",
+   "feature": "TRAIN: rate the workout",
+   "pillar": "feature",
+   "headline": "Rate the session. Say a line about it.",
+   "sub": "Four stars and a spoken note: \u201cLegs were heavy but every set landed.\u201d Optional, always.",
+   "cta": "Start a session",
+   "shows": "The RATE THE WORKOUT card: 4 of 5 stars, STRONG, a microphone and the note 'Legs were heavy but every set landed', LAST TIME 5 stars 'Best session in weeks', above HOLD TO COMPLETE & LOCK.",
+   "angle": "A star rating and a voice note so next week you remember how it felt.",
+   "facts": [
+    "4 stars today, 5 stars last time",
+    "Notes can be spoken",
+    "Rating is optional"
+   ]
+  },
+  {
+   "id": "22",
+   "file": "22-from-health.jpg",
+   "png": "22-from-health.png",
+   "feature": "TRAIN: Apple Health",
+   "pillar": "feature",
+   "headline": "Played five-a-side? It already counts.",
+   "sub": "From Apple Health: football 55 min, 510 kcal. Strength 48 min, 362 kcal. No entry needed.",
+   "cta": "Earn the close",
+   "shows": "The top of TRAIN: 10/10 SETS, 100% EARNED, a START CARDIO card (walk, run or match, clock runs on the lock screen) and FROM HEALTH \u00b7 103 MIN \u00b7 872 KCAL: STRENGTH 48 MIN 362 KCAL, FOOTBALL 55 MIN 510 KCAL.",
+   "angle": "Workouts recorded anywhere in Apple Health show up in TRAIN on their own.",
+   "facts": [
+    "From Health: 103 min, 872 kcal",
+    "Strength 48 min, 362 kcal",
+    "Football 55 min, 510 kcal",
+    "Cardio can be started in the app; its clock runs on the lock screen"
+   ]
+  },
+  {
+   "id": "23",
+   "file": "23-tick-the-meal.jpg",
+   "png": "23-tick-the-meal.png",
+   "feature": "FUEL: tick, don't log",
+   "pillar": "hook",
+   "headline": "Tick the meal. Skip the diary.",
+   "sub": "Omelette, 477 kcal: ticked. You name your meals once, then each day is a tap.",
+   "cta": "Tick a meal",
+   "shows": "FUEL's MEALS & DRINKS list with every row ticked lime: 3 egg omelette with cheese on 2 slices of toast 477 KCAL, Lunch chicken, rice and broccoli 460 KCAL, Post-gym shake 128 KCAL.",
+   "angle": "Food is confirmation, not entry. Name your meals once and tick them.",
+   "facts": [
+    "Omelette 477 kcal, lunch 460 kcal, shake 128 kcal",
+    "Meals are named once, then ticked each day",
+    "Drinks count too"
+   ]
+  },
+  {
+   "id": "24",
+   "file": "24-plate-fills.jpg",
+   "png": "24-plate-fills.png",
+   "feature": "FUEL: the plate",
+   "pillar": "feature",
+   "headline": "The plate fills as you eat.",
+   "sub": "605 of 1,361 kcal part way through the day. 1,361 of 1,361 once every meal is ticked.",
+   "cta": "Fill the plate",
+   "shows": "FUEL's plate twice, and the list under it. Left, part filled at 605 OF 1,361 KCAL with protein 56/144 g, carbs 40/91 g, fat 26/50 g; right, full and lime at 1,361 OF 1,361 KCAL with 144/144, 91/91 and 50/50 g. Below, the omelette (477 KCAL) ticked.",
+   "angle": "A plate that fills as meals are ticked: the same screen at midday and at night.",
+   "facts": [
+    "605 of 1,361 kcal part way",
+    "1,361 of 1,361 kcal when done",
+    "Protein 144 g, carbs 91 g, fat 50 g on the plan"
+   ]
+  },
+  {
+   "id": "25",
+   "file": "25-optional-maths.jpg",
+   "png": "25-optional-maths.png",
+   "feature": "FUEL: macros",
+   "pillar": "feature",
+   "headline": "The maths is optional. And it stays on the phone.",
+   "sub": "This omelette: 477 kcal, 32 g protein, from egg, cheddar and white toast. UK food data, built in.",
+   "cta": "Name a meal",
+   "shows": "TODAY'S PLATE for one meal: '3 egg omelette with cheese on 2 slices of toast' and a MACROS row reading 477 KCAL \u00b7 32P \u00b7 37C \u00b7 24F \u00b7 EGG \u00b7 CHEDDAR \u00b7 WHITE TOAST.",
+   "angle": "Macros are there if you want them, worked out on the device from UK food data.",
+   "facts": [
+    "477 kcal, 32 g protein, 37 g carbs, 24 g fat",
+    "Made of egg, cheddar, white toast",
+    "Uses UK CoFID food data, on the phone",
+    "A barcode scan can fill it in"
+   ]
+  },
+  {
+   "id": "26",
+   "file": "26-readiness.jpg",
+   "png": "26-readiness.png",
+   "feature": "BASE: readiness",
+   "pillar": "feature",
+   "headline": "Train today? It says: steady.",
+   "sub": "Readiness 68. Recovery high, heart normal, sleep strong. Train as planned.",
+   "cta": "Read your morning",
+   "shows": "BASE's readiness card: 68 in a ring, READINESS Steady, 'Train as planned.', with RECOVERY High, HEART Normal, SLEEP Strong.",
+   "angle": "A morning answer in plain words, worked out on the phone from Apple Health.",
+   "facts": [
+    "Readiness 68, Steady",
+    "Recovery high, heart normal, sleep strong",
+    "Scored on the phone"
+   ]
+  },
+  {
+   "id": "27",
+   "file": "27-sleep-score.jpg",
+   "png": "27-sleep-score.png",
+   "feature": "BASE: sleep",
+   "pillar": "feature",
+   "headline": "Last night: 88. And here's why.",
+   "sub": "8h 16m against a 6h 30m target. Bed at 22:07, 27 minutes later than usual. Plain words, not jargon.",
+   "cta": "Read your night",
+   "shows": "The SLEEP screen: 88, Strong, '8h 16m. Plenty of hours, a few wake-ups.', then WHAT MADE THE SCORE: Time asleep full marks (8h 16m, target 6h 30m) and Regular bedtime good (22:07, 27m later than usual).",
+   "angle": "A sleep score that shows its working.",
+   "facts": [
+    "Sleep score 88, Strong",
+    "8h 16m asleep against a 6h 30m target",
+    "Bed at 22:07, 27m later than usual"
+   ]
+  },
+  {
+   "id": "28",
+   "file": "28-fills-itself.jpg",
+   "png": "28-fills-itself.png",
+   "feature": "BASE: zero input",
+   "pillar": "hook",
+   "headline": "BASE fills itself. Zero input.",
+   "sub": "Steps 4,067 of 5,000. Active energy 674 of 600. Apple Health already knows; Sealed just reads it.",
+   "cta": "Earn the close",
+   "shows": "BASE's signals: 3 of 6 hit, a red ring for STEPS at 4,067 of 5,000 and a lime ring for ACTIVE ENERGY at 674 of 600 kcal, +74.",
+   "angle": "The third arc needs nothing from you. It reads what Apple Health has.",
+   "facts": [
+    "Steps 4,067 of 5,000",
+    "Active energy 674 of 600 kcal",
+    "3 of 6 signals hit so far today",
+    "Signals you can choose: steps, sleep, active energy, rings, stand hours, water"
+   ]
+  },
+  {
+   "id": "29",
+   "file": "29-seven-nights.jpg",
+   "png": "29-seven-nights.png",
+   "feature": "BASE: history",
+   "pillar": "feature",
+   "headline": "Seven nights. Seven hits.",
+   "sub": "Sleep averaged 8.2 hours against a 6.5 target. Steps hit 7 of 7 too: 11,281 a day.",
+   "cta": "See your week",
+   "shows": "BASE turned over to its history, LAST 7 DAYS: SLEEP HIT 7 OF 7 with an 8.2 average of 6.5 hrs, STEPS HIT 7 OF 7 averaging 11,281 of 5,000, ACTIVE ENERGY HIT 6 OF 7 averaging 687 of 600 kcal.",
+   "angle": "Every signal's week as bars against your own target.",
+   "facts": [
+    "Sleep hit 7 of 7, average 8.2 of 6.5 hrs",
+    "Steps hit 7 of 7, average 11,281 of 5,000",
+    "Active energy hit 6 of 7, average 687 of 600 kcal"
+   ]
+  },
+  {
+   "id": "30",
+   "file": "30-what-to-do.jpg",
+   "png": "30-what-to-do.png",
+   "feature": "BASE: what to do with it",
+   "pillar": "feature",
+   "headline": "A score is no use without a next step.",
+   "sub": "Readiness 68, steady. Train: today's session stands. Tonight: bed by 21:42 keeps tomorrow steady.",
+   "cta": "Read your morning",
+   "shows": "The READINESS screen: 68, Steady, 'Train as planned.' on a scale from Ease off to Push, and WHAT TO DO WITH IT: 'Train \u00b7 today's session stands.' and 'Tonight \u00b7 bed by 21:42 keeps tomorrow steady.'",
+   "angle": "Readiness ends in an instruction you can act on.",
+   "facts": [
+    "Readiness 68, Steady",
+    "Train: today's session stands",
+    "Tonight: bed by 21:42 keeps tomorrow steady"
+   ]
+  },
+  {
+   "id": "31",
+   "file": "31-the-wall.jpg",
+   "png": "31-the-wall.png",
+   "feature": "The wall",
+   "pillar": "honest",
+   "headline": "Every seal kept. Honest gaps included.",
+   "sub": "Streak 4, best 11, 2 mended. Gold rings mark the days that beat the plan.",
+   "cta": "Build your wall",
+   "shows": "THE WALL: SEALED STREAK 4, BEST 11, 2 MENDED, this week's seals, the run's marks 7 to 365, and NOVEMBER 2026 as a calendar of wax seals with one dashed mended day and one gold-ringed day.",
+   "angle": "History you can't rewrite: every sealed night, the gaps, and the days mended.",
+   "facts": [
+    "Sealed streak 4, best 11",
+    "2 days mended",
+    "One missed day a week can be mended",
+    "Gold-ringed days beat the plan"
+   ]
+  },
+  {
+   "id": "32",
+   "file": "32-this-week.jpg",
+   "png": "32-this-week.png",
+   "feature": "This week",
+   "pillar": "feature",
+   "headline": "One week. One honest screen.",
+   "sub": "4 of 5 sealed. 5 workouts. TRAIN at 93%. 20.0k kg moved.",
+   "cta": "See your week",
+   "shows": "THIS WEEK: four seals reading 93, 98, 88 and 98, then tiles for 4/5 SEALED, 5 WORKOUTS, 93% TRAIN and 20.0k KG VOLUME.",
+   "angle": "A week on one screen, with nothing rounded up.",
+   "facts": [
+    "4 of 5 days sealed",
+    "5 workouts",
+    "TRAIN 93%",
+    "20.0k kg volume",
+    "Daily seals: 93, 98, 88, 98"
+   ]
+  },
+  {
+   "id": "33",
+   "file": "33-thirty-nights.jpg",
+   "png": "33-thirty-nights.png",
+   "feature": "The run: a milestone",
+   "pillar": "hook",
+   "headline": "30 nights in a row.",
+   "sub": "Hold a month and the app stops to mark it. Then: keep going.",
+   "cta": "Start your run",
+   "shows": "The milestone screen: a large crimson seal with a silver ring, 30, NIGHTS IN A ROW.",
+   "angle": "The run is marked when it's earned.",
+   "facts": [
+    "30 nights in a row",
+    "A month's run turns the badge silver"
+   ]
+  },
+  {
+   "id": "34",
+   "file": "34-metals.jpg",
+   "png": "34-metals.png",
+   "feature": "The run: metals",
+   "pillar": "feature",
+   "headline": "Brass at a week. Gold at three months.",
+   "sub": "Bronze at 14, silver at 30, platinum at 60. The badge changes metal as the run grows.",
+   "cta": "Start your run",
+   "shows": "The app's Sealed Streak badge at five marks, stacked: 7 in brass, 14 in bronze, 30 in silver, 60 in platinum, 90 in gold.",
+   "angle": "A streak that changes material as it grows.",
+   "facts": [
+    "Brass at 7 nights",
+    "Bronze at 14",
+    "Silver at 30",
+    "Platinum at 60",
+    "Gold at 90"
+   ]
+  },
+  {
+   "id": "35",
+   "file": "35-the-habit.jpg",
+   "png": "35-the-habit.png",
+   "feature": "Progress: the habit",
+   "pillar": "feature",
+   "headline": "You press at about nine.",
+   "sub": "Seals by weekday: Wednesday most. The wax goes down around 21:00. Your routine, drawn honestly.",
+   "cta": "See your habit",
+   "shows": "Progress, THE HABIT: SEALS BY WEEKDAY bars with WED MOST, and WHEN THE WAX IS PRESSED, a single sharp peak at about 21:00.",
+   "angle": "The app shows the shape of your routine as well as the result.",
+   "facts": [
+    "Wednesday is the most-sealed weekday",
+    "The wax is usually pressed around 21:00"
+   ]
+  },
+  {
+   "id": "36",
+   "file": "36-streaks-take-two.jpg",
+   "png": "36-streaks-take-two.png",
+   "feature": "The pact",
+   "pillar": "pact",
+   "headline": "Some streaks take two.",
+   "sub": "Day 13 with Alex. The pact only moves on the nights you both hold the day. Pact 4, best 4.",
+   "cta": "Make a pact",
+   "shows": "THE PACT: you and Alex, DAY 13 OF THE DUEL SINCE 1 NOV, PACT 4 \u00b7 BEST 4, and two rows of nightly seals: yours 98, 65, 93, 98, 88, 98 and Alex's 86, 100, 91, 68, 94.",
+   "angle": "Two people, one streak. It advances only when both of you seal.",
+   "facts": [
+    "Day 13 of the pact",
+    "Pact streak 4, best 4",
+    "The pact streak moves only when both hold the day (80% or more)"
+   ]
+  },
+  {
+   "id": "37",
+   "file": "37-a-nose-in-front.jpg",
+   "png": "37-a-nose-in-front.png",
+   "feature": "The pact: the duel",
+   "pillar": "pact",
+   "headline": "A nose in front. Never \u201cyou lost\u201d.",
+   "sub": "83\u201375 since day one, and Alex is near enough to hear you. Competitive, and always kind.",
+   "cta": "Make a pact",
+   "shows": "The duel: a banner reading 'A NOSE IN FRONT \u00b7 83\u201375 \u00b7 ALEX'S NEAR ENOUGH TO HEAR YOU' and THE SCORE SINCE DAY ONE, 83 for you and 75 for Alex, THIS WEEK 95\u201388, WEEKS YOU 2, ALEX 0.",
+   "angle": "A head-to-head that never uses loser language.",
+   "facts": [
+    "Score since day one: 83 to 75",
+    "This week 95 to 88",
+    "Weeks: you 2, Alex 0",
+    "The duel is optional and always worded kindly"
+   ]
+  },
+  {
+   "id": "38",
+   "file": "38-price.jpg",
+   "png": "38-price.png",
+   "feature": "The price",
+   "pillar": "feature",
+   "headline": "\u00a33.99 a month. 7 days free.",
+   "sub": "One plan, everything included. A reminder on day 5, before it bills. Cancel any time.",
+   "cta": "Try 7 days",
+   "shows": "The app's own offer page: 7 DAYS FREE, 'Then \u00a33.99 a month. Cancel any time.', a timeline TODAY everything free, DAY 5 we remind you before it bills, DAY 7 \u00a33.99 a month begins, and START MY FREE WEEK.",
+   "angle": "One price, said plainly, with a reminder before it bills.",
+   "facts": [
+    "\u00a33.99 a month, 7-day free trial",
+    "One plan, everything included",
+    "A reminder on day 5, before it bills",
+    "Everything you sealed stays on your phone either way"
+   ]
+  },
+  {
+   "id": "39",
+   "file": "39-widgets.jpg",
+   "png": "39-widgets.png",
+   "feature": "Widgets",
+   "pillar": "feature",
+   "headline": "The seal, on your home screen.",
+   "sub": "Sealed, 100%, gold. Run 5, best 11. 6 of 6 signals hit and 20.0 T lifted this week.",
+   "cta": "Add the widget",
+   "shows": "Four of the app's widgets: THE SEAL reading SEALED 100% GOLD, RUN 5 NEXT 7; THE BASE with 6/6 SIGNALS; THIS WEEK with seals 94, 99, 88, 99, 100, RUN 5 BEST 11; THE WORK with 20.0 T LIFTED THIS WEEK.",
+   "angle": "The day's state without opening the app.",
+   "facts": [
+    "Seal widget: sealed, 100%, gold; run 5, next mark 7",
+    "BASE widget: 6 of 6 signals",
+    "Week widget: 94, 99, 88, 99, 100; run 5, best 11",
+    "Work widget: 20.0 T lifted this week",
+    "Lock-screen widgets too"
+   ]
+  },
+  {
+   "id": "40",
+   "file": "40-wont-let-you-lie.jpg",
+   "png": "40-wont-let-you-lie.png",
+   "feature": "The idea",
+   "pillar": "honest",
+   "headline": "The app that won't let you lie to yourself.",
+   "sub": "No retro-edits. No streak you didn't earn. One wax seal a night, only as full as the day.",
+   "cta": "Earn the close",
+   "shows": "A text card: the headline over three short lists headed Honest by design, Kind by design and Private by design.",
+   "angle": "The founding idea: a tracker you can't argue with, that is still kind.",
+   "facts": [
+    "Sealed days lock forever",
+    "80% holds the day and the run",
+    "Scheduled rest days seal by design",
+    "One missed day a week can be mended",
+    "Everything lives on the phone: no ads, no tracking, no email address"
+   ]
+  }
+ ]
+}

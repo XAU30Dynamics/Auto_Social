@@ -33,31 +33,37 @@ def url(p):
     return "file://" + urllib.parse.quote(os.path.abspath(p))
 
 
-def css(brand):
-    return f"""
+def css(brand, src_dir=""):
+    """Optional brand keys, all defaulting to the first (StrategyDynamics) look: fonts = [{family, file, weight}] loaded
+    from the sources folder, headFont / headWeight / headTracking / headCase / headLine, markFont / markWeight /
+    markTracking, kickerFont, bodyFont, subColor, ctaInk."""
+    serif = '"New York",ui-serif,Georgia,serif'
+    hf, mf = brand.get("headFont", serif), brand.get("markFont", brand.get("headFont", serif))
+    faces = "".join(f'@font-face{{font-family:"{f["family"]}";src:url("{url(os.path.join(src_dir, f["file"]))}");font-weight:{f.get("weight", "100 900")}}}' for f in brand.get("fonts", []))
+    return faces + f"""
 :root{{color-scheme:dark}}
 *{{box-sizing:border-box}}
 html,body{{margin:0;width:{W}px;height:{H}px;overflow:hidden;background:{brand['field']}}}
-body{{position:relative;font-family:-apple-system,"SF Pro Display",system-ui,sans-serif;color:#F4F5F7;-webkit-font-smoothing:antialiased}}
+body{{position:relative;font-family:{brand.get("bodyFont", '-apple-system,"SF Pro Display",system-ui,sans-serif')};color:#F4F5F7;-webkit-font-smoothing:antialiased}}
 .bloom{{position:absolute;border-radius:50%;filter:blur(120px)}}
 .stars{{position:absolute;inset:0;opacity:.5}}
-.brand{{position:absolute;left:64px;top:54px;display:flex;align-items:center;gap:14px;font-family:"New York",ui-serif,Georgia,serif;font-size:34px;font-weight:600;letter-spacing:-.01em}}
+.brand{{position:absolute;left:64px;top:54px;display:flex;align-items:center;gap:14px;font-family:{mf};font-size:34px;font-weight:{brand.get("markWeight", 600)};letter-spacing:{brand.get("markTracking", "-.01em")}}}
 .brand img{{height:46px}}
-.brand b{{font-weight:600;color:{brand['accentText']}}}
-.k{{position:absolute;left:64px;font-size:21px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}}
-h1{{position:absolute;left:64px;margin:0;font-family:"New York",ui-serif,Georgia,serif;font-weight:500;letter-spacing:-.012em;line-height:1.04}}
+.brand b{{font-weight:inherit;color:{brand['accentText']}}}
+.k{{position:absolute;left:64px;font-size:21px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;font-family:{brand.get("kickerFont", "inherit")}}}
+h1{{position:absolute;left:64px;margin:0;font-family:{hf};font-weight:{brand.get("headWeight", 500)};letter-spacing:{brand.get("headTracking", "-.012em")};line-height:{brand.get("headLine", 1.04)};text-transform:{brand.get("headCase", "none")}}}
 h1 em{{font-style:normal}}
-.s{{position:absolute;left:64px;font-size:30px;line-height:1.32;color:#C3C8D2}}
+.s{{position:absolute;left:64px;font-size:30px;line-height:1.32;color:{brand.get("subColor", "#C3C8D2")}}}
 .v{{position:absolute;overflow:hidden;box-shadow:0 0 0 1.5px rgba(255,255,255,.13),0 40px 110px rgba(0,0,0,.7)}}
 .v img{{display:block;position:absolute;left:0;top:0;max-width:none}}
 .scrim{{position:absolute;left:0;right:0;pointer-events:none}}
 .cta{{position:absolute;left:64px;display:flex;align-items:center;gap:20px}}
-.cta .p{{height:68px;padding:0 34px;border-radius:999px;display:flex;align-items:center;font-size:28px;font-weight:700;color:#04140C;box-shadow:0 0 44px var(--glow)}}
+.cta .p{{height:68px;padding:0 34px;border-radius:999px;display:flex;align-items:center;font-size:28px;font-weight:700;color:{brand.get("ctaInk", "#04140C")};box-shadow:0 0 44px var(--glow)}}
 .cta .u{{font-size:26px;font-weight:600;color:#F4F5F7;text-shadow:0 2px 14px rgba(0,0,0,.9)}}
 .fine{{position:absolute;left:64px;right:64px;top:1262px;font-size:15px;line-height:1.35;color:#7F8594;text-shadow:0 1px 8px rgba(0,0,0,.9)}}
 .call{{position:absolute;padding:11px 18px;border-radius:16px;font-size:23px;font-weight:650;line-height:1.2;color:#F4F5F7;background:rgba(10,12,18,.86);border:1.5px solid var(--ink);box-shadow:0 10px 40px rgba(0,0,0,.6);-webkit-backdrop-filter:blur(10px)}}
 .call small{{display:block;font-size:17px;font-weight:500;color:#AEB4C0;margin-top:3px}}
-.num{{position:absolute;font-family:"New York",ui-serif,Georgia,serif;font-weight:500;line-height:1;letter-spacing:-.02em}}
+.num{{position:absolute;font-family:{hf};font-weight:{brand.get("headWeight", 500)};line-height:1;letter-spacing:-.02em}}
 .pills{{position:absolute;display:flex;flex-wrap:wrap;gap:10px}}
 .pills span{{padding:10px 19px;border-radius:999px;font-size:24px;font-weight:600;border:1.5px solid;background:rgba(255,255,255,.04)}}
 .pills .g{{flex-basis:100%;border:0;background:none;padding:9px 0 0;font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:#8A90A0}}
@@ -120,7 +126,7 @@ def page(brand, p, src_dir, n, safe):
         f'<div class="bloom" style="width:900px;height:760px;left:-260px;top:-240px;opacity:.5;background:radial-gradient(circle,{b1},transparent 70%)"></div>',
         f'<div class="bloom" style="width:820px;height:820px;right:-320px;top:520px;opacity:.32;background:radial-gradient(circle,{b2},transparent 70%)"></div>',
         f'<div class="bloom" style="width:1000px;height:700px;left:40px;bottom:-380px;opacity:.28;background:radial-gradient(circle,{b1},transparent 70%)"></div>',
-        stars(n),
+        stars(n) if brand.get("stars", True) else "",
     ]
     body += [visual(v, src_dir) for v in p.get("visuals", []) if not v.get("front")]
     if p.get("topScrim"):
@@ -150,7 +156,7 @@ def page(brand, p, src_dir, n, safe):
     if safe:
         body.append(f'<div style="position:absolute;left:0;right:0;top:{SAFE_BOTTOM}px;bottom:0;background:rgba(255,0,0,.28)"></div>'
                     f'<div style="position:absolute;left:{SAFE_RIGHT}px;right:0;top:{SAFE_RIGHT_FROM}px;height:{SAFE_BOTTOM - SAFE_RIGHT_FROM}px;background:rgba(255,0,0,.28)"></div>')
-    return f'<!doctype html><meta charset="utf-8"><style>{css(brand)}body{{--ink:{ink};--glow:{glow}}}</style><body>{"".join(body)}</body>'
+    return f'<!doctype html><meta charset="utf-8"><style>{css(brand, src_dir)}body{{--ink:{ink};--glow:{glow}}}</style><body>{"".join(body)}</body>'
 
 
 def shoot(doc, out_png):

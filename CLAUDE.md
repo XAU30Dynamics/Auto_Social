@@ -2,6 +2,8 @@
 
 Mobile-first social publishing dashboard for two brands: **StrategyDynamics** (+ MarketDynamics) and **Sealed** (the fitness app). A brand switcher at the top of the UI flips the whole workspace (and its colour theme). The StrategyDynamics side is a thin read/write UI over a Google Sheet — the heavy automation (post generation, Telegram notifications, scheduling) lives in **Make.com** scenarios that read/write the same sheet out-of-band. The Sealed side is self-contained: screenshots in → Claude writes per-platform captions from `SEALED_BRIEF.md` → Buffer. **X/Twitter was dropped on 2 Oct 2026** (zero engagement) — no X field, button or channel anywhere; sheet columns I/R still exist positionally but are never shown or sent.
 
+**Social picture work starts here.** This repo's session is the hub for anything to do with the evergreen post pictures for StrategyDynamics, MarketDynamics and Sealed: new or changed pictures, captions, one-off posts, the posting schedule. Follow `visuals/WORKFLOW.md` (start at "Adding or changing visuals later"); it says when to message a product session for new screens and what only Sean can approve.
+
 ## Stack
 
 - **Runtime**: Node.js ≥ 18
@@ -117,7 +119,7 @@ The purpose is a permanent engagement history for periodically distilling "what'
 
 Added 13 Nov 2026. `rotation.js` (logic + hourly job; `server.js` only wires it in) posts the finished picture sets on a loop, hands-off. Buffer has no repeat feature and a queued post publishes once, so the app feeds Buffer one day at a time.
 
-- **Pool** = every folder `visuals/<brand lowercased>/<set>/` holding `manifest.json` + `NN-slug.jpg` (made by `visuals/tools/make_posts.py`; workflow in `~/Desktop/Social-Visuals-Workflow.md`). Adding a set or a brand is: commit the folder, push. A post is keyed `<set>/<id>`. JPG only.
+- **Pool** = every folder `visuals/<brand lowercased>/<set>/` holding `manifest.json` + `NN-slug.jpg` (made by `visuals/tools/make_posts.py`; workflow in `visuals/WORKFLOW.md`). Adding a set or a brand is: commit the folder, push. A post is keyed `<set>/<id>`. JPG only.
 - **Schedule**: one picture per channel per day, seven days a week, at fixed UK times (`TIMES` in `rotation.js`: IG 12:00, Threads 18:30, TikTok 19:00) via Buffer `customScheduled`, so the channels' paused weekend queue slots don't matter. Scheduled 2–26 h ahead, so only one day ever sits in Buffer.
 - **Order**: least-recently-posted picture first; ties follow a stride through the manifest (keeps related pictures apart). The three channels run a third of a cycle apart, so one picture never lands on two accounts the same day. New pictures jump the queue.
 - **Captions renew each cycle.** `Rotation` tab = one row per caption version (`Ready` / `Hold` / `Rejected`). A channel uses the lowest version it hasn't posted for that picture. When a picture runs out, the job writes a new one (same model/brief as the composers, picture attached) and **lints it before it can post**: the only digits allowed are those in the picture's manifest entry plus `ALLOWED NUMBERS` in `visuals/<brand>/caption-rules.md`; banned words, stale words ("today", "now live"), em dashes, lengths, hashtag count. A failed caption is stored `Rejected` with the reason, retried once, then that picture keeps cycling its existing captions. Keep the lint: like the Threads auto-poster guard, a prompt rule alone does not stop a bad generation. Set a row to `Hold` to pull a caption.

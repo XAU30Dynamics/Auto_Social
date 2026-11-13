@@ -1,0 +1,18 @@
+--- -	2026-11-13 16:35:26
++++ /private/tmp/claude-501/-Users-sean-Seans-Projects-MarketDynamics/803a0ab9-1069-4ab2-bd6f-a9b688e735a1/scratchpad/main/ios/MarketDynamics/Features/Today/TodayView.swift	2026-11-13 14:28:08
+@@ -36,7 +36,14 @@
+             .padding(.top, 8)
+             .padding(.bottom, 24)
+         }
+-        .defaultScrollAnchor(Self.debugBottom ? .bottom : .top)
++        .defaultScrollAnchor(Self.debugAnchor)
++    }
++
++    private static var debugAnchor: UnitPoint {
++        let a = CommandLine.arguments
++        if a.contains("-scroll-bottom") { return .bottom }
++        if let s = a.first(where: { $0.hasPrefix("-scroll:") }), let y = Double(s.dropFirst(8)) { return UnitPoint(x: 0.5, y: y) }
++        return .top
+     }
+ 
+     /// DEBUG `-scroll-bottom`: open scrolled to the end (screenshots).
