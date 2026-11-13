@@ -217,6 +217,17 @@ function mount(d) {
     });
     return parseInt((/!A(\d+)/.exec(r.data.updates?.updatedRange || '') || [])[1], 10) || null;
   }
+  // Many rows in ONE write. Seeding a brand row by row (35 to 40 appends) blew the
+  // Sheets quota of 60 writes a minute on the first live run, 13 Nov 2026.
+  async function appendMany(sheets, tab, objs) {
+    if (!objs.length) return;
+    const r = await sheets.spreadsheets.values.append({
+      spreadsheetId: d.SPREADSHEET_ID, range: `${tab.sheet}!A1`, valueInputOption: 'RAW', insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: objs.map((o) => tab.header.map((k) => String(o[k] ?? ''))) },
+    });
+    const first = parseInt((/!A(\d+)/.exec(r.data.updates?.updatedRange || '') || [])[1], 10) || null;
+    objs.forEach((o, i) => { o._row = first ? first + i : null; });
+  }
   const setCells = (sheets, tab, row, obj) => sheets.spreadsheets.values.batchUpdate({
     spreadsheetId: d.SPREADSHEET_ID,
     requestBody: { valueInputOption: 'RAW', data: Object.entries(obj).map(([k, v]) => ({ range: `${tab.sheet}!${colLetter(tab.header.indexOf(k))}${row}`, values: [[String(v)]] })) },
@@ -296,15 +307,17 @@ function mount(d) {
         const rep = report[brand] = { live, pictures: pool.posts.length, seeded: 0, written: 0, rejected: 0, scheduled: {} };
 
         // 1. Import human-reviewed captions (captions.json beside the manifest).
+        const seeded = [];
         for (const post of pool.posts) {
           const seed = pool.seeds[post.key];
           if (!seed || seed.hash !== post.hash) continue;
           if (rows.some((r) => r.brand === brand && r.key === post.key && r.facts_hash === post.hash && r.source === 'reviewed')) continue;
           const row = { created_at: now.toISOString(), brand, key: post.key, variant: nextVariant(rows, brand, post.key), status: 'Ready', facts_hash: post.hash, source: 'reviewed', lint: '' };
           for (const k of CAPTION_FIELDS) row[k] = seed[k] || '';
-          if (!dry) row._row = await append(sheets, ROT, row);
+          seeded.push(row);
           rows.push(row); rep.seeded++;
         }
+        if (!dry) await appendMany(sheets, ROT, seeded);
         if (!live && !dry) continue;   // a dry run previews every brand
 
         // 2. Write the captions the next cycle will need, a few per run.
