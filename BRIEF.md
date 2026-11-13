@@ -333,7 +333,7 @@ Four tabs — Today, Technicals, Drivers, News — plus You. Each card has a '?'
 - H4 and H1 chart, candles or flowing line, with EMAs, the D50, the Asia range and every level near price drawn on. Drag to test a price and see what sits around it.
 - Buy and sell zones on M30, H4 and D1, built where structure clusters: pivots, prior day and week highs and lows, swing points, averages, the Asia range, and TraderS' own mechanical support and resistance (section 9.2). Each shows stop, targets and reward-to-risk; 'Why this zone' shows what built it, and a confluence ladder ranks the levels.
 - Technical picture: the trend on D1, H4 and H1 from swing structure (stepping higher or lower), the last high or low broken, EMA stacks, the daily 10/20/50 averages and their crosses, RSI with overbought, oversold and divergences.
-- Patterns spotted: 13 chart patterns — triangles, double tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks — drawn on the chart from Possible to Forming to Confirmed, with where each confirms and breaks, and its own history on gold.
+- Patterns spotted: 20 chart patterns — triangles, wedges, rectangles, flags and pennants, double and triple tops and bottoms, head and shoulders, harmonics (Gartley, Bat, Butterfly, Crab), trendline breaks — drawn on the chart from Possible to Forming to Confirmed, with where each confirms and breaks, and its own history on gold.
 
 **Drivers — why gold is moving**
 - Market regime: risk-on, deflationary risk-off, inflationary risk-off or liquidation, read from 14 cross-asset pairs, with how the odds have moved over 60 days, how fragile the regime is, and 'What's changed this month' naming the drivers behind a shift.
@@ -357,7 +357,7 @@ Four tabs — Today, Technicals, Drivers, News — plus You. Each card has a '?'
 
 Nothing in MarketDynamics was added on a hunch. Every part was tested on years of gold data before it shipped, with the standard written down before the results came in, then checked on data it had never seen, with trading costs included. That rigour is the selling point — use it:
 
-- Chart patterns: 13 patterns tested on H1, H4 and D1 data back to 2020. Every pattern on the chart carries its own real history, so you see how that shape has actually behaved on gold before you act on it.
+- Chart patterns: 20 patterns tested on H1, H4 and D1 data back to 2020. Every pattern on the chart carries its own real history, so you see how that shape has actually behaved on gold before you act on it.
 - Zones: built from thousands of historical gold plans, and tracked live from October 2026 — every zone the app publishes is graded.
 - The Daily Read: graded every day after the session, with the record kept in the app. A score of how strong the bias is, so you can see when the drivers line up and when they don't.
 - The regime: backtested on gold from 2019 to 2026 across 14 cross-asset pairs, to show which market conditions have been kindest to gold and which the hardest.
