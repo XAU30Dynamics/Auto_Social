@@ -20,6 +20,8 @@ Mobile-first social publishing dashboard for two brands: **StrategyDynamics** (+
 ```
 .
 ├── server.js          # Express app + all API routes
+├── rotation.js        # Picture rotation: pool, order, caption lint, hourly job (wired in server.js)
+├── visuals/           # Finished picture sets per brand (+ tools/); sources/ and PNGs are git-ignored
 ├── package.json
 ├── public/
 │   └── index.html     # Entire dashboard UI (HTML + CSS + JS in one file) — both brands
@@ -65,6 +67,9 @@ All routes live in `server.js`:
 | POST   | `/api/photo/generate` | Body `{ brand: 'StrategyDynamics'|'MarketDynamics', note, pillar?, images?: [urls] }`. Same model/schema/output shape as the Sealed route but the system prompt is the **StrategyDynamics brief read live from `Brief!A1:A2`** (10-min cache, `BRIEF.md` fallback) — section 11 of the brief (Image Handling Rules) governs how screenshots are read. IG hashtags capped at 10. |
 | GET/POST/PATCH | `/api/sealed/posts[/:row]`, `/api/photo/posts[/:row]` | Photo-post drafts: Sealed rows in the `Sealed` tab (`SEALED_HEADER`), SD/MD rows in the `Photos` tab (`PHOTO_HEADER` = Sealed columns + `brand` after `created_at`). Both tabs auto-create. One generic implementation (`mountStore()` in `server.js`); PATCH only accepts the `PHOTO_EDITABLE` fields present in that tab. |
 | POST   | `/api/sealed/send/:row`, `/api/photo/send/:row` | Body `{ channels?, mode? }`. Posts the SAVED row to Buffer, routed by the row's brand via `BRANDS` (Sealed tab ⇒ Sealed; Photos tab ⇒ its `brand` cell): IG = carousel of all screenshots + Shop Grid `link`, TikTok = photo post (title + caption), Threads = first image only + topic tag. Records `sent_<platform>` timestamps, `buffer_ids`, `status=Sent` on the row. |
+| GET    | `/api/rotation`     | Picture rotation status: which brands are live, what each channel posts next (a dry run, writes nothing), recent `RotationLog` rows. |
+| POST   | `/api/rotation/tick` | Runs one rotation pass now (what the hourly job does). Body `{ dry?: true }`. Only posts for brands in `ROTATION_BRANDS`. |
+| POST   | `/api/rotation/caption` | Body `{ brand, key: '<set>/<id>', variant?, avoid? }`. Writes one caption for a rotation picture and lints it. Saves nothing. Used by `visuals/tools/captions.js`. |
 | GET    | `*`                 | Serves `public/index.html`                                                   |
 
 **Buffer channel map** — `BRANDS` in `server.js` is the ONE place channel ids live: `{ StrategyDynamics, MarketDynamics, Sealed } × { instagram, threads, tiktok }`, plus each brand's Shop Grid `link`. Empty string = not connected (UI greys it, sends return `{ok:false}` for it). As of 31 Oct 2026: all 9 connected — SD (`strategy_dynamics`/`strategydynamics`), MD (`marketdynamics_app`) and Sealed (`earntheclose`) each have IG + Threads + TikTok.
@@ -107,6 +112,19 @@ The column index map lives in `server.js:29-50` (`COL`). It must stay aligned wi
 `server.js` runs a background job (1 min after boot, then every 6 h) that snapshots each sent Buffer post's engagement metrics into the **`Insights` tab** of the Posts spreadsheet — **once per post, after the post is 7 days old** (metrics matured; append-only, no updates). State lives entirely in the sheet: the window is (newest logged `sent_at`, now−7d], so missed runs self-heal and restarts can't duplicate rows. Tab + header row are auto-created if missing. Any error is logged and skipped — the collector can never affect posting or the rest of the app. Columns: `pulled_at, sent_at, channel, post_id, text (first 180 chars), views (views|impressions), reach, reactions, comments, shares (shares+reposts+quotes), saves, follows, eng_rate, clicks`.
 
 The purpose is a permanent engagement history for periodically distilling "what's working" guidance into the brand brief (human-in-the-loop — the brief is never auto-edited). Note: `eng_rate` units are inconsistent across services in Buffer's API (Instagram returns a fraction, X/Threads a percentage) — compare within a channel, not across. `comments` has known self-reply inflation on Threads chains subtracted (`realComments()` — Buffer counts our own chain posts as comments); rows logged before 9 Jul 2026 afternoon hold the raw value.
+
+## Picture rotation (evergreen posting, all three brands)
+
+Added 13 Nov 2026. `rotation.js` (logic + hourly job; `server.js` only wires it in) posts the finished picture sets on a loop, hands-off. Buffer has no repeat feature and a queued post publishes once, so the app feeds Buffer one day at a time.
+
+- **Pool** = every folder `visuals/<brand lowercased>/<set>/` holding `manifest.json` + `NN-slug.jpg` (made by `visuals/tools/make_posts.py`; workflow in `~/Desktop/Social-Visuals-Workflow.md`). Adding a set or a brand is: commit the folder, push. A post is keyed `<set>/<id>`. JPG only.
+- **Schedule**: one picture per channel per day, seven days a week, at fixed UK times (`TIMES` in `rotation.js`: IG 12:00, Threads 18:30, TikTok 19:00) via Buffer `customScheduled`, so the channels' paused weekend queue slots don't matter. Scheduled 2–26 h ahead, so only one day ever sits in Buffer.
+- **Order**: least-recently-posted picture first; ties follow a stride through the manifest (keeps related pictures apart). The three channels run a third of a cycle apart, so one picture never lands on two accounts the same day. New pictures jump the queue.
+- **Captions renew each cycle.** `Rotation` tab = one row per caption version (`Ready` / `Hold` / `Rejected`). A channel uses the lowest version it hasn't posted for that picture. When a picture runs out, the job writes a new one (same model/brief as the composers, picture attached) and **lints it before it can post**: the only digits allowed are those in the picture's manifest entry plus `ALLOWED NUMBERS` in `visuals/<brand>/caption-rules.md`; banned words, stale words ("today", "now live"), em dashes, lengths, hashtag count. A failed caption is stored `Rejected` with the reason, retried once, then that picture keeps cycling its existing captions. Keep the lint: like the Threads auto-poster guard, a prompt rule alone does not stop a bad generation. Set a row to `Hold` to pull a caption.
+- **`captions.json`** beside a manifest holds human-reviewed captions; they are imported as the first version (`source = reviewed`). Each carries the `hash` of its manifest entry (headline, sub, shows, angle, facts). If a picture is re-rendered with different wording or numbers the hash changes and old captions are ignored automatically. `node visuals/tools/captions.js generate|check <Brand>`.
+- **`RotationLog` tab** = one row per scheduled post and is the cycle position; nothing is kept in memory. The row is written before the Buffer call, so a crash skips a slot rather than double-posting. A Buffer rejection is recorded in `error` and retried on later passes (max 3 per slot).
+- **Switch**: env `ROTATION_BRANDS` (comma-separated `BRANDS` keys). Unset ⇒ no timer, no posts, no sheet writes; `GET /api/rotation` still previews. Removing a brand from it pauses that brand next hour.
+- TikTok takes the 1080×1350 JPG as a photo post through this same Buffer path (confirmed by sent posts on the MarketDynamics and Sealed TikTok channels, Oct–Nov 2026). No second size is needed.
 
 ## Brand brief — source of truth
 
@@ -151,6 +169,7 @@ Defined in `env.example`. All are required for full functionality:
 | `PUBLIC_BASE_URL`              | Optional. Base URL Buffer uses to fetch the graphic image; defaults to the request's own `protocol://host` (correct on Railway). |
 | `DASHBOARD_PASSWORD`           | Single shared password for the dashboard (see `POST /api/login`). Unset ⇒ auth disabled (local dev convenience). |
 | `ANTHROPIC_API_KEY`            | `POST /api/sealed/generate` + `POST /api/photo/generate` only. Unset ⇒ that route 500s with a clear message; everything else unaffected. |
+| `ROTATION_BRANDS`              | Picture rotation switch: comma-separated brands to post for (`StrategyDynamics,MarketDynamics,Sealed`). Unset ⇒ rotation fully off. |
 | `IMG_CACHE_DIR`                | Optional, defaults to `/data/img-cache` (Railway volume). Holds mirrored graphic images AND Sealed screenshot uploads. |
 | `PORT`                          | Optional, defaults to `3000`             |
 

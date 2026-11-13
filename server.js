@@ -562,12 +562,14 @@ app.get('/api/channels', (req, res) => {
 // imageUrls: array of public image URLs (1..n → carousel on IG, photo set on
 // TikTok, single image on Threads). link: Instagram Shop Grid URL for the post.
 // tiktokTitle: the bold title TikTok shows above the caption (≤ 90 chars).
-async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, platform, thread, threadsTopic, link, tiktokTitle }) {
+async function bufferCreatePost({ channelId, text, imageUrl, imageUrls, mode, dueAt, platform, thread, threadsTopic, link, tiktokTitle }) {
   const urls = (imageUrls && imageUrls.length) ? imageUrls : (imageUrl ? [imageUrl] : []);
   const input = {
     channelId,
     schedulingType: 'automatic',
-    mode: mode === 'now' ? 'shareNow' : 'addToQueue',
+    // dueAt (ISO instant) pins the post to an exact time instead of the channel's queue slots.
+    mode: dueAt ? 'customScheduled' : (mode === 'now' ? 'shareNow' : 'addToQueue'),
+    ...(dueAt ? { dueAt } : {}),
     text: text || '',
     assets: urls.map((u) => ({ image: { url: u } })),
   };
@@ -1319,6 +1321,28 @@ app.get('/api/insights', async (req, res) => {
     console.error('GET /api/insights error:', err.message);
     res.status(502).json({ error: err.message });
   }
+});
+
+// ─── Picture rotation ─────────────────────────────────────────────────────────
+// Evergreen posting of the finished picture sets under visuals/<brand>/<set>/ for
+// all three brands: one picture a day per channel at fixed UK times, captions
+// renewed each cycle. All logic and the hourly job live in rotation.js; this is
+// only the wiring. Off unless ROTATION_BRANDS names the brand.
+require('./rotation').mount({
+  app, getSheets: getSheetsClient, SPREADSHEET_ID, ensureTab, BRANDS, PLATFORMS, bufferCreatePost, publicBase, IMG_CACHE_DIR,
+  // Same model, schema and briefs as the photo composers; the picture goes in as base64.
+  generate: async (brand, userText, imageFile) => {
+    const sealed = brand === 'Sealed';
+    const brief = sealed ? loadSealedBrief() : await loadSDBrief();
+    if (!brief) throw new Error('Brand brief unavailable');
+    const image = { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: fs.readFileSync(imageFile).toString('base64') } };
+    return generateCaptions({
+      system: sealed
+        ? `You write social media captions for the Sealed app. The brand brief below is your only source of truth.\n\n=== SEALED BRIEF ===\n\n${brief}`
+        : `You write social media captions for StrategyDynamics and its app MarketDynamics. The brand brief below is your only source of truth.\n\n=== BRAND BRIEF ===\n\n${brief}`,
+      userText, images: [image], maxIgTags: 5,
+    });
+  },
 });
 
 // ─── Serve dashboard ──────────────────────────────────────────────────────────

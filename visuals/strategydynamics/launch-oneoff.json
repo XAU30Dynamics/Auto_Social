@@ -1,0 +1,148 @@
+{
+ "sources": "sources",
+ "out": "oneoff-2026-11-13-launch",
+ "brand": {
+  "name": "StrategyDynamics",
+  "field": "#07080C",
+  "mark": "mark.png",
+  "wordmark": [
+   "Strategy",
+   "Dynamics"
+  ],
+  "accentText": "#4EF0A0",
+  "url": "strategydynamics.co.uk",
+  "cta": [
+   "#1BC97A",
+   "#2ED98A",
+   "#5CF59C"
+  ],
+  "defaultCta": "Build yours",
+  "defaultWash": "green",
+  "fine": "Real runs from a showcase account, with spread and commission. Backtests and forward tests do not promise future results. Trading can lose money.",
+  "washes": {
+   "green": {
+    "bloom1": "rgba(46,217,138,.85)",
+    "bloom2": "rgba(27,201,122,.6)",
+    "ink": "#4EF0A0",
+    "glow": "rgba(46,217,138,.38)"
+   },
+   "blue": {
+    "bloom1": "rgba(96,165,250,.8)",
+    "bloom2": "rgba(46,217,138,.5)",
+    "ink": "#8EC2FF",
+    "glow": "rgba(46,217,138,.38)"
+   },
+   "amber": {
+    "bloom1": "rgba(251,146,60,.75)",
+    "bloom2": "rgba(46,217,138,.45)",
+    "ink": "#FDB37A",
+    "glow": "rgba(46,217,138,.38)"
+   },
+   "violet": {
+    "bloom1": "rgba(167,139,250,.8)",
+    "bloom2": "rgba(46,217,138,.45)",
+    "ink": "#C4B5FD",
+    "glow": "rgba(46,217,138,.38)"
+   }
+  }
+ },
+ "posts": [
+  {
+   "id": "00",
+   "slug": "launch-day",
+   "feature": "2.0 launch day",
+   "pillar": "Announcement",
+   "wash": "green",
+   "kicker": "Launch day",
+   "headline": "StrategyDynamics 2.0|*is live.",
+   "sub": "Rebuilt from the ground up. On iPhone and the web, one account. From £9.99 a month.",
+   "cta": "Get 2.0",
+   "visuals": [
+    {
+     "src": "web/t-home.png",
+     "crop": [
+      0.15,
+      0.2,
+      0.99,
+      0.544
+     ],
+     "w": 468,
+     "h": 240,
+     "x": 64,
+     "y": 484,
+     "r": 22
+    },
+    {
+     "src": "web/t-hunt-2200.png",
+     "crop": [
+      0.15,
+      0.3,
+      0.985,
+      0.643
+     ],
+     "w": 468,
+     "h": 240,
+     "x": 548,
+     "y": 484,
+     "r": 22
+    },
+    {
+     "src": "web/st-gold.png",
+     "crop": [
+      0.50347,
+      0.07586,
+      0.98264,
+      0.19793
+     ],
+     "w": 468,
+     "h": 240,
+     "x": 64,
+     "y": 740,
+     "r": 22
+    },
+    {
+     "src": "web/replay-win.png",
+     "crop": [
+      0.24306,
+      0.2388866666666667,
+      0.79861,
+      0.6944466666666667
+     ],
+     "w": 468,
+     "h": 240,
+     "x": 548,
+     "y": 740,
+     "r": 22
+    }
+   ],
+   "pills": [
+    {
+     "x": 64,
+     "y": 1000,
+     "w": 952,
+     "items": [
+      "Edge Finder hunts",
+      "Breed systems",
+      "Forward tests",
+      "Portfolio tests",
+      "9 stress tests",
+      "Trade replay",
+      "Bot export, compile checked"
+     ]
+    }
+   ],
+   "callouts": [],
+   "bottomScrim": 0,
+   "shows": "A launch graphic: four real screens from StrategyDynamics 2.0 in a grid. The Home galaxy of systems, an Edge Finder hunt with its equity lines, the Monte Carlo fan of 400 futures, and a trade replay closing at its target. Beneath them, the main features as labels.",
+   "angle": "Launch day. StrategyDynamics 2.0 is a full rebuild, live today on iPhone and the web.",
+   "facts": [
+    "StrategyDynamics 2.0 is live on iPhone and on the web at strategydynamics.co.uk, one account for both",
+    "Starter £9.99, Pro £39, Institutional £149 a month. No free plan, no trial",
+    "Edge Finder hunts and Breed, forward tests on new bars every day, portfolio tests, 9 stress tests, trade replay",
+    "Bot export for cTrader, MT4, MT5, TradingView and Python, compile checked",
+    "140 building blocks to describe a strategy in plain words",
+    "Monte Carlo runs 400 futures"
+   ]
+  }
+ ]
+}

@@ -3,3 +3,9 @@ node_modules/
 .DS_Store
 *.log
 *.docx
+
+# Social visuals: raw source screenshots (136 MB) and scratch renders stay local.
+# Finished sets keep the JPG (what gets posted); the PNG twin is not tracked.
+visuals/*/sources/
+visuals/*/*-safecheck/
+visuals/*/*/*.png

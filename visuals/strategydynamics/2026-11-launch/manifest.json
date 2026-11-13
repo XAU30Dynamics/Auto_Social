@@ -1,0 +1,612 @@
+{
+ "brand": "StrategyDynamics",
+ "size": [
+  1080,
+  1350
+ ],
+ "posts": [
+  {
+   "id": "01",
+   "file": "01-galaxy.jpg",
+   "png": "01-galaxy.png",
+   "feature": "Home galaxy",
+   "pillar": "Product Showcase",
+   "headline": "Every star is one of your systems.",
+   "sub": "Bigger and brighter means it tested better. Tap a star to open it.",
+   "cta": "See yours",
+   "shows": "The Home galaxy on the web app: a spiral galaxy where each labelled star is one of the account's trading systems.",
+   "angle": "Your whole book of systems as a living galaxy, not a list.",
+   "facts": [
+    "15 systems in the showcase account",
+    "Amber stars are forward testing, green deployed, blue tested, violet ideas"
+   ]
+  },
+  {
+   "id": "02",
+   "file": "02-edge-finder-hunt.jpg",
+   "png": "02-edge-finder-hunt.png",
+   "feature": "Edge Finder hunt",
+   "pillar": "Product Showcase",
+   "headline": "It tested 19 ideas so I didn't have to.",
+   "sub": "293 settings on DAX and Dow. Every line is one of them. Red lines died on data they never saw.",
+   "cta": "Start a hunt",
+   "shows": "An Edge Finder hunt mid reveal on the web: every setting tested drawn as an equity line, the unseen period shaded on the right, and the survivor named below (GER40 swing stop slow trail).",
+   "angle": "The app hunts for strategies and only hands back what survived unseen data, and shows the weak unseen result too.",
+   "facts": [
+    "19 ideas, 293 settings tested, 8 of 19 ideas survived",
+    "Markets DAX 40 and Dow 30, 15 minute bars",
+    "Best: +33.6% in sample, -1.0% unseen, +32.3% whole window, profit factor 1.44 in sample"
+   ]
+  },
+  {
+   "id": "03",
+   "file": "03-no-edge.jpg",
+   "png": "03-no-edge.png",
+   "feature": "Edge Finder honesty",
+   "pillar": "Educational Principles",
+   "headline": "It found nothing. And it said so.",
+   "sub": "19 ideas on gold, 30 minute bars, 5 years. None survived. An honest no beats a curve-fitted yes.",
+   "cta": "Hunt your market",
+   "shows": "An Edge Finder hunt on gold that ended with no survivor: 107 equity lines all drifting down, labelled \"0 of 19 ideas survived\".",
+   "angle": "Most strategy ideas fail after costs. This app tells you so instead of selling you a curve.",
+   "facts": [
+    "Gold, 30 minute bars, 5 years",
+    "19 ideas tested, 0 survived, 107 trails drawn",
+    "Losing ideas are listed with why they died"
+   ]
+  },
+  {
+   "id": "04",
+   "file": "04-optimise-lightning.jpg",
+   "png": "04-optimise-lightning.png",
+   "feature": "Optimise lightning",
+   "pillar": "Product Showcase",
+   "headline": "Lightning on every setting.",
+   "sub": "It tests the whole grid, then picks the robust setting, not the lucky one.",
+   "cta": "Optimise yours",
+   "shows": "The Optimise screen on iPhone mid run: a lightning bolt striking a grid of stop size against target size, the robust pick ringed, and the variants' equity lines racing below.",
+   "angle": "Optimisation you can watch, that picks stable settings over lucky ones.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars",
+    "8 of 20 passes done, robust pick so far Sharpe 2.04, +25.3% whole window, -6.4% max drawdown"
+   ]
+  },
+  {
+   "id": "05",
+   "file": "05-optimise-result.jpg",
+   "png": "05-optimise-result.png",
+   "feature": "Optimise result",
+   "pillar": "Product Showcase",
+   "headline": "20 settings. One robust pick.",
+   "sub": "+45.1% over the whole window with a 4.3% max drawdown. 10 settings failed the unseen data and were dropped.",
+   "cta": "Optimise yours",
+   "shows": "A finished optimisation on the web: the grid of 20 settings with the robust pick locked, and the equity of every variant with the unseen period shaded.",
+   "angle": "The robust pick is chosen across the whole grid and checked on data it never saw.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars",
+    "20 of 20 tested, robust pick Sharpe 3.56 in sample",
+    "+45.1% whole window, -4.3% max drawdown, 10 failed unseen"
+   ]
+  },
+  {
+   "id": "06",
+   "file": "06-backtest-draw.jpg",
+   "png": "06-backtest-draw.png",
+   "feature": "Backtest reveal",
+   "pillar": "Product Showcase",
+   "headline": "Watch the equity draw itself.",
+   "sub": "Gold Asia Box Weekly Bias: +38.9% with real spread and commission. 65 trades, profit factor 2.04.",
+   "cta": "Test your idea",
+   "shows": "A backtest result on the web caught mid reveal: the balance line drawing on from the left with a glowing head, under the headline +38.9%, with the unseen period marked on the right.",
+   "angle": "Results in seconds, with real costs, drawn so you see how the system got there.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars",
+    "Net +38.9%, 65 trades, profit factor 2.04, win rate 55%, max equity drawdown 5.9%",
+    "In sample +36.9%, unseen +1.4%: graded C, too few unseen trades to judge"
+   ]
+  },
+  {
+   "id": "07",
+   "file": "07-forward-test.jpg",
+   "png": "07-forward-test.png",
+   "feature": "Forward test",
+   "pillar": "Product Showcase",
+   "headline": "The backtest ended. The real test began.",
+   "sub": "Amber is the forward test: bars that did not exist when the system was built.",
+   "cta": "Seat it forward",
+   "shows": "A system page on the web (DXY Slope Sweep, GBP/USD): one trail in three parts, blue in sample, shaded unseen, then amber forward test ending at Today.",
+   "angle": "A backtest can be fitted. A forward test on new bars cannot.",
+   "facts": [
+    "DXY Slope Sweep, GBP/USD, 15 minute bars",
+    "Whole +38.3%, in sample +28.8%, unseen +7.4%, forward +0.8% so far",
+    "103 trades, profit factor 1.59, max drawdown 7.1%"
+   ]
+  },
+  {
+   "id": "08",
+   "file": "08-forward-record.jpg",
+   "png": "08-forward-record.png",
+   "feature": "Forward tests",
+   "pillar": "Product Showcase",
+   "headline": "Three systems. Trading new bars daily.",
+   "sub": "+$2,561 since they were seated. Each on its own balance, one summary every morning.",
+   "cta": "Seat yours forward",
+   "shows": "The Forward tests page on the web: \"+$2,561, 3 systems on new bars\", then each forward test with its own amber line (Gold Asia Box Weekly Bias +1.7% on $100,000).",
+   "angle": "The forward record decides, and it builds itself every morning without you.",
+   "facts": [
+    "3 systems forward testing, 3 trades since seating, +$2,561",
+    "Gold Asia Box Weekly Bias: +1.7% on $100,000, 1 trade, seated 9 Nov",
+    "A forward test ends at 40 trades or 60 days"
+   ]
+  },
+  {
+   "id": "09",
+   "file": "09-portfolio.jpg",
+   "png": "09-portfolio.png",
+   "feature": "Portfolio test",
+   "pillar": "Product Showcase",
+   "headline": "Six systems. One account.",
+   "sub": "+14% together with a 5.0% max drawdown. Red marks the days they lose together.",
+   "cta": "Test your portfolio",
+   "shows": "A portfolio test on the web: six systems combined into one account line, +14%, with red sections where two or more systems were losing at once.",
+   "angle": "Your systems tested as one account, so you see the bad days before they happen together.",
+   "facts": [
+    "6 systems, May 2026 to November 2026",
+    "+14.4% return, 5.0% max drawdown, Sharpe 2.20",
+    "42 days losing together"
+   ]
+  },
+  {
+   "id": "10",
+   "file": "10-portfolio-tune.jpg",
+   "png": "10-portfolio-tune.png",
+   "feature": "Portfolio tune",
+   "pillar": "Product Showcase",
+   "headline": "Same systems. +42.8% became +58%.",
+   "sub": "The tune moves sizes, never risk. Sharpe 2.77 to 3.35. Losing days 28 to 21.",
+   "cta": "Tune yours",
+   "shows": "The portfolio tune on iPhone: \"+58% return, was +42.8%\", Sharpe 2.77 to 3.35, 21 days losing together (was 28), with the tuned account line.",
+   "angle": "One tap tunes the mix of systems as a single account.",
+   "facts": [
+    "Return +58%, was +42.8%",
+    "Max drawdown 11.0%, was 9.5%",
+    "Sharpe 3.35, was 2.77",
+    "Days losing together 21, was 28"
+   ]
+  },
+  {
+   "id": "11",
+   "file": "11-breed.jpg",
+   "png": "11-breed.png",
+   "feature": "Breed",
+   "pillar": "Product Showcase",
+   "headline": "Breed your best systems.",
+   "sub": "Two parents, six children. Three survived generation 1. The best scored a profit factor of 1.48.",
+   "cta": "Breed yours",
+   "shows": "A breed on iPhone: US30 RSI extreme crossed with GER40 swing structure, a family tree of children (green survived, red died) and the best child's equity line.",
+   "angle": "Take the systems that work and breed better ones, judged on unseen data.",
+   "facts": [
+    "Parents: US30 RSI extreme reversal x GER40 swing structure target",
+    "Generation 1 of 3: 6 tested, 3 survived",
+    "Best: GER40 channel break, RSI-free trail, profit factor 1.48, 310 trades"
+   ]
+  },
+  {
+   "id": "12",
+   "file": "12-monte-carlo.jpg",
+   "png": "12-monte-carlo.png",
+   "feature": "Stress: Monte Carlo",
+   "pillar": "Product Showcase",
+   "headline": "400 futures before real money.",
+   "sub": "The same 62 trades, reshuffled 400 ways. Typical +48%. Even the worst 5% ended near +27%.",
+   "cta": "Stress yours",
+   "shows": "The Monte Carlo stress test on the web: a fan of 400 possible futures from today, the luckiest in green, the typical band in blue, the unluckiest in red, with the worst 5%, typical and best 5% results beneath.",
+   "angle": "Know the range of outcomes before you put money on a system.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "400 futures: worst 5% +27%, typical +48%, best 5% +70%, drawdown 9%",
+    "Luckiest +83%, unluckiest -1%",
+    "2% of futures touched a 10% drawdown"
+   ]
+  },
+  {
+   "id": "13",
+   "file": "13-walk-forward.jpg",
+   "png": "13-walk-forward.png",
+   "feature": "Stress: walk forward",
+   "pillar": "Product Showcase",
+   "headline": "Did it work in every period?",
+   "sub": "Walk forward cuts the record into six periods and judges each on its own. Here: 6 of 6 made money.",
+   "cta": "Stress yours",
+   "shows": "The walk forward card on the web: \"6 of 6 periods that made money on their own\", marked Consistent, the equity line running through six green boxes with each period's result under it.",
+   "angle": "One good year can carry a bad system. Walk forward shows whether the edge held period by period.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "6 of 6 periods made money on their own, marked consistent",
+    "Period results: +5%, +9%, +4%, +13%, +4%, +6%",
+    "Six equal stretches of time, no re-tuning"
+   ]
+  },
+  {
+   "id": "14",
+   "file": "14-replay.jpg",
+   "png": "14-replay.png",
+   "feature": "Trade replay",
+   "pillar": "Product Showcase",
+   "headline": "Replay every trade, bar by bar.",
+   "sub": "Entry, stop and target on the real candles. This one ran to its target: +1.91R.",
+   "cta": "Replay yours",
+   "shows": "Trade replay on the web: gold 15 minute candles for trade 15 of 65, a long. The green target zone sits above the entry and the red stop zone below it; price climbs through the green zone and closes at the target, +1.91%.",
+   "angle": "See exactly how each trade happened, instead of trusting a number.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars",
+    "Trade 15 of 65: long on 22 Jan 2026, in 4833.79, out 4951.49 at its target",
+    "+1.91%, +1.91R on 1% risked",
+    "Plays at 1, 4 or 16 times speed",
+    "Library candles, fills and exits from the engine run"
+   ]
+  },
+  {
+   "id": "15",
+   "file": "15-deploy-targets.jpg",
+   "png": "15-deploy-targets.png",
+   "feature": "Code export",
+   "pillar": "Product Showcase",
+   "headline": "One system. Six ways to run it.",
+   "sub": "cTrader, MetaTrader 5, MetaTrader 4, TradingView, Python or an agent package. Checked before you see it.",
+   "cta": "Export yours",
+   "shows": "The Deploy sheet on iPhone listing six export targets: cTrader cBot, MetaTrader 5, MetaTrader 4, TradingView Pine Script v6, Python and an agent package.",
+   "angle": "From a tested system to a running bot on your platform, without writing code.",
+   "facts": [
+    "Six targets: cTrader cBot (C#), MQL5, MQL4, Pine Script v6, Python, agent package",
+    "Each export is checked on a worker before you see it, with its parity against the engine",
+    "Code export is on the Institutional plan"
+   ]
+  },
+  {
+   "id": "16",
+   "file": "16-compiled.jpg",
+   "png": "16-compiled.png",
+   "feature": "Code export, checked",
+   "pillar": "Product Showcase",
+   "headline": "From plain words to a compiled bot.",
+   "sub": "It shows exactly what was converted. The template owns the trading loop, so the bot trades the rules you tested.",
+   "cta": "Export yours",
+   "shows": "The web Deploy page: \"What is converted\" for Gold Asia Box Weekly Bias, listing entry, filter, exit and risk in plain words, then the exact buy and sell expressions the engine runs.",
+   "angle": "No drift between what you tested and what the bot trades.",
+   "facts": [
+    "Entry: Asia range break with daily SMA and prior-week close bias agreeing",
+    "Stop 6x ATR, target 1.8R, risk 1% a trade, 1 trade a day",
+    "4,073 bars of warmup before the first trade"
+   ]
+  },
+  {
+   "id": "17",
+   "file": "17-build.jpg",
+   "png": "17-build.png",
+   "feature": "Build",
+   "pillar": "Product Showcase",
+   "headline": "Describe it. It builds it.",
+   "sub": "Type your idea in plain words. Every gene in the helix is a rule it understood.",
+   "cta": "Build yours",
+   "shows": "The Build tab on iPhone: a box to explain a trading idea in plain words, \"Build me this\", and a DNA helix of the account's systems with genes for entry, filter, session, stop, target and trail.",
+   "angle": "No code, no block diagrams. Say the strategy and test it.",
+   "facts": [
+    "Three ways in: Build from words, Decode from a file or code, Edge Finder",
+    "Genes: entry, filter, session, stop, target, trail"
+   ]
+  },
+  {
+   "id": "18",
+   "file": "18-rules-back.jpg",
+   "png": "18-rules-back.png",
+   "feature": "Rules read back",
+   "pillar": "Educational Principles",
+   "headline": "It reads your rules back to you.",
+   "sub": "Before a single test, check it built what you meant. Change anything that is not.",
+   "cta": "Build yours",
+   "shows": "The \"How it trades\" sheet on iPhone: the system's entry in plain words (close above the 00:00 to 07:00 UTC high, above the daily SMA 40, above last week's close), then direction, days, session, stop 3x ATR, target 3.5R and risk 1%.",
+   "angle": "The app that tested a different strategy than the one you wrote is the one you leave. This one shows its working.",
+   "facts": [
+    "Asia range break with daily SMA and prior-week close bias",
+    "Stop 3x ATR, target 3.5R, risk 1% a trade, 1 trade a day",
+    "Session 07:00 to 15:00 UTC"
+   ]
+  },
+  {
+   "id": "19",
+   "file": "19-markets.jpg",
+   "png": "19-markets.png",
+   "feature": "Bar library",
+   "pillar": "Product Showcase",
+   "headline": "49 markets. Real bars. Real costs.",
+   "sub": "Gold, silver, indices and FX. Each tested with its own spread and commission.",
+   "cta": "Pick your market",
+   "shows": "The Market picker on iPhone: \"49 markets in the bar library\" with metals (gold, silver, platinum, copper), indices (Nasdaq 100, S&P 500, Dow 30, DAX 40 and more) and FX majors and crosses.",
+   "angle": "Test on the market you actually trade, with its real costs.",
+   "facts": [
+    "49 markets in the bar library",
+    "Metals, indices, FX majors and crosses"
+   ]
+  },
+  {
+   "id": "20",
+   "file": "20-iphone-and-web.jpg",
+   "png": "20-iphone-and-web.png",
+   "feature": "iPhone and web",
+   "pillar": "Product Showcase",
+   "headline": "On iPhone. And on the web.",
+   "sub": "One account. Build on the laptop, check the forward test on your phone.",
+   "cta": "Open it",
+   "shows": "The Home galaxy on the web app in the background and the same Home on iPhone in front.",
+   "angle": "StrategyDynamics 2.0 is on iPhone and in the browser, with the same account and the same systems.",
+   "facts": [
+    "Same account on iPhone and the web",
+    "Pay once, in either place"
+   ]
+  },
+  {
+   "id": "21",
+   "file": "21-plans.jpg",
+   "png": "21-plans.png",
+   "feature": "Plans",
+   "pillar": "Product Showcase",
+   "headline": "Test an idea for \u00a39.99 a month.",
+   "sub": "Starter \u00a39.99. Pro \u00a339. Institutional \u00a3149. Monthly. No free plan, no trial.",
+   "cta": "Choose a plan",
+   "shows": "The plan sheet on iPhone: Starter \u00a39.99, Pro \u00a339.00 and Institutional \u00a3149.00 a month, with what each includes.",
+   "angle": "A real backtesting and forward testing engine from under a tenner.",
+   "facts": [
+    "Starter \u00a39.99: 20 backtests, 1 optimisation, 1 forward test, Monte Carlo",
+    "Pro \u00a339: 50 backtests, 20 optimisations, 5 forward tests, 2 Edge Finder hunts",
+    "Institutional \u00a3149: 1,000 backtests, 200 optimisations, 20 forward tests, 10 hunts, code export"
+   ]
+  },
+  {
+   "id": "22",
+   "file": "22-engine-blocks.jpg",
+   "png": "22-engine-blocks.png",
+   "feature": "Engine capabilities",
+   "pillar": "Product Showcase",
+   "headline": "140 ways to build a strategy.",
+   "sub": "Say it in plain words. The engine checks every rule before it runs.",
+   "cta": "Build yours",
+   "shows": "A text graphic listing what the engine can build, grouped: indicators, smart money, time, exits, scaling and prop rules.",
+   "angle": "Whatever you trade, the engine can probably express it.",
+   "facts": [
+    "140 building blocks",
+    "28 indicators, 25 candle patterns, 18 exits",
+    "Prop rules as guards: FTMO, FundedNext, The5%ers"
+   ]
+  },
+  {
+   "id": "23",
+   "file": "23-grade.jpg",
+   "png": "23-grade.png",
+   "feature": "Grades",
+   "pillar": "Educational Principles",
+   "headline": "It grades its own homework.",
+   "sub": "+19.3%, grade C. Profitable, but under 100 trades a year. It tells you what it cannot prove yet.",
+   "cta": "Test your idea",
+   "shows": "A system page on iPhone: Donchian trend with trail, +19.3% whole test return, grade C, with the in sample and unseen parts of its trail.",
+   "angle": "A grade and a plain reason, so a good-looking number does not fool you.",
+   "facts": [
+    "Donchian trend with trail, gold, 30 minute bars",
+    "+19.3%, 82 trades, profit factor 1.99, max drawdown 2.5%",
+    "Grade C: tested only, under 100 trades a year"
+   ]
+  },
+  {
+   "id": "24",
+   "file": "24-live-hunt.jpg",
+   "png": "24-live-hunt.png",
+   "feature": "Edge Finder live",
+   "pillar": "Product Showcase",
+   "headline": "87 settings tested in 63 seconds.",
+   "sub": "A live hunt on gold. Each setting lands as a trail. 4 of 5 ideas already dead.",
+   "cta": "Start a hunt",
+   "shows": "A live Edge Finder hunt on iPhone: gold, 30 minute bars, dozens of red trails for dead settings and one green leader at +12.5%, with \"Sweeping 87 of 100 settings, 63s\".",
+   "angle": "It does in a minute what takes a trader a weekend.",
+   "facts": [
+    "Gold, 30 minute bars, 5 years",
+    "87 of 100 settings in 63 seconds",
+    "Leader: Squeeze Then First Break, profit factor 1.32, 73 trades"
+   ]
+  },
+  {
+   "id": "25",
+   "file": "25-challenge-race.jpg",
+   "png": "25-challenge-race.png",
+   "feature": "Stress: challenge race",
+   "pillar": "Product Showcase",
+   "headline": "300 attempts at a prop challenge.",
+   "sub": "FTMO rules, day by day: 10% target, 10% max loss, 5% daily. 99% passed, typically in 11 days.",
+   "cta": "Race yours",
+   "shows": "The challenge race card on the web: 300 attempts at an FTMO challenge drawn as green lines racing from 0% toward the +10% target line, with the -10% max loss line beneath. 99% passed.",
+   "angle": "Before paying for a challenge, see how often this system would pass one.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "300 attempts on FTMO rules: 10% target, 10% max loss, 5% daily loss, 60 trading days",
+    "99% passed, 1 failed, 2 still racing",
+    "Typically 11 days to pass, 0% hit the daily limit"
+   ]
+  },
+  {
+   "id": "26",
+   "file": "26-without-best-trades.jpg",
+   "png": "26-without-best-trades.png",
+   "feature": "Stress: without the best trades",
+   "pillar": "Product Showcase",
+   "headline": "Take out its 10 best trades.",
+   "sub": "Still +21%. If a few lucky winners carried the result, this is where it shows.",
+   "cta": "Stress yours",
+   "shows": "The \"Without the best trades\" card on the web, marked Not luck: bars for the net result with all trades, then without the top 1, 3, 5 and 10 winners.",
+   "angle": "A system that only works because of two or three big wins is luck. This test removes them and looks again.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "All trades +49%, profit factor 2.45",
+    "Without the top 1: +45%. Top 3: +39%. Top 5: +34%. Top 10: +21%, profit factor 1.64",
+    "Marked not luck"
+   ]
+  },
+  {
+   "id": "27",
+   "file": "27-missed-trades.jpg",
+   "png": "27-missed-trades.png",
+   "feature": "Stress: missed trades",
+   "pillar": "Product Showcase",
+   "headline": "Miss 1 trade in 10. Still in profit?",
+   "sub": "300 runs, each skipping a random tenth of the trades. 300 of 300 stayed in profit.",
+   "cta": "Stress yours",
+   "shows": "The \"Missed trades, skip 1 in 10\" card on the web: 100% still in profit, with a green histogram of where the 300 runs ended.",
+   "angle": "Real trading misses fills. This shows whether the edge survives when a tenth of the trades never happen.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "300 runs, each missing a random tenth of the trades",
+    "100% still in profit, 300 of 300 runs",
+    "Worst 5% +36%, typical +45%, best 5% +51%"
+   ]
+  },
+  {
+   "id": "28",
+   "file": "28-stability-terrain.jpg",
+   "png": "28-stability-terrain.png",
+   "feature": "Stress: stability terrain",
+   "pillar": "Product Showcase",
+   "headline": "A peak its neighbours do not back is luck.",
+   "sub": "Every setting drawn as terrain. Green is ground that holds. Red peaks are marked luck.",
+   "cta": "Stress yours",
+   "shows": "The stability terrain on the web: a 3D surface of profit factor over the stop and trail settings. The robust setting is ringed in green with its value, and three red peaks are labelled LUCK.",
+   "angle": "The best single setting is often a fluke. The terrain shows whether the settings around it hold up too.",
+   "facts": [
+    "Donchian trend with trail, gold, 30 minute bars, 82 trades",
+    "Robust pick: stop 3.65, trail 5, profit factor 2.00, neighbours 1.97",
+    "3 isolated peaks, a best that its neighbours do not back",
+    "25 engine runs on the same bars"
+   ]
+  },
+  {
+   "id": "29",
+   "file": "29-regime.jpg",
+   "png": "29-regime.png",
+   "feature": "Stress: regime",
+   "pillar": "Product Showcase",
+   "headline": "Does it work in every kind of market?",
+   "sub": "Quarter by quarter, then by volatility and trend. Here: 5 of 6 quarters made money.",
+   "cta": "Stress yours",
+   "shows": "The regime card on the web: \"5 of 6 quarters made money\", a bar for each quarter's profit, then results in low, mid and high volatility.",
+   "angle": "An edge that only works in one kind of market stops working when the market changes.",
+   "facts": [
+    "Donchian trend with trail, gold, 30 minute bars, 82 trades",
+    "5 of 6 quarters made money",
+    "Made the most in up trend: +15.0% on 51 trades. Down trend +3.7% on 32 trades",
+    "Low volatility +5.7%, mid +3.9%, high +9.0%"
+   ]
+  },
+  {
+   "id": "30",
+   "file": "30-parity.jpg",
+   "png": "30-parity.png",
+   "feature": "Stress: parity, code vs engine",
+   "pillar": "Product Showcase",
+   "headline": "Does the bot trade what you tested?",
+   "sub": "The exported code runs beside the engine on the same bars and costs. Here: 16 of 16 trades the same, to the cent.",
+   "cta": "Export yours",
+   "shows": "The parity card on the web: 100%, same entry, exit and reason as the engine. 16 of 16 trades match to the cent, engine +0.1% and exported code +0.1%.",
+   "angle": "The usual gap between a backtest and a bot is the code. Parity measures that gap before you run it.",
+   "facts": [
+    "Donchian trend with trail, gold, 30 minute bars, 82 trades",
+    "Parity 100%: same entry, exit and reason as the engine",
+    "16 of 16 trades to the cent, largest gap on one matched trade $0",
+    "Engine +0.1% on 16 trades, exported code +0.1% on 16 trades"
+   ]
+  },
+  {
+   "id": "31",
+   "file": "31-stress-complete.jpg",
+   "png": "31-stress-complete.png",
+   "feature": "Stress: the whole screen",
+   "pillar": "Product Showcase",
+   "headline": "Nine stress tests. One screen.",
+   "sub": "Monte Carlo, walk forward, challenge race, best trades, missed trades and more. Run them before money.",
+   "cta": "Stress yours",
+   "shows": "The whole Stress screen on the web with its tests complete: the Monte Carlo fan across the top, walk forward at 6 of 6 and the challenge race at 99% beneath, then without the best trades and missed trades.",
+   "angle": "One place to try to break a system before trusting it.",
+   "facts": [
+    "Gold Asia Box Weekly Bias, gold, 15 minute bars, 62 trades",
+    "Nine stress tests on one screen",
+    "Monte Carlo worst 5% +27%; walk forward 6 of 6; challenge race 99% passed",
+    "Without the top 10 trades +21%; missing 1 trade in 10, 100% still in profit"
+   ]
+  },
+  {
+   "id": "32",
+   "file": "32-news.jpg",
+   "png": "32-news.png",
+   "feature": "News on every trade",
+   "pillar": "Product Showcase",
+   "headline": "Was it the system, or the news?",
+   "sub": "Trades held through red news are flagged and totalled. Here: 4 trades, +0.76% between them.",
+   "cta": "Test yours",
+   "shows": "A backtest on the web: a News tile reading +0.76%, held through red news on 4 trades, beside a Breaker note saying the system is profitable in sample but loses on unseen data. Below, the first trade is tagged \"Held through USD Fed rate decision\".",
+   "angle": "A result made by one news spike is not an edge. The app shows which trades sat through red news and what they added.",
+   "facts": [
+    "PropDynamics v2, US30, 15 minute bars, 257 trades",
+    "4 trades held through red news, +0.76% between them",
+    "Trade 1 hit its target, +1.38%, held through the USD Fed rate decision",
+    "Breaker: profitable in sample, loses on unseen data"
+   ]
+  },
+  {
+   "id": "33",
+   "file": "33-stress-fail.jpg",
+   "png": "33-stress-fail.png",
+   "feature": "Stress: a system that fails",
+   "pillar": "Product Showcase",
+   "headline": "Stress said no. Better now than live.",
+   "sub": "Worst 5% of futures ended at -9%. 70% touched a 10% drawdown. Found before any money went on it.",
+   "cta": "Stress yours",
+   "shows": "The Monte Carlo stress test on the web for a weaker system: the fan of 400 futures spreads wide, the unluckiest line in red falls well below zero, and the worst 5% reads -9%.",
+   "angle": "The point of a stress test is to be told no. This system looked fine on its backtest and did not survive.",
+   "facts": [
+    "PropDynamics v2, US30, 15 minute bars, 257 trades",
+    "400 futures: worst 5% -9%, typical +26%, best 5% +56%, drawdown 25%",
+    "70% of futures touched a 10% drawdown"
+   ]
+  },
+  {
+   "id": "34",
+   "file": "34-build-web.jpg",
+   "png": "34-build-web.png",
+   "feature": "Build on the web",
+   "pillar": "Product Showcase",
+   "headline": "Start with a sentence.",
+   "sub": "Describe it, drop in a file, or let it discover one. You read the rules back before anything is saved or run.",
+   "cta": "Build yours",
+   "shows": "The Build page on the web: a box that says \"Explain your trading idea here\" with Describe, From a file and Discover tabs and a green \"Build me this\" button. Beneath it, the account's systems drawn as strands of genes.",
+   "angle": "No code and no form to fill. Say the idea the way you would say it to another trader.",
+   "facts": [
+    "Three ways in: describe, from a file, discover",
+    "The market and the bars are read from the idea",
+    "You read the rules back before anything is saved or run"
+   ]
+  },
+  {
+   "id": "35",
+   "file": "35-hunt-setup.jpg",
+   "png": "35-hunt-setup.png",
+   "feature": "Edge Finder: set up a hunt",
+   "pillar": "Product Showcase",
+   "headline": "18 styles. Breed up to four.",
+   "sub": "Pick a market and a timeframe. Edge Finder breeds the ideas, tests them on real bars with real costs, and keeps what survives.",
+   "cta": "Start a hunt",
+   "shows": "The Edge Finder setup on the web: 18 style buttons with Trend, Breakout, Mean reversion and Sweep chosen, 4 of 4, and the timeframe row beneath with 30M selected.",
+   "angle": "You choose the kind of idea. It does the breeding and the testing.",
+   "facts": [
+    "18 styles to breed from, up to 4 a hunt",
+    "Styles include trend, breakout, mean reversion, sweep, smart money, grid",
+    "Timeframes from 1 minute to 1 day"
+   ]
+  }
+ ]
+}

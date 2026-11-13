@@ -1,0 +1,15 @@
+{
+ "brand": "StrategyDynamics",
+ "note": "One-off launch day post, 13 Nov 2026. Posts once, never rotates (this folder has no manifest.json on purpose).",
+ "posts": {
+  "00": {
+   "file": "00-launch-day.jpg",
+   "hook": "StrategyDynamics 2.0 is live today.",
+   "ig_caption": "StrategyDynamics 2.0 is live today.\n\nIt is a full rebuild, on iPhone and on the web, with one account for both.\n\nOne idea runs through all of it: the forward record decides. Build a system in plain words from 140 building blocks. Test it with real costs. Seat it forward and it runs on new bars every day, without touching a live account. Only then send it to your platform.\n\nWhat is in 2.0:\nEdge Finder hunts and Breed, to test ideas and cross the ones that survive.\nForward tests on new bars every day.\nPortfolio tests, to judge your systems as one account.\n9 stress tests, including a Monte Carlo of 400 futures.\nTrade replay, bar by bar.\nBot export for cTrader, MT4, MT5, TradingView and Python, compile checked.\n\nMost ideas die after costs. 2.0 shows you that instead of selling you a curve.\n\nStarter £9.99, Pro £39, Institutional £149 a month.\n\nGet 2.0 at strategydynamics.co.uk. Link in bio.\n\nFor education only. Trading involves risk.\n\n#StrategyDynamics #AlgoTrading #Backtesting #ForwardTesting #TradingBot",
+   "tiktok_title": "StrategyDynamics 2.0 is live today.",
+   "tiktok_caption": "A full rebuild, on iPhone and the web with one account. Edge Finder hunts, forward tests on new bars every day, 9 stress tests, trade replay and compile checked bot export. From £9.99 a month. Link in bio. #StrategyDynamics #AlgoTrading #Backtesting #TradingBot",
+   "threads_text": "StrategyDynamics 2.0 is live today, on iPhone and the web with one account. It is a full rebuild around one idea: the forward record decides. Build a system in plain words, test it with real costs, seat it forward on new bars every day, stress it 9 ways, then export a compile checked bot for cTrader, MT4, MT5, TradingView or Python. From £9.99 a month at strategydynamics.co.uk",
+   "threads_topic": "algotrading"
+  }
+ }
+}
